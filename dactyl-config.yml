@@ -577,6 +577,14 @@ pages:
         blurb: Browse the documentation based on practical use cases.
         targets:
             - en
+
+    -   name: ユースケース
+        html: use-cases.html
+        parent: docs.html
+        top_nav_grouping: Article Types
+        template: pagetype-category.html.jinja
+        blurb: 実践的なユースケースに基づいたドキュメントを閲覧することができます。
+        targets:
             - ja
 
 
@@ -588,6 +596,14 @@ pages:
         blurb: Practical examples for using different types of payment on the XRP Ledger.
         targets:
             - en
+
+    -   name: Payments
+        html: payments-uc.html
+        parent: use-cases.html
+        top_nav_grouping: Article Types
+        template: pagetype-category.html.jinja
+        blurb: XRPレジャーでさまざまな種類の支払いを使用するための実践的な例を紹介します。
+        targets:
             - ja
 
     -   md: use-cases/payments/peer-to-peer-payments-uc.md
@@ -616,6 +632,14 @@ pages:
         blurb: Work with a variety of tokens supported by the XRP Ledger.
         targets:
             - en
+
+    -   name: Tokenization
+        html: tokenization.html
+        parent: use-cases.html
+        top_nav_grouping: Article Types
+        template: pagetype-category.html.jinja
+        blurb: XRPレジャーがサポートする様々なトークンと連携することができます。
+        targets:
             - ja
 
     -   md: use-cases/tokenization/stablecoin-issuer.md
@@ -657,6 +681,14 @@ pages:
         blurb: Enabling fast, secure financial transactions without a central authority.
         targets:
             - en
+
+    -   name: 分散型金融
+        html: defi-uc.html
+        parent: use-cases.html
+        top_nav_grouping: Article Types
+        template: pagetype-category.html.jinja
+        blurb: 非中央集権で迅速かつ安全な金融トランザクションを可能にします。
+        targets:
             - ja
 
         # TODO: fix, rename this stub use case
@@ -686,6 +718,15 @@ pages:
         blurb: Practical ways to connect the XRP Ledger to external chains.
         targets:
             - en
+
+    -   name: 相互運用性
+        html: interoperability-uc.html
+        parent: use-cases.html
+        status: not_enabled
+        top_nav_grouping: Article Types
+        template: pagetype-category.html.jinja
+        blurb: XRPレジャーを外部のチェーンに接続するための実用的な方法を紹介します。
+        targets:
             - ja
 
     -   md: use-cases/interoperability/sidechains-uc.md
@@ -1517,6 +1558,14 @@ pages:
         blurb: Get step-by-step guidance to perform common tasks with the XRP Ledger.
         targets:
             - en
+
+    -   name: クイックスタート
+        html: quickstart.html
+        parent: tutorials.html
+        top_nav_grouping: Article Types
+        template: pagetype-category.html.jinja
+        blurb: XRP Ledgerで一般的なタスクを実行するためのステップバイステップのガイダンスを紹介します。
+        targets:
             - ja
 
         # TODO: translate
@@ -1552,6 +1601,14 @@ pages:
         blurb: Mint and sell NFTokens on the XRP Ledger.
         targets:
             - en
+
+    -   name: NFTのクイックスタート
+        html: nft-quickstart.html
+        parent: quickstart.html
+        top_nav_grouping: Article Types
+        template: pagetype-category.html.jinja
+        blurb: XRPレジャー上でNFTokenをミント、販売します。
+        targets:
             - ja
 
         # TODO: translate
@@ -1840,7 +1897,7 @@ pages:
         targets:
             - en
 
-    -   name: 専門化した支払いタイプの使用
+    -   name: 高度な支払いタイプの使用
         html: use-specialized-payment-types.html
         parent: tutorials.html
         template: pagetype-category.html.jinja
@@ -2039,6 +2096,13 @@ pages:
         nav_omit: true
         targets:
             - en
+
+    -   name: 相互運用性 - EVM Sidechain
+        html: evm-sidechains.html
+        template: pagetype-redirect.html.jinja
+        redirect_url: https://opensource.ripple.com/docs/evm-sidechain/intro-to-evm-sidechain/
+        nav_omit: true
+        targets:
             - ja
 
     # Redirect for "Get Started with the EVM Sidechain" tutorial page
@@ -4128,7 +4192,7 @@ pages:
         targets:
             - en
 
-    -   name: スタンドアロンモードでrippledをテスト
+    -   name: スタンドアロンモードでrippledの機能をテスト
         html: use-stand-alone-mode.html
         parent: infrastructure.html
         blurb: 新機能や実験用に、スタンドアロンモードを使用してフルネットワークで機能をテストできます。
@@ -4168,7 +4232,7 @@ pages:
         targets:
             - en
 
-    -   name: rippledのトラブルシューティング
+    -   name: トラブルシューティング
         html: troubleshoot-the-rippled-server.html
         parent: infrastructure.html
         blurb: rippledサーバーのあらゆる種類の問題をトラブルシューティングします。
