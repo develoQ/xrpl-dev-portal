@@ -787,6 +787,11 @@ pages:
         status: not_enabled
         targets:
             - en
+
+    -   md: use-cases/interoperability/sidechains-uc.ja.md
+        parent: interoperability-uc.html
+        status: not_enabled
+        targets:
             - ja
 
     -   md: use-cases/interoperability/xrpl-hooks-uc.md
@@ -794,6 +799,11 @@ pages:
         status: not_enabled
         targets:
             - en
+
+    -   md: use-cases/interoperability/xrpl-hooks-uc.ja.md
+        parent: interoperability-uc.html
+        status: not_enabled
+        targets:
             - ja
 
 # Concepts ---------------------------------------------------------------------
