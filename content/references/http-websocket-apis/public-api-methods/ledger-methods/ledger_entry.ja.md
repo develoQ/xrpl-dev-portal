@@ -155,11 +155,11 @@ _(Automated Market Maker (AMM) functionality is part of the proposed [XLS-30d](h
 
 Retrieve an Automated Market-Maker (AMM) object from the ledger. This is similar to \[amm_info method\]\[\], but the `ledger_entry` version returns only the ledger entry as stored.
 
-| Field        | Type             | Description                                                                                                                                                    |
-|:------------ |:---------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `amm`        | Object or String | _（省略可）_ 取得する[Escrowオブジェクト](escrow-object.html)を指定します。 文字列の場合はEscrowの[オブジェクトID](ledger-object-ids.html)（16進数）である必要があります。 オブジェクトの場合は`owner`および`seq`サブフィールドが必要です。 |
-| `amm.asset`  | オブジェクト           | One of the two assets in this AMM's pool, as a [currency object without an amount](currency-formats.html#specifying-without-amounts).                          |
-| `amm.asset2` | オブジェクト           | The other of the two assets in this AMM's pool, as a [currency object without an amount](currency-formats.html#specifying-without-amounts).                    |
+| Field        | Type         | Description                                                                                                                                                    |
+|:------------ |:------------ |:-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `amm`        | オブジェクトまたは文字列 | _（省略可）_ 取得する[Escrowオブジェクト](escrow-object.html)を指定します。 文字列の場合はEscrowの[オブジェクトID](ledger-object-ids.html)（16進数）である必要があります。 オブジェクトの場合は`owner`および`seq`サブフィールドが必要です。 |
+| `amm.asset`  | オブジェクト       | One of the two assets in this AMM's pool, as a [currency object without an amount](currency-formats.html#specifying-without-amounts).                          |
+| `amm.asset2` | オブジェクト       | The other of the two assets in this AMM's pool, as a [currency object without an amount](currency-formats.html#specifying-without-amounts).                    |
 
 <!-- MULTICODE_BLOCK_START -->
 
@@ -584,11 +584,11 @@ rippled json ledger_entry '{ "deposit_preauth": { "owner": "rf1BiGeXwwQoi8Z2ueFY
 
 Retrieve a [Ticket object](ticket.html), which represents a \[sequence number\]\[\] set aside for future use. Can be provided as string (object ID of the Ticket) or as an object. _(Added by the \[TicketBatch amendment\]\[\])_
 
-| Field               | Type               | Description                                                                                                                                                                                                                                          |
-|:------------------- |:------------------ |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ticket`            | Object or String   | The [Ticket object](ticket.html) to retrieve. If a string, must be the [object ID](ledger-object-ids.html) of the Ticket, as hexadecimal. If an object, the `account` and `ticket_seq` sub-fields are required to uniquely specify the Ticket entry. |
-| `ticket.account`    | 文字列 - \[アドレス\]\[\] | _（`directory`がオブジェクトとして指定されており、`directory.owner`が指定されていない場合に必須）_ 取得するディレクトリーを識別する一意のインデックス（16進数）。                                                                                                                                                    |
-| `ticket.ticket_seq` | Number             | _(Required if `ticket` is specified as an object)_ The Ticket Sequence number of the Ticket entry to retrieve.                                                                                                                                       |
+| Field               | Type         | Description                                                                                                                                                                                                                                          |
+|:------------------- |:------------ |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ticket`            | オブジェクトまたは文字列 | The [Ticket object](ticket.html) to retrieve. If a string, must be the [object ID](ledger-object-ids.html) of the Ticket, as hexadecimal. If an object, the `account` and `ticket_seq` sub-fields are required to uniquely specify the Ticket entry. |
+| `ticket.account`    | 試してみる >      | _（`directory`がオブジェクトとして指定されており、`directory.owner`が指定されていない場合に必須）_ 取得するディレクトリーを識別する一意のインデックス（16進数）。                                                                                                                                                    |
+| `ticket.ticket_seq` | Number       | _(Required if `ticket` is specified as an object)_ The Ticket Sequence number of the Ticket entry to retrieve.                                                                                                                                       |
 
 <!-- MULTICODE_BLOCK_START -->
 
@@ -683,7 +683,7 @@ rippled json ledger_entry '{ "nft_page": "255DD86DDF59D778081A06D02701E9B2C9F4F0
 |:-------------- |:------ |:-------------------------------------------------------------------------------------- |
 | `index`        | 文字列    | この[レジャーオブジェクト](ledger-object-types.html)の一意のID。                                        |
 | `ledger_index` | 符号なし整数 | このデータの取得時に使用されたレジャーの\[レジャーインデックス\]\[\]。                                                |
-| `node`         | Object | _（`"binary": true`が指定されている場合は省略）_\[レジャーフォーマット\]\[\]に基づく、このレジャーオブジェクトのデータが含まれているオブジェクト。 |
+| `node`         | オブジェクト | _（`"binary": true`が指定されている場合は省略）_\[レジャーフォーマット\]\[\]に基づく、このレジャーオブジェクトのデータが含まれているオブジェクト。 |
 | `node_binary`  | 文字列    | _（`"binary":true`が指定されていない場合は省略可）_ レジャーオブジェクトの[バイナリー表現](serialization.html)（16進数）。     |
 
 処理が成功した応答の例:
