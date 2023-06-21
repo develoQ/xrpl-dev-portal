@@ -5,11 +5,11 @@ blurb: コンセンサスで承認された基本トランザクションコス�
 labels:
   - 手数料
 ---
+
 # FeeSettings
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/protocol/impl/LedgerFormats.cpp#L115-L120 "Source")
 
-`FeeSettings`オブジェク
-トタイプには、現在の基本[トランザクションコスト](transaction-cost.html)と、[手数料投票](fee-voting.html)により決定する[準備金の額](reserves.html)が含まれています。各レジャーバージョンには**最大で1つの** `FeeSettings`オブジェクトが含まれています。
+`FeeSettings`オブジェク トタイプには、現在の基本[トランザクションコスト](transaction-cost.html)と、[手数料投票](fee-voting.html)により決定する[準備金の額](reserves.html)が含まれています。 各レジャーバージョンには**最大で1つの** `FeeSettings`オブジェクトが含まれています。
 
 ## {{currentpage.name}} JSONの例
 
@@ -31,26 +31,39 @@ labels:
 
 `FeeSettings`オブジェクトのフィールドは次のとおりです。
 
-| 名前                | JSONの型 | [内部の型][] | 説明            |
-|:--------------------|:----------|:------------------|:-----------------------|
-| `LedgerEntryType`   | 文字列    | UInt16            | 値`0x0073`が文字列`FeeSettings`にマッピングされている場合は、このオブジェクトにレジャーの手数料設定が含まれていることを示します。 |
-| `BaseFee`           | 文字列    | UInt64            | 「リファレンストランザクション」の[トランザクションコスト](transaction-cost.html)（XRPのdrop数、16進数） |
-| `ReferenceFeeUnits` | 数値    | UInt32            | 「手数料単位」に変換された`BaseFee` |
-| `ReserveBase`       | 数値    | UInt32            | XRP Ledgerのアカウントの[基本準備金](reserves.html#基本準備金と所有者準備金)（XRPのdrop数）。 |
-| `ReserveIncrement`  | 数値    | UInt32            | 所有するオブジェクトごとに増加する[所有者準備金](reserves.html#基本準備金と所有者準備金)（XRPのdrop数）。 |
-| `Flags`             | 数値    | UInt32            | このオブジェクトのブールフラグのビットマップ。このタイプではフラグは定義されていません。 |
+| 名前                  | JSON Type | \[内部の型\]\[\] | Required? | Description                                                                                                          |
+|:------------------- |:--------- |:------------ |:--------- |:-------------------------------------------------------------------------------------------------------------------- |
+| `BaseFee`           | 文字列       | UInt64       | Yes       | 「リファレンストランザクション」の[トランザクションコスト](transaction-cost.html)（XRPのdrop数、16進数）                                                |
+| `Flags`             | 数値        | UInt32       | Yes       | このオブジェクトのブールフラグのビットマップ。 Currently, the protocol defines no flags for `FeeSettings` objects. The value is always `0`. |
+| `LedgerEntryType`   | 文字列       | UInt16       | Yes       | 値`0x0073`が文字列`FeeSettings`にマッピングされている場合は、このオブジェクトにレジャーの手数料設定が含まれていることを示します。                                          |
+| `ReferenceFeeUnits` | 数値        | UInt32       | Yes       | 「手数料単位」に変換された`BaseFee`                                                                                               |
+| `ReserveBase`       | 数値        | UInt32       | Yes       | XRP Ledgerのアカウントの[基本準備金](reserves.html#基本準備金と所有者準備金)（XRPのdrop数）。                                                     |
+| `ReserveIncrement`  | 数値        | UInt32       | Yes       | 所有するオブジェクトごとに増加する[所有者準備金](reserves.html#基本準備金と所有者準備金)（XRPのdrop数）。                                                    |
 
-**警告:** このレジャーオブジェクトのJSONフォーマットは一般的ではありません。`BaseFee`、`ReserveBase`、および`ReserveIncrement`はXRPのdrop数を示しますが、通常の[XRP指定][通貨額]フォーマットでは***ありません*** 。
+**警告:** このレジャーオブジェクトのJSONフォーマットは一般的ではありません。 `BaseFee`、`ReserveBase`、および`ReserveIncrement`はXRPのdrop数を示しますが、通常の\[XRP指定\]\[通貨額\]フォーマットでは***ありません*** 。
+
+
+If the _\[XRPFees amendment\]\[\]_ is enabled, the `FeeSettings` object has these fields instead:
+
+| Name                    | JSONの型 | \[内部の型\]\[\] | Required? | 説明                                                                                                                                              |
+|:----------------------- |:------ |:------------ |:--------- |:----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BaseFeeDrops`          | String | Amount       | Yes       | The [transaction cost](transaction-cost.html) of the "reference transaction" in drops of XRP.                                                   |
+| `Flags`                 | 数値     | UInt32       | Yes       | A bitmap of boolean flags enabled for this object. Currently, the protocol defines no flags for `FeeSettings` objects. The value is always `0`. |
+| `LedgerEntryType`       | String | UInt16       | Yes       | 値`0x0073`が文字列`FeeSettings`にマッピングされている場合は、このオブジェクトにレジャーの手数料設定が含まれていることを示します。                                                                     |
+| `ReserveBaseDrops`      | String | Amount       | Yes       | XRP Ledgerのアカウントの[基本準備金](reserves.html#基本準備金と所有者準備金)（XRPのdrop数）。                                                                                |
+| `ReserveIncrementDrops` | String | Amount       | Yes       | The incremental [owner reserve](reserves.html#base-reserve-and-owner-reserve) for owning objects, as drops of XRP.                              |
+
 
 ## FeeSettings IDのフォーマット
 
-`FeeSettings`オブジェクトIDは、`FeeSettings`スペースキー（`0x0065`）のハッシュのみです。つまり、レジャーの`FeeSettings`オブジェクトのIDは常に次の値になります。
+`FeeSettings`オブジェクトIDは、`FeeSettings`スペースキー（`0x0065`）のハッシュのみです。 つまり、レジャーの`FeeSettings`オブジェクトのIDは常に次の値になります。
 
 ```
 4BC50C9B0D8515D3EAAE1E74B29A95804346C491EE1A95BF25E4AAB854A6A651
 ```
 
+
 <!--{# common link defs #}-->
-{% include '_snippets/rippled-api-links.md' %}			
-{% include '_snippets/tx-type-links.md' %}			
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
 {% include '_snippets/rippled_versions.md' %}
