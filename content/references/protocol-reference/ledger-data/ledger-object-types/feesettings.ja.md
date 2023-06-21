@@ -51,7 +51,7 @@ If the _\[XRPFees amendment\]\[\]_ is enabled, the `FeeSettings` object has thes
 | `Flags`                 | 数値     | UInt32       | Yes       | A bitmap of boolean flags enabled for this object. Currently, the protocol defines no flags for `FeeSettings` objects. The value is always `0`. |
 | `LedgerEntryType`       | String | UInt16       | Yes       | 値`0x0073`が文字列`FeeSettings`にマッピングされている場合は、このオブジェクトにレジャーの手数料設定が含まれていることを示します。                                                                     |
 | `ReserveBaseDrops`      | String | Amount       | Yes       | XRP Ledgerのアカウントの[基本準備金](reserves.html#基本準備金と所有者準備金)（XRPのdrop数）。                                                                                |
-| `ReserveIncrementDrops` | String | Amount       | Yes       | The incremental [owner reserve](reserves.html#base-reserve-and-owner-reserve) for owning objects, as drops of XRP.                              |
+| `ReserveIncrementDrops` | 文字列    | Amount       | Yes       | The incremental [owner reserve](reserves.html#base-reserve-and-owner-reserve) for owning objects, as drops of XRP.                              |
 
 
 ## FeeSettings IDのフォーマット
