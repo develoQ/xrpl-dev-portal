@@ -1,15 +1,16 @@
 ---
 html: book_offers.html
 parent: path-and-order-book-methods.html
-blurb: オーダーブックと呼ばれる、2つの通貨間のオファーのリストを取得します。
+blurb: Get info about offers to exchange two currencies.
 labels:
-  - 分散型取引所
-  - 複数通貨間
+  - Decentralized Exchange
+  - Cross-Currency
 ---
+
 # book_offers
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/rpc/handlers/BookOffers.cpp "Source")
 
-`book_offers`メソッドは、[オーダーブック](http://www.investopedia.com/terms/o/order-book.asp)と呼ばれる、2つの通貨間のオファーのリストを取得します。結果が非常に大きい場合、結果の一部がマーカー付きで返されます。これにより、その後の要求は前回の要求で終わった箇所から再開できます。
+`book_offers`メソッドは、[オーダーブック](http://www.investopedia.com/terms/o/order-book.asp)と呼ばれる、2つの通貨間のオファーのリストを取得します。 The response omits [unfunded Offers](offers.html#lifecycle-of-an-offer) and reports how much of each remaining Offer's total is currently funded.
 
 ## 要求フォーマット
 要求フォーマットの例:
@@ -64,19 +65,19 @@ rippled book_offers 'USD/rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B' 'EUR/rvYAfWj5gh67oV6
 
 <!-- MULTICODE_BLOCK_END -->
 
-[試してみる >](websocket-api-tool.html#book_offers)
+[Try it! >](websocket-api-tool.html#book_offers)
 
 要求には以下のパラメーターが含まれます。
 
-| `Field`        | 型                                         | 説明                           |
-|:---------------|:-------------------------------------------|:-------------------------------|
-| `ledger_hash` | 文字列 | _（省略可）_ 使用するレジャーバージョンの20バイトの16進文字列。（[レジャーの指定][]を参照してください） |
-| `ledger_index` | 文字列または符号なし整数 | _（省略可）_ 使用するレジャーの[レジャーインデックス][]、またはレジャーを自動的に選択するためのショートカット文字列。（[レジャーの指定][]を参照してください） |
-| `limit` | 符号なし整数 | _（省略可）_ 指定されている場合、サーバーはこの制限を超える数のオファーを結果に含めません。資金供給のないオファーはサーバーにより省略されるため、返される結果の総数はこの制限よりも少ないことがあります。 |
-| `marker` | [マーカー][] | _（省略可）_ 以前にページネーションされた応答の値。その応答を停止した箇所からデータの取得を再開します。 |
-| `taker` | 文字列 | _（省略可）_ パースペクティブとして使用するアカウントの[アドレス][]。このアカウントが発行した[資金供給のないオファー](offers.html#オファーのライフサイクル)は常に応答に含まれます。（これを使用して、キャンセルしたい各自のオーダーを検索できます。） |
-| `taker_gets` | オブジェクト | オファーを受諾するアカウントが受け取る通貨を、[通貨額][通貨額]と同様に、`currency`フィールドと`issuer`フィールドを持つオブジェクトとして指定します（XRPの場合はissuerを省略）。 |
-| `taker_pays` | オブジェクト | オファーを受諾するアカウントが支払う通貨を、[通貨額][通貨額]と同様に、`currency`フィールドと`issuer`フィールドを持つオブジェクトとして指定します（XRPの場合はissuerを省略）。 |
+| `Field`        | 型            | Required? | 説明                                                                                                                                                                                                                  |
+|:-------------- |:------------ |:--------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `taker_gets`   | オブジェクト       | Yes       | The asset the account taking the Offer would receive, as a [currency without an amount](currency-formats.html#specifying-without-amounts).                                                                          |
+| `taker_pays`   | オブジェクト       | Yes       | The asset the account taking the Offer would pay, as a [currency without an amount](currency-formats.html#specifying-without-amounts).                                                                              |
+| `ledger_hash`  | \[Hash\]\[\] | No        | _（省略可）_ 使用するレジャーバージョンの20バイトの16進文字列。 （\[レジャーの指定\]\[\]を参照してください）                                                                                                                                                      |
+| `ledger_index` | \[マーカー\]\[\] | No        | _（省略可）_ 使用するレジャーの\[レジャーインデックス\]\[\]、またはレジャーを自動的に選択するためのショートカット文字列。 （\[レジャーの指定\]\[\]を参照してください）                                                                                                                       |
+| `limit`        | Number       | No        | The maximum number of Offers to return. The response may include fewer results.                                                                                                                                     |
+| `taker`        | 文字列          | No        | The \[Address\]\[\] of an account to use as a perspective. The response includes this account's Offers even if they are unfunded. (You can use this to see what Offers are above or below yours in the order book.) |
+
 
 ## 応答フォーマット
 
@@ -160,30 +161,101 @@ rippled book_offers 'USD/rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B' 'EUR/rvYAfWj5gh67oV6
 }
 ```
 
+*Commandline*
+
+```json
+{
+   "result" : {
+      "ledger_current_index" : 56867201,
+      "offers" : [
+         {
+            "Account" : "rnixnrMHHvR7ejMpJMRCWkaNrq3qREwMDu",
+            "BookDirectory" : "7E5F614417C2D0A7CEFEB73C4AA773ED5B078DE2B5771F6D56038D7EA4C68000",
+            "BookNode" : "0000000000000000",
+            "Flags" : 131072,
+            "LedgerEntryType" : "Offer",
+            "OwnerNode" : "0000000000000000",
+            "PreviousTxnID" : "E43ADD1BD4AC2049E0D9DE6BC279B7FD95A99C8DE2C4694A4A7623F6D9AAAE29",
+            "PreviousTxnLgrSeq" : 47926685,
+            "Sequence" : 219,
+            "TakerGets" : {
+               "currency" : "EUR",
+               "issuer" : "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+               "value" : "2.459108753792364"
+            },
+            "TakerPays" : {
+               "currency" : "USD",
+               "issuer" : "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+               "value" : "24.59108753792364"
+            },
+            "index" : "3087B4828C6B5D8595EA325D69C0F396C57452893647799493A38F2C164990AB",
+            "owner_funds" : "2.872409153061363",
+            "quality" : "10"
+         },
+         {
+            "Account" : "rKwjWCKBaASEvtHCxtvReNd2i9n8DxSihk",
+            "BookDirectory" : "7E5F614417C2D0A7CEFEB73C4AA773ED5B078DE2B5771F6D56038D7EA4C68000",
+            "BookNode" : "0000000000000000",
+            "Flags" : 131072,
+            "LedgerEntryType" : "Offer",
+            "OwnerNode" : "0000000000000000",
+            "PreviousTxnID" : "B63B2ECD124FE6B02BC2998929517266BD221A02FEE51DDE4992C1BCB7E86CD3",
+            "PreviousTxnLgrSeq" : 43166305,
+            "Sequence" : 19,
+            "TakerGets" : {
+               "currency" : "EUR",
+               "issuer" : "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+               "value" : "3.52"
+            },
+            "TakerPays" : {
+               "currency" : "USD",
+               "issuer" : "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+               "value" : "35.2"
+            },
+            "index" : "89865F2C70D1140796D9D249AC2ED765AE2D007A52DEC6D6D64CCB1A77A6EB7F",
+            "owner_funds" : "3.523192614770459",
+            "quality" : "10",
+            "taker_gets_funded" : {
+               "currency" : "EUR",
+               "issuer" : "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+               "value" : "3.516160294182094"
+            },
+            "taker_pays_funded" : {
+               "currency" : "USD",
+               "issuer" : "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+               "value" : "35.16160294182094"
+            }
+         }
+      ],
+      "status" : "success",
+      "validated" : false
+   }
+}
+```
+
 <!-- MULTICODE_BLOCK_END -->
 
-この応答は[標準フォーマット][]に従っており、正常に完了した場合は結果に次のフィールドが含まれます。
+この応答は\[標準フォーマット\]\[\]に従っており、正常に完了した場合は結果に次のフィールドが含まれます。
 
-| `Field`                | 型                        | 説明                    |
-|:-----------------------|:--------------------------|:------------------------|
-| `ledger_current_index` | 数値 - [レジャーインデックス][] | _（`ledger_current_index`が指定されている場合は省略）_ この情報の取得時に使用した、現在処理中のレジャーバージョンの[レジャーインデックス][]。 |
-| `ledger_index` | 数値 - [レジャーインデックス][] | _（`ledger_current_index`が指定されている場合は省略可）_ 要求に従って、このデータの取得時に使用されたレジャーバージョンのレジャーインデックス。 |
-| `ledger_hash` | 文字列 - [ハッシュ][] | _（省略される場合があります）_ 要求に従って、このデータの取得時に使用されたレジャーバージョンの識別用ハッシュ。 |
-| `marker` | [マーカー][] | _（省略される場合があります）_ 応答がページネーションされていることを示す、サーバーが定義した値。この値を次のコールに渡して、このコールで終わった箇所から再開します。この後に情報ページがない場合は省略されます。 |
-| `offers` | 配列 | Offerオブジェクトの配列。各オブジェクトには[Offer オブジェクト](offer.html)のフィールドが含まれています。 |
+| `Field`                | 型                       | 説明                                                                                        |
+|:---------------------- |:----------------------- |:----------------------------------------------------------------------------------------- |
+| `ledger_current_index` | 数値 - \[レジャーインデックス\]\[\] | _（`ledger_current_index`が指定されている場合は省略）_ この情報の取得時に使用した、現在処理中のレジャーバージョンの\[レジャーインデックス\]\[\]。 |
+| `ledger_index`         | 数値 - \[レジャーインデックス\]\[\] | _（`ledger_current_index`が指定されている場合は省略可）_ 要求に従って、このデータの取得時に使用されたレジャーバージョンのレジャーインデックス。      |
+| `ledger_hash`          | \[Hash\]\[\]            | _（省略される場合があります）_ 要求に従って、このデータの取得時に使用されたレジャーバージョンの識別用ハッシュ。                                 |
+| `offers`               | 配列                      | Offerオブジェクトの配列。 各オブジェクトには[Offer オブジェクト](offer.html)のフィールドが含まれています。                        |
 
 `offers`配列の要素には、Offerの標準フィールドの他に以下のフィールドが含まれます。
 
-| `Field`             | 型                               | 説明                |
-|:--------------------|:---------------------------------|:--------------------|
-| `owner_funds` | 文字列 | オファーの発行元が保有する取引可能なTakerGets通貨の金額。（XRPはdrop単位で表されます。その他のすべての通貨は10進数値として表されます。）1人のトレーダーの複数のオファーが同一のブックに含まれている場合、このフィールドは最高順位のオファーにのみ含まれます。 |
-| `taker_gets_funded` | 文字列（XRP）またはオブジェクト（XRP以外） | （部分的に資金供給されているオファーのみに含まれます）オファーの資金供給ステータスが指定されている場合に、受取人が受領できる最大通貨額。 |
-| `taker_pays_funded` | 文字列（XRP）またはオブジェクト（XRP以外） | （部分的に資金供給されているオファーのみに含まれます）オファーの資金供給ステータスが指定されている場合に、受取人が支払う最大通貨額。 |
-| `quality` | 文字列 | 為替レート（`taker_pays`を`taker_gets`で割った比率）。公正を期すため、同じクオリティのオファーは先入れ先出しで自動的に受諾されます。（つまり、複数の人々が通貨を同じレートで取引するオファーを出した場合、最も古いオファーが最初に受諾されます。） |
+| `Field`             | 型                  | 説明                                                                                                                                                                                                  |
+|:------------------- |:------------------ |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `owner_funds`       | 文字列                | Amount of the `TakerGets` currency the side placing the offer has available to be traded. （XRPはdrop単位で表されます。 その他のすべての通貨は10進数値として表されます。 ）1人のトレーダーの複数のオファーが同一のブックに含まれている場合、このフィールドは最高順位のオファーにのみ含まれます。 |
+| `taker_gets_funded` | 文字列 - \[ハッシュ\]\[\] | （部分的に資金供給されているオファーのみに含まれます）オファーの資金供給ステータスが指定されている場合に、受取人が受領できる最大通貨額。                                                                                                                                |
+| `taker_pays_funded` | \[マーカー\]\[\]       | （部分的に資金供給されているオファーのみに含まれます）オファーの資金供給ステータスが指定されている場合に、受取人が支払う最大通貨額。                                                                                                                                  |
+| `quality`           | 文字列                | 為替レート（`taker_pays`を`taker_gets`で割った比率）。 公正を期すため、同じクオリティのオファーは先入れ先出しで自動的に受諾されます。 （つまり、複数の人々が通貨を同じレートで取引するオファーを出した場合、最も古いオファーが最初に受諾されます。 ）                                                            |
 
 ## 考えられるエラー
 
-* いずれかの[汎用エラータイプ][]。
+* いずれかの\[汎用エラータイプ\]\[\]。
 * `invalidParams` - 1つ以上のフィールドの指定が正しくないか、1つ以上の必須フィールドが指定されていません。
 * `lgrNotFound` - `ledger_hash`または`ledger_index`で指定したレジャーが存在しないか、存在してはいるもののサーバーが保有していません。
 * `srcCurMalformed` - 要求の`taker_pays`フィールドのフォーマットが適切ではありません。
