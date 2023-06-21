@@ -3,14 +3,15 @@ html: invariant-checking.html
 parent: consensus-network.html
 blurb: 不変性チェックとは何か、なぜ存在するのか、どのように機能するのか、どのような不変性チェックが有効なのかを理解することができます。
 labels:
-  - ブロックチェーン
+  - Blockchain
   - セキュリティ
 ---
+
 # 不変性チェック
 
-不変性チェックは、XRP Ledgerの安全機能です。これは、通常のトランザクション処理とは別に、すべての取引において特定の「不変量」が真であることを保証する一連のチェックで構成されています。
+不変性チェックは、XRP Ledgerの安全機能です。 これは、通常のトランザクション処理とは別に、すべての取引において特定の「不変量」が真であることを保証する一連のチェックで構成されています。
 
-多くの安全機能がそうであるように、私たちは不変性チェックが実際に何もする必要がないことを望んでいます。しかし、XRP Ledger の不変量は XRP Ledger のトランザクション処理に対するハードリミットを定義しているため、それを理解することは有用であり、万が一不変量チェックに違反したためにトランザクションが失敗した場合に問題を認識するために有用です。
+多くの安全機能がそうであるように、私たちは不変性チェックが実際に何もする必要がないことを望んでいます。 しかし、XRP Ledger の不変量は XRP Ledger のトランザクション処理に対するハードリミットを定義しているため、それを理解することは有用であり、万が一不変量チェックに違反したためにトランザクションが失敗した場合に問題を認識するために有用です。
 
 不変性はトリガーされるべきではありませんが、まだ発見されていない、あるいは作成されてもいないバグからXRP Ledgerの整合性を確保するものです。
 
@@ -22,56 +23,56 @@ labels:
 
 具体的には、不正なトランザクションの実行により、無効または破損したデータが作成され、後にネットワーク上のサーバーを「動作不可能」な状態にすることで一貫してクラッシュさせ、ネットワーク全体を停止させる可能性があります。
 
-不正なトランザクションの処理は、XRP Ledgerの信頼という価値を損なうことになります。不変性チェックは、信頼性という機能を付加するため、XRP Ledger 全体に価値を提供します。
+不正なトランザクションの処理は、XRP Ledgerの信頼という価値を損なうことになります。 不変性チェックは、信頼性という機能を付加するため、XRP Ledger 全体に価値を提供します。
 
 
 
-## 仕組み
+## How it Works
 
-不変性チェッカーは、各トランザクションの後にリアルタイムで自動的に実行される第2層のコードです。トランザクションの結果がレジャーにコミットされる前に、不変性チェッカーはそれらの変更が正しいかどうかを検証します。もしトランザクションの結果がXRP Ledgerの厳格なルールに沿わない場合、不変性チェッカーはそのトランザクションを拒否します。このように拒否されたトランザクションは結果コード `tecINVARIANT_FAILED` を持ち、何の効果もなくレジャーに含まれます。
+不変性チェッカーは、各トランザクションの後にリアルタイムで自動的に実行される第2層のコードです。 トランザクションの結果がレジャーにコミットされる前に、不変性チェッカーはそれらの変更が正しいかどうかを検証します。 もしトランザクションの結果がXRP Ledgerの厳格なルールに沿わない場合、不変性チェッカーはそのトランザクションを拒否します。 このように拒否されたトランザクションは結果コード `tecINVARIANT_FAILED` を持ち、何の効果もなくレジャーに含まれます。
 
-トランザクションを `tec` クラスのコードでレジャーに含めるには、何らかの最小限の処理が必要です。この最小限の処理でも不変条件に沿わない場合、トランザクションは `tefINVARIANT_FAILED` というコードで失敗し、レジャーには一切含まれません。
+トランザクションを `tec` クラスのコードでレジャーに含めるには、何らかの最小限の処理が必要です。 この最小限の処理でも不変条件に沿わない場合、トランザクションは `tefINVARIANT_FAILED` というコードで失敗し、レジャーには一切含まれません。
 
 
-## 有効な不変条件
+## Active Invariants
 
 XRP Ledgerは、各トランザクションについて、以下のすべての不変条件をチェックします。
 
 [[ソース]](https://github.com/ripple/rippled/blob/023f5704d07d09e70091f38a0d4e5df213a3144b/src/ripple/app/tx/impl/InvariantCheck.h#L92 "ソース")
 
-- [トランザクション手数料チェック](#トランザクション手数料チェック)
+- [トランザクション手数料チェック](#transaction-fee-check)
 
 [[ソース]](https://github.com/ripple/rippled/blob/023f5704d07d09e70091f38a0d4e5df213a3144b/src/ripple/app/tx/impl/InvariantCheck.h#L118 "ソース")
 
-- [XRPは作成されません](#xrpは作成されません)
+- [XRPは作成されません](#xrp-not-created)
 
 [[ソース]](https://github.com/ripple/rippled/blob/023f5704d07d09e70091f38a0d4e5df213a3144b/src/ripple/app/tx/impl/InvariantCheck.h#L146 "ソース")
 
-- [アカウントルートが削除されていない](#アカウントルートが削除されていない)
+- [アカウントルートが削除されていない](#account-roots-not-deleted)
 
 [[ソース]](https://github.com/ripple/rippled/blob/023f5704d07d09e70091f38a0d4e5df213a3144b/src/ripple/app/tx/impl/InvariantCheck.h#L173 "ソース")
 
-- [XRPの残高確認](#xrpの残高確認)
+- [XRPの残高確認](#xrp-balance-checks)
 
 [[ソース]](https://github.com/ripple/rippled/blob/023f5704d07d09e70091f38a0d4e5df213a3144b/src/ripple/app/tx/impl/InvariantCheck.h#L197 "ソース")
 
-- [レジャーエントリ形式の一致](#レジャーエントリ形式の一致)
+- [レジャーエントリ形式の一致](#ledger-entry-types-match)
 
 [[ソース]](https://github.com/ripple/rippled/blob/023f5704d07d09e70091f38a0d4e5df213a3144b/src/ripple/app/tx/impl/InvariantCheck.h#L224 "ソース")
 
-- [XRPのトラストラインはありません](#xrpのトラストラインはありません)
+- [XRPのトラストラインはありません](#no-xrp-trust-lines)
 
 [[ソース]](https://github.com/ripple/rippled/blob/023f5704d07d09e70091f38a0d4e5df213a3144b/src/ripple/app/tx/impl/InvariantCheck.h#L251 "ソース")
 
-- [不正なオファーでない](#不正なオファーでない)
+- [不正なオファーでない](#no-bad-offers)
 
 [[ソース]](https://github.com/ripple/rippled/blob/023f5704d07d09e70091f38a0d4e5df213a3144b/src/ripple/app/tx/impl/InvariantCheck.h#L275 "ソース")
 
-- [0のエスクローでない](#0のエスクローでない)
+- [0のエスクローでない](#no-zero-escrow)
 
 [[ソース]](https://github.com/ripple/rippled/blob/023f5704d07d09e70091f38a0d4e5df213a3144b/src/ripple/app/tx/impl/InvariantCheck.h#L300 "ソース")
 
-- [有効な新規アカウントルート](#有効な新規アカウントルート)
+- [有効な新規アカウントルート](#valid-new-account-root)
 
 
 ### トランザクション手数料チェック
@@ -89,7 +90,7 @@ XRP Ledgerは、各トランザクションについて、以下のすべての�
 ### アカウントルートが削除されていない
 
 - **不変条件:**
-    - [アカウント](accounts.html)は、[AccountDeleteトランザクション][]によってのみレジャーから削除することができます。
+    - [アカウント](accounts.html)は、\[AccountDeleteトランザクション\]\[\]によってのみレジャーから削除することができます。
     - AccountDelete が成功すると、常にちょうど1つのアカウントが削除されます。
 
 
@@ -131,7 +132,7 @@ XRP Ledgerは、各トランザクションについて、以下のすべての�
     - 1つのトランザクションで複数の新しい[アカウント](accounts.html)を作成してはいけません。
 
 
-## 関連項目
+## See Also
 
 - **ブログ:**
     - [レジャーの保護: 不変性チェック](https://xrpl.org/blog/2017/invariant-checking.html)
@@ -146,12 +147,12 @@ XRP Ledgerは、各トランザクションについて、以下のすべての�
 
 - **その他:**
     - [Authorized Trust Lines](authorized-trust-lines.html)
-    - [XRPの特性](xrp.html#xrpの特性)
+    - [XRPの特性](xrp.html#xrp-properties)
     - [トランザクションの残高変化の計算](https://xrpl.org/blog/2015/calculating-balance-changes-for-a-transaction.html#calculating-balance-changes-for-a-transaction)
 
 
 
 <!--{# common link defs #}-->
-{% include '_snippets/rippled-api-links.md' %}			
-{% include '_snippets/tx-type-links.md' %}			
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
 {% include '_snippets/rippled_versions.md' %}
