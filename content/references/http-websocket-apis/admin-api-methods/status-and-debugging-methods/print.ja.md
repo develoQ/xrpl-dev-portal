@@ -1,10 +1,11 @@
 ---
 html: print.html
 parent: status-and-debugging-methods.html
-blurb: さまざまな内部サブシステムの現在の状況を返します。
+blurb: Get information about internal subsystems.
 labels:
   - コアサーバー
 ---
+
 # print
 [[ソース]](https://github.com/ripple/rippled/blob/315a8b6b602798a4cff4d8e1911936011e12abdb/src/ripple/rpc/handlers/Print.cpp "Source")
 
@@ -232,11 +233,11 @@ Connecting to 127.0.0.1:5005
 
 <!-- MULTICODE_BLOCK_END -->
 
-応答は[標準フォーマット][]に従っています。結果に含まれる追加フィールドは、`rippled`サーバーの内部状態に応じて異なります。このコマンドの実行結果は、予告なく変更されることがあります。
+応答は\[標準フォーマット\]\[\]に従っています。 結果に含まれる追加フィールドは、`rippled`サーバーの内部状態に応じて異なります。 このコマンドの実行結果は、予告なく変更されることがあります。
 
 ### 考えられるエラー
 
-* [汎用エラータイプ][]のすべて。
+* \[汎用エラータイプ\]\[\]のすべて。
 
 <!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
