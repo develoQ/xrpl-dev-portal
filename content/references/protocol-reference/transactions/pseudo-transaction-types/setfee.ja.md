@@ -36,7 +36,7 @@ labels:
 
 | フィールド               | JSON Type | \[内部の型\]\[\] | Description                                                                                                                                          |
 |:------------------- |:--------- |:------------ |:---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BaseFee`           | String    | UInt64       | The charge, in drops of XRP, for the reference transaction, as hex. (This is the [transaction cost](transaction-cost.html) before scaling for load.) |
+| `BaseFee`           | 文字列       | UInt64       | The charge, in drops of XRP, for the reference transaction, as hex. (This is the [transaction cost](transaction-cost.html) before scaling for load.) |
 | `ReferenceFeeUnits` | 符号なし整数    | UInt32       | リファレンストランザクションのコスト（手数料単位）                                                                                                                            |
 | `ReserveBase`       | 符号なし整数    | UInt32       | The base reserve, in drops                                                                                                                           |
 | `ReserveIncrement`  | 符号なし整数    | UInt32       | The incremental reserve, in drops                                                                                                                    |
