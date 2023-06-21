@@ -5,12 +5,13 @@ blurb: レジャーにCheckオブジェクトを作成します
 labels:
   - Checks
 ---
+
 # CheckCreate
-[[ソース]](https://github.com/XRPLF/rippled/blob/master/src/ripple/app/tx/impl/CreateCheck.cpp "Source")
+[[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/app/tx/impl/CreateCheck.cpp "Source")
 
-_（[Checks Amendment][]が必要です）_
+_（\[Checks Amendment\]\[\]が必要です）_
 
-レジャーにCheckオブジェクトを作成します。これにより指定の送金先は後日換金することができます。このトランザクションの送信者はCheckの送金元です。
+レジャーにCheckオブジェクトを作成します。 これにより指定の送金先は後日換金することができます。 このトランザクションの送信者はCheckの送金元です。
 
 ## {{currentpage.name}} JSONの例
 
@@ -27,20 +28,22 @@ _（[Checks Amendment][]が必要です）_
 }
 ```
 
+[Query example transaction. >](websocket-api-tool.html?server=wss%3A%2F%2Fxrplcluster.com%2F&req=%7B%22id%22%3A%22example_CheckCreate%22%2C%22command%22%3A%22tx%22%2C%22transaction%22%3A%224E0AA11CBDD1760DE95B68DF2ABBE75C9698CEB548BEA9789053FCB3EBD444FB%22%2C%22binary%22%3Afalse%7D)
+
 {% include '_snippets/tx-fields-intro.ja.md' %}
 <!--{# fix md highlighting_ #}-->
 
-| フィールド            | JSONの型           | [内部の型][] | 説明     |
-|:-----------------|:--------------------|:------------------|:----------------|
-| `Destination`    | 文字列              | AccountID          | Checkを換金できる[アカウント](accounts.html)の一意アドレス。 |
-| `SendMax`        | [通貨額][] | Amount            | Checkで送金元から引き落とすことができる送金元通貨の最大額（XRP以外の通貨の[送金手数料](transfer-fees.html)を含む）。Checkは同一通貨の送金先にのみ入金可能です（XRP以外の通貨の場合は同一イシュアーから）。XRP以外の金額の場合、入れ子フィールドの名前にはアルファベットの小文字のみ使用してください。 |
-| `DestinationTag` | 数値              | UInt32            | _（省略可）_ Checkの理由を明確にする任意のタグ、または支払先となる、ホスティングされている受取人。 |
-| `Expiration`     | 数値              | UInt32            | _（省略可）_ Checkが無効になる時刻（[Rippleエポック以降の経過秒数][]）。 |
-| `InvoiceID`      | 文字列              | Hash256           | _（省略可）_ このCheckの具体的な理由または識別子を表現する任意の256ビットハッシュ。 |
+| フィールド            | JSONの型      | \[内部の型\]\[\] | 説明                                                                                                                                                                        |
+|:---------------- |:----------- |:------------ |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Destination`    | 文字列         | AccountID    | Checkを換金できる[アカウント](accounts.html)の一意アドレス。                                                                                                                                 |
+| `SendMax`        | \[通貨額\]\[\] | Amount       | Checkで送金元から引き落とすことができる送金元通貨の最大額（XRP以外の通貨の[送金手数料](transfer-fees.html)を含む）。 Checkは同一通貨の送金先にのみ入金可能です（XRP以外の通貨の場合は同一イシュアーから）。 XRP以外の金額の場合、入れ子フィールドの名前にはアルファベットの小文字のみ使用してください。 |
+| `DestinationTag` | 数値          | UInt32       | _（省略可）_ Checkの理由を明確にする任意のタグ、または支払先となる、ホスティングされている受取人。                                                                                                                     |
+| `Expiration`     | 数値          | UInt32       | _（省略可）_ Checkが無効になる時刻（\[Rippleエポック以降の経過秒数\]\[\]）。                                                                                                                         |
+| `InvoiceID`      | 文字列         | Hash256      | _（省略可）_ このCheckの具体的な理由または識別子を表現する任意の256ビットハッシュ。                                                                                                                           |
 
 ## エラーケース
 
-- `Destination`アカウントがCheckの着信をブロックしている場合、トランザクションは結果コード`tecNO_PERMISSION`で失敗します。 _([DisallowIncoming amendment][] :not_enabled: が必要です。)_
+- `Destination`アカウントがCheckの着信をブロックしている場合、トランザクションは結果コード`tecNO_PERMISSION`で失敗します。 _(\[DisallowIncoming amendment\]\[\] :not_enabled: が必要です。 )_
 - `Destination`がトランザクションの送信者である場合、トランザクションは結果コード`temREDUNDANT`で失敗します。
 - `Destination`[アカウント](accounts.html)がレジャーに存在していない場合、トランザクションは結果コード`tecNO_DST`で失敗します。
 - `Destination`アカウントでRequireDestフラグが有効であるが、トランザクションに`DestinationTag`フィールドが含まれていない場合、トランザクションは結果コード`tecDST_TAG_NEEDED`で失敗します。
