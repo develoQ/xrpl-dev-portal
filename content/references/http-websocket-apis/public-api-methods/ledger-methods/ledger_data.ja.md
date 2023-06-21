@@ -1,18 +1,21 @@
 ---
 html: ledger_data.html
 parent: ledger-methods.html
-blurb: 指定されたレジャーの内容を取得します。
-label:
-  - ブロックチェーン
+blurb: Get the raw contents of a ledger version.
+labels:
+  - Blockchain
   - データ保持
 ---
+
 # ledger_data
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/rpc/handlers/LedgerData.cpp "Source")
 
-`ledger_data`メソッドは指定されたレジャーの内容を取得します。1つのレジャーバージョンの内容全体を取得するため、複数のコールを繰り返し実行できます。
+`ledger_data`メソッドは指定されたレジャーの内容を取得します。 1つのレジャーバージョンの内容全体を取得するため、複数のコールを繰り返し実行できます。
 
 ## 要求フォーマット
 要求フォーマットの例:
+
+{% include '_snippets/no-cli-syntax.md' %}
 
 <!-- MULTICODE_BLOCK_START -->
 
@@ -45,18 +48,17 @@ label:
 
 <!-- MULTICODE_BLOCK_END -->
 
-**注記:**`ledger_data`のコマンドライン構文はありません。代わりに[jsonメソッド][]を使用してコマンドラインからこのメソッドにアクセスできます。
 
 要求には以下のフィールドが含まれます。
 
-| `Field`        | 型                                       | 説明    |
-|:---------------|:-------------------------------------------|:---------------|
-| `id`           | （任意）                                | （WebSocketのみ）応答が遅延して順不同になる場合にこの要求を他の要求と区別するためのID。 |
-| `ledger_hash`  | 文字列                                     | _（省略可）_ 使用するレジャーバージョンの20バイトの16進文字列。（[レジャーの指定][]を参照してください） |
-| `ledger_index` | 文字列または符号なし整数                 | _（省略可）_ 使用するレジャーのシーケンス番号、またはレジャーを自動的に選択するためのショートカット文字列。（[レジャーの指定][]を参照してください） |
-| `binary`       | ブール値                                    | （省略可、デフォルトではfalseです）trueに設定すると、レジャーオブジェクトがJSONではなくハッシュされた16進文字列として返されます。 |
-| `limit`        | 整数                                    | （省略可、デフォルト値は可変）取得するレジャーオブジェクトの数を制限します。サーバーはこの値に従う必要はありません。 |
-| `marker`       | [マーカー][] | 以前にページネーションされた応答の値。その応答を停止した箇所からデータの取得を再開します。 |
+| `Field`        | 型            | Required? | 説明                                                                                                                                                                                                                    |
+|:-------------- |:------------ |:--------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ledger_hash`  | \[Hash\]\[\] | No        | A 20-byte hex string identifying the ledger version to use.                                                                                                                                                           |
+| `ledger_index` | id           | No        | _（省略可）_ 使用するレジャーのシーケンス番号、またはレジャーを自動的に選択するためのショートカット文字列。 （\[レジャーの指定\]\[\]を参照してください）                                                                                                                                    |
+| `binary`       | ブール値         | No        | （省略可、デフォルトではfalseです）trueに設定すると、レジャーオブジェクトがJSONではなくハッシュされた16進文字列として返されます。 The default is `false`.                                                                                                                      |
+| `limit`        | 整数           | No        | Limit the number of ledger entries to retrieve. The server may return fewer than this number of entries. Cannot be more than 2048 (when requesting binary) or 256 (when requesting JSON). The default is the maximum. |
+| `marker`       | \[マーカー\]\[\] | No        | 以前にページネーションされた応答の値。 その応答を停止した箇所からデータの取得を再開します。                                                                                                                                                                        |
+| `type`         | 文字列          | No        | Filter results to a specific type of ledger entry. {% include '_snippets/lowercase-types.md' %}                                                                                                                       |
 
 `ledger`フィールドは廃止予定であり、今後予告なしに削除される可能性があります。
 
@@ -241,27 +243,29 @@ label:
 
 <!-- MULTICODE_BLOCK_END -->
 
-この応答は[標準フォーマット][]に従っており、正常に完了した場合は結果に次のフィールドが含まれます。
+この応答は\[標準フォーマット\]\[\]に従っており、正常に完了した場合は結果に次のフィールドが含まれます。
 
-| `Field`        | 型                                       | 説明    |
-|:---------------|:-------------------------------------------|:---------------|
-| `ledger_index` | 符号なし整数                           | このレジャーのシーケンス番号 |
-| `ledger_hash`  | 文字列                                     | レジャー全体の一意の識別用ハッシュ。 |
-| `state`        | 配列                                      | ツリーのデータが含まれているJSONオブジェクトの配列。以下のように定義されています。 |
-| `marker`       | [マーカー][] | 応答がページネーションされていることを示す、サーバーが定義した値。この値を次のコールに渡して、このコールで終わった箇所から再開します。 |
+| `Field`        | 型                                       | 説明                                                                   |
+|:-------------- |:--------------------------------------- |:-------------------------------------------------------------------- |
+| `ledger_index` | Unsigned Integer - \[Ledger Index\]\[\] | The ledger index of this ledger version.                             |
+| `ledger_hash`  | String - \[Hash\]\[\]                   | Unique identifying hash of this ledger version.                      |
+| `state`        | 配列                                      | ツリーのデータが含まれているJSONオブジェクトの配列。 以下のように定義されています。                         |
+| `marker`       | \[マーカー\]\[\]                            | 応答がページネーションされていることを示す、サーバーが定義した値。 この値を次のコールに渡して、このコールで終わった箇所から再開します。 |
 
-`state`配列の各オブジェクトのフォーマットは、要求で`binary`がtrueに設定されているかどうかによって異なります。各`state`オブジェクトには以下のフィールドが含まれます。
+If a `type` field is mentioned in the request, the `state` array will be empty if the first set of array objects does not match the type requested. In such cases, you can use the `marker` from this response to paginate and retrieve further data.
 
-| `Field`             | 型      | 説明                                |
-|:--------------------|:----------|:-------------------------------------------|
-| `data`              | 文字列    | （`"binary":true`の場合にのみ含まれる）要求されたデータの16進表現。 |
-| `LedgerEntryType`   | 文字列    | （`"binary":false`の場合にのみ含まれる）このオブジェクトが表すレジャーオブジェクトの型を示す文字列。詳細なリストについては[レジャーデータフォーマット](ledger-data-formats.html)を参照してください。 |
-| （追加のフィールド） | （各種） | （`"binary":false`の場合にのみ含まれる）このオブジェクトを記述する追加フィールド。オブジェクトのLedgerEntryTypeに応じて異なります。 |
-| `index`             | 文字列    | このレジャーエントリの一意のID（16進数） |
+`state`配列の各オブジェクトのフォーマットは、要求で`binary`がtrueに設定されているかどうかによって異なります。 各`state`オブジェクトには以下のフィールドが含まれます。
+
+| `Field`           | 型    | 説明                                                                                                                        |
+|:----------------- |:---- |:------------------------------------------------------------------------------------------------------------------------- |
+| `data`            | 文字列  | （`"binary":true`の場合にのみ含まれる）要求されたデータの16進表現。                                                                                |
+| `LedgerEntryType` | 文字列  | （`"binary":false`の場合にのみ含まれる）このオブジェクトが表すレジャーオブジェクトの型を示す文字列。 詳細なリストについては[レジャーデータフォーマット](ledger-data-formats.html)を参照してください。 |
+| （追加のフィールド）        | （各種） | （`"binary":false`の場合にのみ含まれる）このオブジェクトを記述する追加フィールド。                                                                         |
+| `index`           | 文字列  | Unique identifier for this ledger entry, as hex.                                                                          |
 
 ## 考えられるエラー
 
-* [汎用エラータイプ][]のすべて。
+* \[汎用エラータイプ\]\[\]のすべて。
 * `invalidParams` - 1つ以上のフィールドの指定が正しくないか、1つ以上の必須フィールドが指定されていません。
 * `lgrNotFound` - `ledger_hash`または`ledger_index`で指定したレジャーが存在しないか、存在してはいるもののサーバーが保有していません。
 
