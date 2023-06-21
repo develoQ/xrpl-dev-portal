@@ -4,11 +4,12 @@ parent: configure-rippled.html
 blurb: プロトコル修正に伴うサーバーの投票を設定する。
 labels:
   - コアサーバー
-  - ブロックチェーン
+  - Blockchain
 ---
+
 # 修正投票機能の設定
 
-バリデーターとして設定されたサーバーは、[feature method][]を使ってXRP Ledgerプロトコルの[修正案(amendments)](amendments.html)に投票することができます。(この方法には[管理者アクセス](get-started-using-http-websocket-apis.html#管理者アクセス権限)が必要です).
+バリデーターとして設定されたサーバーは、\[feature method\]\[\]を使ってXRP Ledgerプロトコルの[修正案(amendments)](amendments.html)に投票することができます。 (この方法には[管理者アクセス](get-started-using-http-websocket-apis.html#管理者アクセス権限)が必要です).
 
 例えば、「SHAMapV2」Amendmentに反対票を投じるには、以下のコマンドを実行します。
 
@@ -47,11 +48,11 @@ rippled feature SHAMapV2 reject
 
 <!-- MULTICODE_BLOCK_END -->
 
-**注記:** Amendmentの省略名は大文字と小文字が区別されます。また、AmendmentのIDを16進数で指定することもできますが、この場合は大文字と小文字が区別されません。
+**注記:** Amendmentの省略名は大文字と小文字が区別されます。 また、AmendmentのIDを16進数で指定することもできますが、この場合は大文字と小文字が区別されません。
 
 ## 設定ファイルを使用する
 
-もし、修正票の設定に設定ファイルを使いたい場合は、`[rpc_startup]` 節に行を追加して、起動時に各明示票のために自動的にコマンドを実行させることができます。例えば
+もし、修正票の設定に設定ファイルを使いたい場合は、`[rpc_startup]` 節に行を追加して、起動時に各明示票のために自動的にコマンドを実行させることができます。 例えば
 
 ```
 [rpc_startup]
@@ -62,11 +63,11 @@ rippled feature SHAMapV2 reject
 
 **注意事項:** `[rpc_startup]` 節にあるコマンドは、サーバが起動するたびに実行され、サーバが動作している間に構成された投票設定を上書きすることができます。
 
-## 関連項目
+## See Also
 
 - [Amendment](amendments.html)
-    - [既知のAmendment](known-amendments.html)
-- [feature メソッド][]
+    - [Known Amendments](known-amendments.html)
+- \[feature メソッド\]\[\]
 
 <!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
