@@ -5,12 +5,13 @@ blurb: 承認を必要とするアカウントへの送金ペイメントの事�
 labels:
   - セキュリティ
 ---
+
 # DepositPreauth
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/protocol/impl/LedgerFormats.cpp#L172-L178 "Source")
 
-`DepositPreauth`オブジェクトはアカウント間の事前承認を追跡します。[DepositPreauthトランザクション][]によりこれらのオブジェクトが作成されます。
+`DepositPreauth`オブジェクトはアカウント間の事前承認を追跡します。 \[DepositPreauthトランザクション\]\[\]によりこれらのオブジェクトが作成されます。
 
-これは、事前承認を付与したアカウントに[Deposit Authorization](depositauth.html)が不要な場合は、トランザクションの処理に影響しません。その場合、事前承認されたアカウントから、事前承認を付与したアカウントに対して、支払やその他のトランザクションを直接送信できます。事前認証は一方向であり、反対方向の支払には影響しません。
+これは、事前承認を付与したアカウントに[Deposit Authorization](depositauth.html)が不要な場合は、トランザクションの処理に影響しません。 その場合、事前承認されたアカウントから、事前承認を付与したアカウントに対して、支払やその他のトランザクションを直接送信できます。 事前認証は一方向であり、反対方向の支払には影響しません。
 
 ## {{currentpage.name}} JSONの例
 
@@ -31,26 +32,26 @@ labels:
 
 `DepositPreauth`オブジェクトのフィールドは次のとおりです。
 
-| フィールド               | JSONの型        | [内部の型][] | 説明     |
-|:--------------------|:-----------------|:------------------|:----------------|
-| `LedgerEntryType`   | 文字列           | UInt16            | 値`0x0070`が文字列`DepositPreauth`にマッピングされている場合は、これがDepositPreauthオブジェクトであることを示します。 |
-| `Account` | 文字列           | Account           | 事前承認を付与したアカウント。（事前認証支払の宛先。） |
-| `Authorize` | 文字列 | Account | 事前承認を受けたアカウント。（事前認証支払の送金元。） |
-| `Flags`             | 数値           | UInt32            |  ブールフラグのビットマップ。DepositPreauthオブジェクトにはフラグが定義されていないため、この値は常に`0`です。 |
-| `OwnerNode`         | 文字列           | UInt64            | 送金元アドレスの所有者のディレクトリが複数ページで構成されている場合に、このオブジェクトにリンクしているページを示すヒントです。**注記:** このオブジェクトには、オブジェクトを含む所有者ディレクトリへの直接リンクは含まれていません。これは、その値を`Account`から取得できるためです。 |
-| `PreviousTxnID`     | 文字列           | Hash256           | 最後にこのオブジェクトを変更したトランザクションの識別用ハッシュ。 |
-| `PreviousTxnLgrSeq` | 数値           | UInt32            | 最後にこのオブジェクトを変更したトランザクションが記録された[レジャーインデックス][]。 |
+| フィールド               | JSONの型 | \[内部の型\]\[\] | Required? | 説明                                                                                                                                                    |
+|:------------------- |:------ |:------------ |:--------- |:----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Account`           | 文字列    | Account      | Yes       | The account that granted the preauthorization. （事前認証支払の宛先。                                                                                            |
+| `Authorize`         | 文字列    | Account      | Yes       | 事前承認を付与したアカウント。 （事前認証支払の送金元。                                                                                                                          |
+| `Flags`             | 数値     | UInt32       | Yes       | A bit-map of boolean flags enabled for this object. DepositPreauthオブジェクトにはフラグが定義されていないため、この値は常に`0`です。 The value is always `0`.                        |
+| `LedgerEntryType`   | 文字列    | UInt16       | Yes       | 値`0x0070`が文字列`DepositPreauth`にマッピングされている場合は、これがDepositPreauthオブジェクトであることを示します。                                                                        |
+| `OwnerNode`         | 文字列    | UInt64       | Yes       | 送金元アドレスの所有者のディレクトリが複数ページで構成されている場合に、このオブジェクトにリンクしているページを示すヒントです。 **注記:** このオブジェクトには、オブジェクトを含む所有者ディレクトリへの直接リンクは含まれていません。 これは、その値を`Account`から取得できるためです。 |
+| `PreviousTxnID`     | 文字列    | Hash256      | Yes       | 最後にこのオブジェクトを変更したトランザクションの識別用ハッシュ。                                                                                                                     |
+| `PreviousTxnLgrSeq` | 数値     | UInt32       | Yes       | 最後にこのオブジェクトを変更したトランザクションが記録された\[レジャーインデックス\]\[\]。                                                                                                     |
 
 
 ## DepositPreauth IDのフォーマット
 
-`DepositPreauth`オブジェクトのIDは、以下の値がこの順序で連結されている[SHA-512ハーフ][]です。
+`DepositPreauth`オブジェクトのIDは、以下の値がこの順序で連結されている\[SHA-512ハーフ\]\[\]です。
 
 * DepositPreauthスペースキー（`0x0070`）
-* このオブジェクトの所有者（このオブジェクトを作成した[DepositPreauthトランザクション][]の送信者、つまり事前承認を付与したユーザー）のAccountID。
-* 事前承認されたアカウント（このオブジェクトを作成した[DepositPreauthトランザクション][]の`Authorized`フィールド、つまり事前承認を受けたユーザー）のAccountID。
+* このオブジェクトの所有者（このオブジェクトを作成した\[DepositPreauthトランザクション\]\[\]の送信者、つまり事前承認を付与したユーザー）のAccountID。
+* 事前承認されたアカウント（このオブジェクトを作成した\[DepositPreauthトランザクション\]\[\]の`Authorized`フィールド、つまり事前承認を受けたユーザー）のAccountID。
 
 <!--{# common link defs #}-->
-{% include '_snippets/rippled-api-links.md' %}			
-{% include '_snippets/tx-type-links.md' %}			
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
 {% include '_snippets/rippled_versions.md' %}
