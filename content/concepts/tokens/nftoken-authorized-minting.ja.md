@@ -1,14 +1,14 @@
 ---
-name: 代理Mint
 html: nftoken-authorized-minting.html
 parent: non-fungible-tokens.html
 blurb: NFTのMintを他のアカウントに代行してもらうことができます。
 labels:
- - 非代替性トークン, NFT
+  - 非代替性トークン, NFT
 ---
+
 # 他のアカウントでNFTを処理することを許可する
 
-各アカウントは、自分に代わってNFTをMintすることができる認可されたMinterを最大一人設定することができまます。認可Minter機能を利用することで、クリエイターは別のアカウントにNFTをMintさせることができ、より多くのNFTを作ることに集中することができます。
+各アカウントは、自分に代わってNFTをMintすることができる認可されたMinterを最大一人設定することができまます。 認可Minter機能を利用することで、クリエイターは別のアカウントにNFTをMintさせることができ、より多くのNFTを作ることに集中することができます。
 
 ## 認可Minterの割り当て
 
@@ -23,9 +23,9 @@ tx_json = {
 }
 ```
 
-`NFTokenMinter` 同じXRP Ledgerインスタンス上のアカウントのIDです。`asfAuthorizedNFTokenMinter`フラグは`NFTokenMinter`に指定するアカウントが`Account`の代理としてNFTをMintすることを許可します。
+`NFTokenMinter` 同じXRP Ledgerインスタンス上のアカウントのIDです。 `asfAuthorizedNFTokenMinter`フラグは`NFTokenMinter`に指定するアカウントが`Account`の代理としてNFTをMintすることを許可します。
 
-*注記*: `asfAuthorizedNFTokenMinter`フラグは`AccountSet`トランザクションでのみ使用されます。これは、トランザクションがAccountRoot上のNFTokenMinterフィールドの存在または値に影響を与えるかどうかを示します。実際、AccountRootには対応するフラグはありません。
+*注記*: `asfAuthorizedNFTokenMinter`フラグは`AccountSet`トランザクションでのみ使用されます。 これは、トランザクションがAccountRoot上のNFTokenMinterフィールドの存在または値に影響を与えるかどうかを示します。 実際、AccountRootには対応するフラグはありません。
 
 ## 認可Minterの割り当て解除
 
@@ -41,7 +41,7 @@ tx_json = {
 
 ## 他のアカウントのNFTをMintする
 
-標準的な `NFTokenMint` トランザクションを使用して、別のアカウントのNFTをMintすることができます。違いは、`Issuer`フィールド、つまりNFTをMintするアカウントのIDを含める必要があることです。
+標準的な `NFTokenMint` トランザクションを使用して、別のアカウントのNFTをMintすることができます。 違いは、`Issuer`フィールド、つまりNFTをMintするアカウントのIDを含める必要があることです。
 
 ```json
 const transactionBlob = {
@@ -52,6 +52,7 @@ const transactionBlob = {
   "TransferFee": 5000,
   "NFTokenTaxon": 0,
   "Issuer": "rrE5EgHN4DfjXhR9USecudHm7UyhTYq6m", // 別アカウントでMintする際に必要
+}
 }
 ```
 
