@@ -1,15 +1,16 @@
 ---
 html: validator_list_sites.html
 parent: status-and-debugging-methods.html
-blurb: バリデータリストを処理するサイトのステータス情報を返します。
+blurb: Get information about sites that publish validator lists.
 labels:
-  - ブロックチェーン
   - コアサーバー
+  - Blockchain
 ---
+
 # validator_list_sites
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/rpc/handlers/ValidatorListSites.cpp "Source")
 
-`validator_list_sites`コマンドは、バリデータリストを処理するサイトのステータス情報を返します。[新規: rippled 0.80.1][]
+`validator_list_sites`コマンドは、バリデータリストを処理するサイトのステータス情報を返します。 \[新規: rippled 0.80.1\]\[\]
 
 *`validator_list_sites`要求は、権限のないユーザーは実行できない[管理メソッド](admin-api-methods.html)です。*
 
@@ -119,24 +120,38 @@ Connecting to 127.0.0.1:5005
 
 <!-- MULTICODE_BLOCK_END -->
 
-応答は[標準フォーマット][]に従っており、正常に完了した場合は結果に次のフィールドが含まれています。
+応答は\[標準フォーマット\]\[\]に従っており、正常に完了した場合は結果に次のフィールドが含まれています。
 
-| `Field`           | 型  | 説明                      |
-|:------------------|:------|----------------------------------|
+| `Field`           | 型  | 説明                    |
+|:----------------- |:-- | --------------------- |
 | `validator_sites` | 配列 | バリデータサイトオブジェクトからなる配列。 |
 
 `validator_sites`フィールドの配列の各メンバーは、次のフィールドを有するオブジェクトです。
 
-| `Field`                | 型             | 説明                     |
-|:-----------------------|:-----------------|:--------------------------------|
-| `last_refresh_status`  | 文字列           | 存在する場合は、サイトの最終更新の[`ListDisposition`](https://github.com/ripple/rippled/blob/master/src/ripple/app/misc/ValidatorList.h)です。存在しない場合は、サイトに対するクエリーがまだ成功していません。 |
-| `last_refresh_time`    | 文字列           | サイトの最終照会時刻を人間が読み取れる形式で表示します。存在しない場合は、サイトに対するクエリーがまだ成功していません。 |
-| `refresh_interval_min` | 符号なし整数 | 更新試行間隔の分数。 |
-| `uri`                  | 文字列           | サイトのURI。 |
+| `Field`                | 型      | 説明                                                                                                                                                                             |
+|:---------------------- |:------ |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `last_refresh_status`  | 文字列    | If present, shows the status of the most recent refresh of the site. 存在しない場合は、サイトに対するクエリーがまだ成功していません。 See **Site Status Values** below for possible states and their meanings. |
+| `last_refresh_time`    | 文字列    | サイトの最終照会時刻を人間が読み取れる形式で表示します。 存在しない場合は、サイトに対するクエリーがまだ成功していません。                                                                                                                  |
+| `refresh_interval_min` | 符号なし整数 | 更新試行間隔の分数。                                                                                                                                                                     |
+| `uri`                  | 文字列    | サイトのURI。                                                                                                                                                                       |
+
+#### Site Status Values
+
+The `last_refresh_status` field can have the following values:
+
+| Value                 | Meaning                                                                                                                                                                                                                                                          |
+|:--------------------- |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `accepted`            | The site provided a valid list, which your server is now using.                                                                                                                                                                                                  |
+| `same_sequence`       | The site provided a list with the same sequence number as your existing list, so your server continued using its existing list.                                                                                                                                  |
+| `unsupported_version` | The site provided a list, but your server does not support the list format version number in the list. You might need to [update `rippled`](install-rippled.html) to a newer software version.                                                                   |
+| `untrusted`           | The site provided a list from the site that is signed by a cryptographic key pair your server is not configured to trust. You may want to check for typos in your `validators.txt` file and check to see if the list publisher changed their cryptographic keys. |
+| `stale`               | The site provided a list with a lower sequence number than the list your server is already using.                                                                                                                                                                |
+| `invalid`             | The site provided a list or signature that was not validly formed.                                                                                                                                                                                               |
 
 ### 考えられるエラー
 
-* [汎用エラータイプ][]のすべて。
+- \[汎用エラータイプ\]\[\]のすべて。
+- `reportingUnsupported` - (\[Reporting Mode\]\[\] servers only) This method is not available in Reporting Mode.
 
 <!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
