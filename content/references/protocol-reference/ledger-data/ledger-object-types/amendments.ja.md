@@ -3,12 +3,13 @@ html: amendments-object.html #amendments.html is taken by the concept page
 parent: ledger-object-types.html
 blurb: 有効化されているAmendmentと保留中のAmendmentのステータスを持つシングルトンオブジェクトです。
 labels:
-  - ブロックチェーン
+  - Blockchain
 ---
-# Amendments
-[[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/protocol/impl/LedgerFormats.cpp#L110-L113 "Source")
 
-`Amendments`オブジェクトタイプには、現在アクティブな[Amendment](amendments.html)のリストが含まれています。各レジャーバージョンには**最大で1つの** `Amendments`オブジェクトが含まれています。
+# Amendments
+[[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/protocol/impl/LedgerFormats.cpp#L138-L144 "Source")
+
+`Amendments`オブジェクトタイプには、現在アクティブな[Amendment](amendments.html)のリストが含まれています。 各レジャーバージョンには**最大で1つの** `Amendments`オブジェクトが含まれています。
 
 ## {{currentpage.name}}のJSONの例
 
@@ -36,35 +37,35 @@ labels:
 
 ## {{currentpage.name}}のフィールド
 
-| 名前              | JSONの型 | [内部の型][] | 説明 |
-|-------------------|-----------|-------------------|-------------|
-| `Amendments`      | 配列     | STI_VECTOR256     | _（省略可）_ 現在有効なすべてのAmendmentの256ビット[Amendment ID](amendments.html#amendmentについて)からなる配列。省略されている場合は、有効なAmendmentがありません。 |
-| `Majorities`      | 配列     | STI_ARRAY | _（省略可）_ 過半数の支持を得ているがまだ有効になっていないAmendmentのステータスを記述するオブジェクトの配列。省略されている場合は、過半数の支持を得ている保留中のAmendmentがありません。 |
-| `Flags`           | 数値    | UInt32    | ブール値フラグのビットマップ。Amendmentオブジェクトタイプにはフラグが定義されていないため、この値は常に`0`です。 |
-| `LedgerEntryType` | 文字列    | UInt16    |  値が `0x0066`（文字列`Amendments`にマッピング）の場合は、このオブジェクトがXRP Ledgerに対するAmendmentのステータスを記述していることを示します。 |
+| 名前                | JSONの型 | \[内部の型\]\[\] | Required? | 説明                                                                                                                                              |
+| ----------------- | ------ | ------------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Amendments`      | 配列     | Vector256    | No        | _（省略可）_ 現在有効なすべてのAmendmentの256ビット[Amendment ID](amendments.html#amendmentについて)からなる配列。 省略されている場合は、有効なAmendmentがありません。                            |
+| `Flags`           | 数値     | UInt32       | Yes       | A bit-map of boolean flags enabled for this object. Currently, the protocol defines no flags for `Amendments` objects. The value is always `0`. |
+| `LedgerEntryType` | 文字列    | UInt16       | Yes       | 値が `0x0066`（文字列`Amendments`にマッピング）の場合は、このオブジェクトがXRP Ledgerに対するAmendmentのステータスを記述していることを示します。                                                    |
+| `Majorities`      | 配列     | STArray      | No        | _（省略可）_ 過半数の支持を得ているがまだ有効になっていないAmendmentのステータスを記述するオブジェクトの配列。 省略されている場合は、過半数の支持を得ている保留中のAmendmentがありません。                                        |
 
-`Majorities`フィールドにメンバーが含まれている場合、各メンバーは`Majority`フィールドのみが含まれているオブジェクトです。このフィールドの内容は、以下のフィールドからなるネストオブジェクトです。
+`Majorities`フィールドにメンバーが含まれている場合、各メンバーは`Majority`フィールドのみが含まれているオブジェクトです。 このフィールドの内容は、以下のフィールドからなるネストオブジェクトです。
 
-| 名前              | JSONの型 | [内部の型][] | 説明 |
-|-------------------|-----------|-------------------|-------------|
-| `Amendment`       | 文字列    | Hash256           | 保留中のAmendmentのAmendment ID。 |
-| `CloseTime`       | 数値    | UInt32            | このAmendmentが最後に過半数の支持を得たレジャーバージョンの[`close_time`フィールド](ledger-header.html)。 |
+| 名前          | JSONの型 | \[内部の型\]\[\] | 説明                                                                         |
+| ----------- | ------ | ------------ | -------------------------------------------------------------------------- |
+| `Amendment` | 文字列    | Hash256      | The Amendment ID of the pending amendment.                                 |
+| `CloseTime` | 数値     | UInt32       | このAmendmentが最後に過半数の支持を得たレジャーバージョンの[`close_time`フィールド](ledger-header.html)。 |
 
-[Amendmentプロセス](amendments.html#amendmentプロセス)では、80%以上のバリデータが新しいAmendmentを支持してバリデータのコンセンサスが得られると、`tfGotMajority`フラグを指定した[EnableAmendment][]疑似トランザクションを使用してこの新しいAmendmentが`Majorities`フィールドに追加されます。保留中のAmendmentの支持が80%を下回ると、`tfLostMajority`フラグが指定された[EnableAmendment][]疑似トランザクションによりそのAmendmentが`Majorities`配列から削除されます。Amendmentが`Majorities`フィールドに含まれている状態が2週間以上継続している場合、フラグが指定されていない[EnableAmendment][]疑似トランザクションによってそのAmendmentは`Majorities`から削除され、`Amendments`フィールドに恒久的に追加されます。
+[Amendmentプロセス](amendments.html#amendmentプロセス)では、80%以上のバリデータが新しいAmendmentを支持してバリデータのコンセンサスが得られると、`tfGotMajority`フラグを指定した\[EnableAmendment\]\[\]疑似トランザクションを使用してこの新しいAmendmentが`Majorities`フィールドに追加されます。 保留中のAmendmentの支持が80%を下回ると、`tfLostMajority`フラグが指定された\[EnableAmendment\]\[\]疑似トランザクションによりそのAmendmentが`Majorities`配列から削除されます。 Amendmentが`Majorities`フィールドに含まれている状態が2週間以上継続している場合、フラグが指定されていない\[EnableAmendment\]\[\]疑似トランザクションによってそのAmendmentは`Majorities`から削除され、`Amendments`フィールドに恒久的に追加されます。
 
-**注記:** 実際には、レジャー内のすべてのトランザクションは、その直前のレジャーバージョンで有効になっているAmendmentに基づいて処理されます。Amendmentが有効になったレジャーバージョンにトランザクションを適用する場合、このルールでは中間レジャーは変更されません。レジャーの閉鎖後、適用された新しいAmendmentにより定義される新しいルールが次のレジャーで使用されます。
+**注記:** 実際には、レジャー内のすべてのトランザクションは、その直前のレジャーバージョンで有効になっているAmendmentに基づいて処理されます。 Amendmentが有効になったレジャーバージョンにトランザクションを適用する場合、このルールでは中間レジャーは変更されません。 レジャーの閉鎖後、適用された新しいAmendmentにより定義される新しいルールが次のレジャーで使用されます。
 
 ## Amendment IDのフォーマット
 
-`Amendments`オブジェクトIDは、`Amendments`スペースキー（`0x0066`）のハッシュのみです。つまり、レジャーの`Amendments`オブジェクトのIDは常に次の値になります:
+`Amendments`オブジェクトIDは、`Amendments`スペースキー（`0x0066`）のハッシュのみです。 つまり、レジャーの`Amendments`オブジェクトのIDは常に次の値になります:
 
 ```
 7DB0788C020F02780A673DC74757F23823FA3014C1866E72CC4CD8B226CD6EF4
 ```
 
-（`Amendments`レジャーオブジェクトタイプのIDと、個々のAmendmentのAmendment IDを混同しないでください。）
+（`Amendments`レジャーオブジェクトタイプのIDと、個々のAmendmentのAmendment IDを混同しないでください。 ）
 
 <!--{# common link defs #}-->
-{% include '_snippets/rippled-api-links.md' %}			
-{% include '_snippets/tx-type-links.md' %}			
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
 {% include '_snippets/rippled_versions.md' %}
