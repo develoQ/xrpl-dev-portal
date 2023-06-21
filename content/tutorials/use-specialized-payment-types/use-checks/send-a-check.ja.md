@@ -5,17 +5,18 @@ blurb: 受取人が後で現金化できるCheckオブジェクトが作成さ�
 labels:
   - Checks
 ---
+
 # Checkの送信
 
-_[Checks Amendment][]が必要です。_
+_\[Checks Amendment\]\[\]が必要です。_
 
-Checkの送信は、指定受取人にあなたからの支払いを引き出す許可を与えることに似ています。このプロセスの結果、受取人が後で現金化できる[レジャーのCheckオブジェクト](check.html)が作成されます。
+Checkの送信は、指定受取人にあなたからの支払いを引き出す許可を与えることに似ています。 このプロセスの結果、受取人が後で現金化できる[レジャーのCheckオブジェクト](check.html)が作成されます。
 
-多くの場合、Checkではなく[Payment][]が送信されます。これは、Paymentでは1つのステップで受取人に直接送金できるためです。ただし、指定受取人が[DepositAuth](depositauth.html)を使用している場合はPaymentを直接送信できないため、代替手段としてCheckが適切です。
+多くの場合、Checkではなく\[Payment\]\[\]が送信されます。 これは、Paymentでは1つのステップで受取人に直接送金できるためです。 ただし、指定受取人が[DepositAuth](depositauth.html)を使用している場合はPaymentを直接送信できないため、代替手段としてCheckが適切です。
 
-このチュートリアルでは、架空の会社BoxSend SG（XRP LedgerアドレスはrBXsgNkPcDN2runsvWmwxk3Lh97zdgo9za）が架空の暗号資産コンサルタント会社Grand Payments（XRP LedgerアドレスはrGPnRH1EBpHeTF2QG8DCAgM7z5pb75LAis）に、コンサルティング料を支払う例を取り上げます。Grand PaymentsはXRPでの支払いを望んでいますが、税務処理と規制対応を簡素化するため、明示的に承認した支払いのみを受け入れます。
+このチュートリアルでは、架空の会社BoxSend SG（XRP LedgerアドレスはrBXsgNkPcDN2runsvWmwxk3Lh97zdgo9za）が架空の暗号資産コンサルタント会社Grand Payments（XRP LedgerアドレスはrGPnRH1EBpHeTF2QG8DCAgM7z5pb75LAis）に、コンサルティング料を支払う例を取り上げます。 Grand PaymentsはXRPでの支払いを望んでいますが、税務処理と規制対応を簡素化するため、明示的に承認した支払いのみを受け入れます。
 
-XRP Ledgerの外部でGrand PaymentsはBoxSend SGに請求書（IDは`46060241FABCF692D4D934BA2A6C4427CD4279083E38C77CBE642243E43BE291`）を送り、Grand PaymentsのXRP Ledgerアドレス（rGPnRH1EBpHeTF2QG8DCAgM7z5pb75LAis）宛てに100 XRPのCheckを送信するよう要求します。
+XRP Ledgerの外部でGrand PaymentsはBoxSend SGに請求書（IDは`46060241FABCF692D4D934BA2A6C4427CD4279083E38C77CBE642243E43BE291`）を送り、Grand PaymentsのXRP Ledgerアドレス（rGPnRH1EBpHeTF2QG8DCAgM7z5pb75LAis）宛てに100 XRPのCheckを送信するよう要求します。 <!-- SPELLING_IGNORE: boxsend -->
 
 {% set send_n = cycler(* range(1,99)) %}
 
@@ -29,26 +30,32 @@ XRP Ledgerの外部でGrand PaymentsはBoxSend SGに請求書（IDは`46060241FA
 - トランザクションに[安全に署名できる手段](set-up-secure-signing.html)。
 - [クライアントライブラリ](client-libraries.html)またはHTTPライブラリ、WebSocketライブラリなど。
 
-## {{send_n.next()}}.CheckCreateトランザクションの準備
+## {{send_n.next()}}. {{send_n.next()}}.CheckCreateトランザクションの準備
 
-Checkの額と、Checkを現金化できる当事者を決定します。[CheckCreateトランザクション][]のフィールドの値を決定します。以下のフィールドは必要最小限のフィールドです。その他のフィールドはオプションまたは署名時に[自動入力](transaction-common-fields.html#自動入力可能なフィールド)できるフィールドです。
+Checkの額と、Checkを現金化できる当事者を決定します。 \[CheckCreateトランザクション\]\[\]のフィールドの値を決定します。 以下のフィールドは必要最小限のフィールドです。 その他のフィールドはオプションまたは署名時に[自動入力](transaction-common-fields.html#自動入力可能なフィールド)できるフィールドです。
 
-| フィールド             | 値                     | 説明                  |
-|:------------------|:--------------------------|:-----------------------------|
-| `TransactionType` | 文字列                    | このフィールドには文字列`CheckCreate`を使用します。 |
-| `Account`         | 文字列（アドレス）          | Checkを作成する送金元のアドレス。（あなたのアドレスです。） |
-| `Destination`     | 文字列（アドレス）          | Checkを換金できる指定受取人のアドレス。 |
-| `SendMax`         | 文字列またはオブジェクト（額） | Checkが現金化されるときに送金元から引き出される最大額。XRPの場合、XRPのdrop数を示す文字列を使用します。発行済み通貨の場合、`currency`、`issuer`、および`value` フィールドを含むオブジェクトを使用します。詳細は、[通貨額の指定][]を参照してください。受取人がXRP以外の通貨で正確な額のCheckを換金できるようにし、かつ[送金手数料](transfer-fees.html)を含めるには、送金手数料分の追加パーセンテージを必ず指定してください。（たとえば受取人が送金手数料2%でCheckをイシュアーからの100 CADに現金化できるようにするには、`SendMax`をイシュアーからの102 CADに設定する必要があります。） |
+| フィールド             | 値               | 説明                                                                                                                                                                                                                                                                                                                                                        |
+|:----------------- |:--------------- |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TransactionType` | 文字列             | このフィールドには文字列`CheckCreate`を使用します。                                                                                                                                                                                                                                                                                                                          |
+| `Account`         | 文字列（アドレス）       | Checkを作成する送金元のアドレス。 （あなたのアドレスです。                                                                                                                                                                                                                                                                                                                          |
+| `Destination`     | 文字列（アドレス）       | Checkを換金できる指定受取人のアドレス。                                                                                                                                                                                                                                                                                                                                    |
+| `SendMax`         | 文字列またはオブジェクト（額） | Checkが現金化されるときに送金元から引き出される最大額。 XRPの場合、XRPのdrop数を示す文字列を使用します。 発行済み通貨の場合、`currency`、`issuer`、および`value` フィールドを含むオブジェクトを使用します。 詳細は、\[通貨額の指定\]\[\]を参照してください。 受取人がXRP以外の通貨で正確な額のCheckを換金できるようにし、かつ[送金手数料](transfer-fees.html)を含めるには、送金手数料分の追加パーセンテージを必ず指定してください。 （たとえば受取人が送金手数料2%でCheckをイシュアーからの100 CADに現金化できるようにするには、`SendMax`をイシュアーからの102 CADに設定する必要があります。 ） |
 
 ### CheckCreateトランザクションの準備の例
 
-以下の例は、BoxSend SG（rBXsgNkPcDN2runsvWmwxk3Lh97zdgo9za）がGrand Payments（rGPnRH1EBpHeTF2QG8DCAgM7z5pb75LAis）宛てに作成した100 XRPのCheckです。追加（オプション）のメタデータとして、BoxSend SGはGrand Paymentsの請求書のIDを追加しています。これによりGrand PaymentsはこのCheckがどの請求書に対する支払いかを確認できます。
+以下の例は、BoxSend SG（rBXsgNkPcDN2runsvWmwxk3Lh97zdgo9za）がGrand Payments（rGPnRH1EBpHeTF2QG8DCAgM7z5pb75LAis）宛てに作成した100 XRPのCheckです。 追加（オプション）のメタデータとして、BoxSend SGはGrand Paymentsの請求書のIDを追加しています。 これによりGrand PaymentsはこのCheckがどの請求書に対する支払いかを確認できます。
 
 <!-- MULTICODE_BLOCK_START -->
 
+*ripple-lib 1.x*
+
+```js
+{% include '_code-samples/checks/js/prepareCreate.js' %}
+```
+
 *JSON-RPC、WebSocket、またはコマンドライン*
 
-```
+```json
 {
  "TransactionType":"CheckCreate",
  "Account":"rBXsgNkPcDN2runsvWmwxk3Lh97zdgo9za",
@@ -58,15 +65,9 @@ Checkの額と、Checkを現金化できる当事者を決定します。[CheckC
 }
 ```
 
-*ripple-lib 1.x*
-
-```js
-{% include '_code-samples/checks/js/prepareCreate.js' %}
-```
-
 <!-- MULTICODE_BLOCK_END -->
 
-## {{send_n.next()}}.CheckCreateトランザクションへの署名
+## {{send_n.next()}}. {{send_n.next()}}.CheckCreateトランザクションへの署名
 
 {% include '_snippets/tutorial-sign-step.ja.md' %}
 <!--{#_ #}-->
@@ -75,7 +76,7 @@ Checkの額と、Checkを現金化できる当事者を決定します。[CheckC
 
 <!-- MULTICODE_BLOCK_START -->
 
-*RippleAPI*
+*ripple-lib 1.x*
 
 ```js
 {% include '_code-samples/checks/js/signCreate.js' %}
@@ -99,7 +100,7 @@ Checkの額と、Checkを現金化できる当事者を決定します。[CheckC
 
 <!-- MULTICODE_BLOCK_START -->
 
-*RippleAPI*
+*ripple-lib 1.x*
 
 ```js
 {% include '_code-samples/checks/js/sign-create-resp.txt' %}
@@ -119,7 +120,7 @@ Checkの額と、Checkを現金化できる当事者を決定します。[CheckC
 
 <!-- MULTICODE_BLOCK_END -->
 
-## {{send_n.next()}}.署名済みトランザクションの送信
+## {{send_n.next()}}. {{send_n.next()}}.署名済みトランザクションの送信
 
 {% set step_1_link = "#1checkcreateトランザクションの準備" %}
 {% include '_snippets/tutorial-submit-step.md' %}
@@ -129,7 +130,7 @@ Checkの額と、Checkを現金化できる当事者を決定します。[CheckC
 
 <!-- MULTICODE_BLOCK_START -->
 
-*RippleAPI*
+*ripple-lib 1.x*
 
 ```js
 {% include '_code-samples/checks/js/submitCreate.js' %}
@@ -153,7 +154,7 @@ Checkの額と、Checkを現金化できる当事者を決定します。[CheckC
 
 <!-- MULTICODE_BLOCK_START -->
 
-*RippleAPI*
+*ripple-lib 1.x*
 
 ```js
 {% include '_code-samples/checks/js/submit-create-resp.txt' %}
@@ -174,24 +175,22 @@ Checkの額と、Checkを現金化できる当事者を決定します。[CheckC
 <!-- MULTICODE_BLOCK_END -->
 
 
-## {{send_n.next()}}.検証の待機
+## {{send_n.next()}}. Wait for validation
 
 {% include '_snippets/wait-for-validation.ja.md' %}
 <!--{#_ #}-->
 
-## {{send_n.next()}}.最終結果の確認
+## {{send_n.next()}}.最終結果の確認 Confirm final result
 
-トランザクションのステータスを確認するには、CheckCreateトランザクションの識別用ハッシュを指定した[txメソッド][]を使用します。トランザクションメタデータで、トランザクションが成功したことを示す`"TransactionResult": "tesSUCCESS"`フィールドを探し、またこの結果が最終結果であることを示す`"validated": true`フィールドを結果で探します。
+トランザクションのステータスを確認するには、CheckCreateトランザクションの識別用ハッシュを指定した\[txメソッド\]\[\]を使用します。 トランザクションメタデータで、トランザクションが成功したことを示す`"TransactionResult": "tesSUCCESS"`フィールドを探し、またこの結果が最終結果であることを示す`"validated": true`フィールドを結果で探します。
 
-トランザクションのメタデータで、`LedgerEntryType`が `"Check"`の`CreatedNode`オブジェクトを探します。これは、トランザクションにより[Checkレジャーオブジェクト](check.html)が作成されたことを示します。このオブジェクトの`LedgerIndex` がCheckのIDです。以下の例ではCheckのIDは`84C61BE9B39B2C4A2267F67504404F1EC76678806C1B901EA781D1E3B4CE0CD9`です。
-
-**注記:** RippleAPIでは、CheckCreateトランザクションの検索時にCheckのIDが報告されません。この回避策として、以下のRippleAPIコードの例に示すように[Check IDフォーマット](check.html#check-idのフォーマット)からCheckのIDを計算することができます。 <!--{# TODO: Remove this and update the code samples if ripple-lib #876 gets fixed. #}-->
+トランザクションのメタデータで、`LedgerEntryType`が `"Check"`の`CreatedNode`オブジェクトを探します。 これは、トランザクションにより[Checkレジャーオブジェクト](check.html)が作成されたことを示します。 このオブジェクトの`LedgerIndex` がCheckのIDです。 以下の例ではCheckのIDは`84C61BE9B39B2C4A2267F67504404F1EC76678806C1B901EA781D1E3B4CE0CD9`です。
 
 ### 要求の例
 
 <!-- MULTICODE_BLOCK_START -->
 
-*RippleAPI*
+*ripple-lib 1.x*
 
 ```
 {% include '_code-samples/checks/js/getCreateTx.js' %}
@@ -215,7 +214,7 @@ Checkの額と、Checkを現金化できる当事者を決定します。[CheckC
 
 <!-- MULTICODE_BLOCK_START -->
 
-*RippleAPI*
+*ripple-lib 1.x*
 
 ```
 {% include '_code-samples/checks/js/get-create-tx-resp.txt' %}
@@ -236,6 +235,6 @@ Checkの額と、Checkを現金化できる当事者を決定します。[CheckC
 <!-- MULTICODE_BLOCK_END -->
 
 <!--{# common link defs #}-->
-{% include '_snippets/rippled-api-links.md' %}			
-{% include '_snippets/tx-type-links.md' %}			
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
 {% include '_snippets/rippled_versions.md' %}
