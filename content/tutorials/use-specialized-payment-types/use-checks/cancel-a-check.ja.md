@@ -5,13 +5,14 @@ blurb: 送金を行わずにCheckを取り消す。
 labels:
   - Checks
 ---
+
 # Checkの取消し
 
-_[Checks Amendment][]が必要です。_
+_\[Checks Amendment\]\[\]が必要です。_
 
-このチュートリアルでは、[Check](checks.html)を取り消す手順を説明します。この手順を実行すると、送金を行わずに[レジャーのCheckオブジェクト](check.html)が削除されます。
+このチュートリアルでは、[Check](checks.html)を取り消す手順を説明します。 この手順を実行すると、送金を行わずに[レジャーのCheckオブジェクト](check.html)が削除されます。
 
-着信したCheckが不要な場合、取り消すことができます。送信時に内容を誤って入力した場合や状況が変化した場合に、送信したCheckを取り消すこともできます。有効期限切れのCheckはレジャーから削除する必要があります。これにより、送金元に[所有者準備金](reserves.html#所有者準備金)が戻ります。
+You may want to cancel an incoming Check if you do not want it. 送信時に内容を誤って入力した場合や状況が変化した場合に、送信したCheckを取り消すこともできます。 有効期限切れのCheckはレジャーから削除する必要があります。 これにより、送金元に[所有者準備金](reserves.html#所有者準備金)が戻ります。
 
 {% set cancel_n = cycler(* range(1,99)) %}
 
@@ -21,20 +22,20 @@ _[Checks Amendment][]が必要です。_
 
 - 現在レジャーに記録されているCheckオブジェクトのIDが必要です。
     - たとえばこのチュートリアルの例では、IDが`49647F0D748DC3FE26BDACBC57F251AADEFFF391403EC9BF87C97F67E9977FB0`のCheckを取り消しますが、この手順を自身で実行する場合は異なるIDを使用する必要があります。
-- CheckCancelトランザクションを送信する資金供給のあるアカウントの**アドレス**と**シークレットキー**。Checkが有効期限切れでない限り、このアドレスは、Checkの送金元または受取人のいずれかでなければなりません。
+- CheckCancelトランザクションを送信する資金供給のあるアカウントの**アドレス**と**シークレットキー**。 Checkが有効期限切れでない限り、このアドレスは、Checkの送金元または受取人のいずれかでなければなりません。
 - トランザクションに[安全に署名できる手段](set-up-secure-signing.html)。
 - [クライアントライブラリ](client-libraries.html)またはHTTPライブラリ、WebSocketライブラリなど。
 
 
-## {{cancel_n.next()}}.CheckCancelトランザクションの準備
+## {{cancel_n.next()}}. {{cancel_n.next()}}.CheckCancelトランザクションの準備
 
-[CheckCancelトランザクション][]のフィールドの値を決定します。以下のフィールドは必要最小限のフィールドです。その他のフィールドはオプションまたは署名時に[自動入力](transaction-common-fields.html#自動入力可能なフィールド)可能なフィールドです。
+\[CheckCancelトランザクション\]\[\]のフィールドの値を決定します。 以下のフィールドは必要最小限のフィールドです。 その他のフィールドはオプションまたは署名時に[自動入力](transaction-common-fields.html#自動入力可能なフィールド)可能なフィールドです。
 
-| フィールド             | 値            | 説明                           |
-|:------------------|:-----------------|:--------------------------------------|
-| `TransactionType` | 文字列           | Checkを取り消す場合は文字列`CheckCancel`を使用します。 |
-| `Account`         | 文字列（アドレス） | Checkを取り消す送信元のアドレス。（あなたのアドレスです。） |
-| `CheckID`         | 文字列           | レジャーで取り消すCheckオブジェクトのID。この情報を確認するには、[txメソッド][]を使用してCheckCreateトランザクションのメタデータを調べるか、または[account_objectsメソッド][]を使用してCheckを探します。 |
+| フィールド             | 値         | 説明                                                                                                                                    |
+|:----------------- |:--------- |:------------------------------------------------------------------------------------------------------------------------------------- |
+| `TransactionType` | 文字列       | Checkを取り消す場合は文字列`CheckCancel`を使用します。                                                                                                  |
+| `Account`         | 文字列（アドレス） | Checkを取り消す送信元のアドレス。 （あなたのアドレスです。                                                                                                      |
+| `CheckID`         | 文字列       | レジャーで取り消すCheckオブジェクトのID。 この情報を確認するには、\[txメソッド\]\[\]を使用してCheckCreateトランザクションのメタデータを調べるか、または\[account_objectsメソッド\]\[\]を使用してCheckを探します。 |
 
 ### CheckCancelトランザクションの準備の例
 
@@ -61,7 +62,7 @@ Checkを取り消す例を以下に示します。
 
 <!-- MULTICODE_BLOCK_END -->
 
-## {{cancel_n.next()}}.CheckCancelトランザクションの署名
+## {{cancel_n.next()}}. Sign the CheckCancel transaction
 
 {% include '_snippets/tutorial-sign-step.ja.md' %} <!--#{ fix md highlighting_ #}-->
 
@@ -103,7 +104,7 @@ Checkを取り消す例を以下に示します。
 <!-- MULTICODE_BLOCK_END -->
 
 
-## {{cancel_n.next()}}.署名済みCheckCancelトランザクションの送信
+## {{cancel_n.next()}}. {{cancel_n.next()}}.CheckCancelトランザクションの署名
 
 {% set step_1_link = "#1checkcancelトランザクションの準備" %}
 {% include '_snippets/tutorial-submit-step.md' %} <!--#{ fix md highlighting_ #}-->
@@ -145,15 +146,15 @@ Checkを取り消す例を以下に示します。
 
 <!-- MULTICODE_BLOCK_END -->
 
-## {{cancel_n.next()}}.検証の待機
+## {{cancel_n.next()}}. Wait for validation
 
 {% include '_snippets/wait-for-validation.ja.md' %} <!--#{ fix md highlighting_ #}-->
 
-## {{cancel_n.next()}}.最終結果の確認
+## {{cancel_n.next()}}.最終結果の確認 Confirm final result
 
-トランザクションのステータスを確認するには、CheckCancelトランザクションの識別用ハッシュを指定した[txメソッド][]を使用します。トランザクションが成功したことを示す`"TransactionResult": "tesSUCCESS"`フィールドをトランザクションメタデータから検索し、またこの結果が最終結果であることを示す`"validated": true`フィールドを結果から検索します。
+トランザクションのステータスを確認するには、CheckCancelトランザクションの識別用ハッシュを指定した\[txメソッド\]\[\]を使用します。 トランザクションが成功したことを示す`"TransactionResult": "tesSUCCESS"`フィールドをトランザクションメタデータから検索し、またこの結果が最終結果であることを示す`"validated": true`フィールドを結果から検索します。
 
-トランザクションによって[Checkレジャーオブジェクト](check.html)が削除されたことを示す`"LedgerEntryType": "Check"`を含む`DeletedNode`オブジェクトを、トランザクションメタデータから検索します。このオブジェクトの`LedgerIndex`はCheckのIDに一致している必要があります。
+トランザクションによって[Checkレジャーオブジェクト](check.html)が削除されたことを示す`"LedgerEntryType": "Check"`を含む`DeletedNode`オブジェクトを、トランザクションメタデータから検索します。 このオブジェクトの`LedgerIndex`はCheckのIDに一致している必要があります。
 
 ### 要求の例
 
@@ -193,6 +194,6 @@ Checkを取り消す例を以下に示します。
 <!-- MULTICODE_BLOCK_END -->
 
 <!--{# common link defs #}-->
-{% include '_snippets/rippled-api-links.md' %}			
-{% include '_snippets/tx-type-links.md' %}			
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
 {% include '_snippets/rippled_versions.md' %}
