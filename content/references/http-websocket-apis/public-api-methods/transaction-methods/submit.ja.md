@@ -1,11 +1,12 @@
 ---
 html: submit.html
 parent: transaction-methods.html
-blurb: トランザクションを適用し、トランザクションの確認と将来のレジャーへの記録が行われるように、ネットワークに送信します。
+blurb: Send a transaction to the network.
 labels:
   - トランザクション送信
   - 支払い
 ---
+
 # submit
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/rpc/handlers/Submit.cpp "ソース")
 
@@ -13,19 +14,19 @@ labels:
 
 このコマンドには、以下の2つのモードがあります。
 
-* 送信専用モードは、署名済みのシリアル化されたトランザクションをブロブとして取得し、そのままネットワークに送信します。署名済みのトランザクションオブジェクトは不変のものであるため、送信後は、どの部分も修正したり、自動的に内容を入力したりすることはできません。
-* 署名と送信モードでは、JSONフォーマットのトランザクションオブジェクトを取得し、[signメソッド][]と同じ方法でトランザクションを完成させて署名し、署名済みのトランザクションを送信します。テストと開発に関しては、このモードのみ使用することをお勧めします。
+* 送信専用モードは、署名済みのシリアル化されたトランザクションをブロブとして取得し、そのままネットワークに送信します。 署名済みのトランザクションオブジェクトは不変のものであるため、送信後は、どの部分も修正したり、自動的に内容を入力したりすることはできません。
+* 署名と送信モードでは、JSONフォーマットのトランザクションオブジェクトを取得し、\[signメソッド\]\[\]と同じ方法でトランザクションを完成させて署名し、署名済みのトランザクションを送信します。 テストと開発に関しては、このモードのみ使用することをお勧めします。
 
-トランザクションを可能な限り確実に送信するには、トランザクションを事前に生成して[sign][sign method]メソッドで署名し、停電発生後もアクセスできるいずれかの場所に保存した後、`tx_blob`として`submit`メソッドで送信します。送信後は、ネットワークを[txメソッド][]コマンドで監視して、トランザクションが正常に適用されたかどうかを確認します。再起動やその他の問題が発生した場合ても、`tx_blob`のトランザクションを問題なく再送信できます。シーケンス番号が以前のトランザクションと同一であるため、トランザクションが2回適用されることはありません。
+トランザクションを可能な限り確実に送信するには、トランザクションを事前に生成して\[sign\]\[sign method\]メソッドで署名し、停電発生後もアクセスできるいずれかの場所に保存した後、`tx_blob`として`submit`メソッドで送信します。 送信後は、ネットワークを\[txメソッド\]\[\]コマンドで監視して、トランザクションが正常に適用されたかどうかを確認します。 再起動やその他の問題が発生した場合ても、`tx_blob`のトランザクションを問題なく再送信できます。 シーケンス番号が以前のトランザクションと同一であるため、トランザクションが2回適用されることはありません。
 
 ## 送信専用モード
 
 送信専用の要求では、以下のパラメーターを指定します。
 
-| `Field`     | 型    | 説明                                          |
-|:------------|:--------|:-----------------------------------------------------|
-| `tx_blob`   | 文字列  | 送信する署名済みトランザクションの16進表現。[マルチ署名済みトランザクション](multi-signing.html)を送信することもできます。 |
-| `fail_hard` | ブール値 | （省略可。デフォルトはfalse）trueにした場合は、トランザクションがローカルで失敗したときに再試行されず、他のサーバーにも中継されません。 |
+| `Field`     | 型    | Required? | 説明                                                                                          |
+|:----------- |:---- |:--------- |:------------------------------------------------------------------------------------------- |
+| `tx_blob`   | 文字列  | Yes       | 送信する署名済みトランザクションの16進表現。 [マルチ署名済みトランザクション](multi-signing.html)を送信することもできます。                  |
+| `fail_hard` | ブール値 | No        | デフォルトはfalse）trueにした場合は、トランザクションがローカルで失敗したときに再試行されず、他のサーバーにも中継されません。 The default is `false`. |
 
 ### 要求フォーマット
 
@@ -63,37 +64,37 @@ submit 1200002280000000240000000361D4838D7EA4C6800000000000000000000000000055534
 
 <!-- MULTICODE_BLOCK_END -->
 
-[試してみる>](websocket-api-tool.html#submit)
+[Try it! >](websocket-api-tool.html#submit)
 
 
 ## 署名と送信モード
 
-このモードでは、トランザクションに署名してただちに送信します。このモードは、テストで使用することを目的としています。[マルチ署名済みトランザクション](multi-signing.html)には使用できません。
+このモードでは、トランザクションに署名してただちに送信します。 このモードは、テストで使用することを目的としています。 [マルチ署名済みトランザクション](multi-signing.html)には使用できません。
 
- _デフォルトでは、署名と送信モードは[管理者専用](admin-api-methods.html)です。_ サーバーで[パブリック署名が有効になっている](enable-public-signing.html)場合は、パブリックメソッドとして使用できます。
+_デフォルトでは、署名と送信モードは[管理者専用](admin-api-methods.html)です。 _ サーバーで[パブリック署名が有効になっている](enable-public-signing.html)場合は、パブリックメソッドとして使用できます。
 
 トランザクションの署名に使用するシークレットキーは、以下の方法で提供できます。
 
-* `secret`値を指定し、`key_type`フィールドを省略します。この値は、XRP Ledgerの[base58][]シード、RFC-1751、16進値のフォーマットで記述するか、文字列パスフレーズとして記述します（secp256k1キーのみ）。
-* `key_type`値と、`seed`、`seed_hex`、または`passphrase`のいずれか1つを提供します。`secret`フィールドは省略します（コマンドライン構文ではサポートされません）。
+* `secret`値を指定し、`key_type`フィールドを省略します。 この値は、XRP Ledgerの\[base58\]\[\]シード、RFC-1751、16進値のフォーマットで記述するか、文字列パスフレーズとして記述します（secp256k1キーのみ）。 (secp256k1 keys only)
+* `key_type`値と、`seed`、`seed_hex`、または`passphrase`のいずれか1つを提供します。 Omit the `secret` field. (Not supported by the commandline syntax.)
 
 要求には以下のパラメーターが含まれます。
 
-| `Field`        | 型    | 説明                                       |
-|:---------------|:--------|:--------------------------------------------------|
-| `tx_json`      | オブジェクト  | JSONフォーマットの[トランザクション定義](transaction-formats.html)。自動入力可能なフィールドについては、省略することも可能です。 |
-| `secret`       | 文字列  |  _（省略可）_ トランザクションを提供するアカウントのシークレットキー。トランザクションへの署名に使用されます。信頼できないサーバーに対して、またはセキュリティが確保されていないネットワーク接続を通じて機密情報を送信しないでください。`key_type`、`seed`、`seed_hex`、`passphrase`と同時に使用することはできません。 |
-| `seed`         | 文字列  |  _（省略可）_ トランザクションを提供するアカウントのシークレットキー。トランザクションへの署名に使用されます。XRP Ledgerの[base58][]フォーマットにする必要があります。指定する場合は、`key_type`も指定する必要があります。`secret`、`seed_hex`、`passphrase`と同時に使用することはできません。 |
-| `seed_hex`     | 文字列  |  _（省略可）_ トランザクションを提供するアカウントのシークレットキー。トランザクションへの署名に使用されます。16進フォーマットにする必要があります。指定する場合は、`key_type`も指定する必要があります。`secret`、`seed`、`passphrase`と同時に使用することはできません。 |
-| `passphrase`   | 文字列  |  _（省略可）_ トランザクションを提供するアカウントのシークレットキー。文字列パスフレーズとして、トランザクションへの署名に使用されます。指定する場合は、`key_type`も指定する必要があります。`secret`、`seed`、`seed_hex`と同時に使用することはできません。 |
-| `key_type`     | 文字列  |  _（省略可）_ この要求で提供する暗号鍵の種類。有効な種類は、`secp256k1`または`ed25519`です。デフォルトは`secp256k1`です。`secret`と同時に使用することはできません。**注意:** Ed25519のサポートは実験的な機能です。 |
-| `fail_hard`    | ブール値 | （省略可。デフォルトはfalse）trueにした場合は、トランザクションがローカルで失敗したときに再試行されず、他のサーバーにも中継されません。 |
-| `offline`      | ブール値 | （省略可。デフォルトはfalse）trueにする場合は、トランザクションの生成時に、値を自動で入力または検証しようとしないでください。 |
-| `build_path`   | ブール値 |  _（省略可）_ Payment型のトランザクションに対して指定した場合、署名前に`Paths`フィールドが自動で入力されます。トランザクションがXRP間の直接移動である場合は、このフィールドを省略してください。**注意:** サーバーは、このフィールドの値ではなく、このフィールドが存在するかどうかを調べます。この動作は変更される可能性があります。 |
-| `fee_mult_max` | 整数 | （省略可。デフォルトは10、推奨値は1000）`Fee`パラメーターを省略する場合は、自動的に提供される`Fee`値が長期の基本トランザクションコストとこの値の積以下になるよう、このフィールドで制限します。 |
-| `fee_div_max`  | 整数 | （省略可。デフォルトは1）`fee_mult_max`と併用して、制限に使用される分数の乗数を作成します。具体的には、サーバーは基本[トランザクションコスト](transaction-cost.html)を`fee_mult_max`で乗算した後、この値で除算して上限値（整数値に丸められます）を割り出します。自動的に提供される`Fee`値が上限値を超えている場合、submitコマンドは失敗します。[新規: rippled 0.30.1][] |
+| `Field`        | 型      | 説明                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|:-------------- |:------ |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tx_json`      | オブジェクト | JSONフォーマットの[トランザクション定義](transaction-formats.html)。 自動入力可能なフィールドについては、省略することも可能です。                                                                                                                                                                                                                                                                                                                                                     |
+| `secret`       | 文字列    | _（省略可）_ トランザクションを提供するアカウントのシークレットキー。 トランザクションへの署名に使用されます。 信頼できないサーバーに対して、またはセキュリティが確保されていないネットワーク接続を通じて機密情報を送信しないでください。 `key_type`、`seed`、`seed_hex`、`passphrase`と同時に使用することはできません。                                                                                                                                                                                                                                                    |
+| `seed`         | 文字列    | _（省略可）_ トランザクションを提供するアカウントのシークレットキー。 文字列パスフレーズとして、トランザクションへの署名に使用されます。 指定する場合は、`key_type`も指定する必要があります。 `secret`、`seed`、`seed_hex`と同時に使用することはできません。                                                                                                                                                                                                                                                                                    |
+| `seed_hex`     | 文字列    | _（省略可）_ トランザクションを提供するアカウントのシークレットキー。 トランザクションへの署名に使用されます。 16進フォーマットにする必要があります。 指定する場合は、`key_type`も指定する必要があります。 `secret`、`seed`、`passphrase`と同時に使用することはできません。                                                                                                                                                                                                                                                                          |
+| `passphrase`   | 文字列    | _（省略可）_ トランザクションを提供するアカウントのシークレットキー。 トランザクションへの署名に使用されます。 指定する場合は、`key_type`も指定する必要があります。 `secret`、`seed_hex`、`passphrase`と同時に使用することはできません。                                                                                                                                                                                                                                                                                           |
+| `key_type`     | 文字列    | _（省略可）_ この要求で提供する暗号鍵の種類。 有効な種類は、`secp256k1`または`ed25519`です。 デフォルトは`secp256k1`です。 `secret`と同時に使用することはできません。 **注意:** Ed25519のサポートは実験的な機能です。                                                                                                                                                                                                                                                                                              |
+| `fail_hard`    | ブール値   | _(Optional)_ If `true`, and the transaction fails locally, do not retry or relay the transaction to other servers. The default is `false`. \[Updated in: rippled 1.5.0\]\[\]                                                                                                                                                                                                                                                          |
+| `offline`      | ブール値   | _(Optional)_ If `true`, when constructing the transaction, do not try to automatically fill in or validate values. The default is `false`.                                                                                                                                                                                                                                                                                            |
+| `build_path`   | ブール値   | _（省略可）_ Payment型のトランザクションに対して指定した場合、署名前に`Paths`フィールドが自動で入力されます。 トランザクションがXRP間の直接移動である場合は、このフィールドを省略してください。 **注意:** サーバーは、このフィールドの値ではなく、このフィールドが存在するかどうかを調べます。 この動作は変更される可能性があります。 ([Issue #3272](https://github.com/ripple/rippled/issues/3272))                                                                                                                                                                                      |
+| `fee_mult_max` | 整数     | _(Optional)_ Sign-and-submit fails with the error `rpcHIGH_FEE` if the [auto-filled `Fee` value](transaction-common-fields.html#auto-fillable-fields) would be greater than the [reference transaction cost](transaction-cost.html#special-transaction-costs) × `fee_mult_max` ÷ `fee_div_max`. This field has no effect if you explicitly specify the `Fee` field of the transaction. The default is `10`.                           |
+| `fee_div_max`  | 整数     | _(Optional)_ Sign-and-submit fails with the error `rpcHIGH_FEE` if the [auto-filled `Fee` value](transaction-common-fields.html#auto-fillable-fields) would be greater than the [reference transaction cost](transaction-cost.html#special-transaction-costs) × `fee_mult_max` ÷ `fee_div_max`. This field has no effect if you explicitly specify the `Fee` field of the transaction. The default is `1`. \[新規: rippled 0.30.1\]\[\] |
 
-サーバーによって特定のフィールドにどのように値が自動入力されるかについては、[signメソッド][]を参照してください。
+サーバーによって特定のフィールドにどのように値が自動入力されるかについては、\[signメソッド\]\[\]を参照してください。
 
 ### 要求フォーマット
 要求フォーマットの例:
@@ -156,7 +157,7 @@ rippled submit s█████████████████████�
 
 <!-- MULTICODE_BLOCK_END -->
 
-[試してみる>](websocket-api-tool.html#submit)
+[Try it! >](websocket-api-tool.html#submit)
 
 ## 応答フォーマット
 
@@ -168,6 +169,18 @@ rippled submit s█████████████████████�
 
 ```json
 {
+  "id": 1,
+  "status": "success",
+  "type": "response",
+  "result": {
+    "accepted" : true,
+    "account_sequence_available" : 362,
+    "account_sequence_next" : 362,
+    "applied" : true,
+    "broadcast" : true,
+    "engine_result": "tesSUCCESS",
+    "engine_result_code": 0,
+    "engine_result_message": "The transaction was applied. {
   "id": 1,
   "status": "success",
   "type": "response",
@@ -201,6 +214,57 @@ rippled submit s█████████████████████�
 ```json
 {
     "result": {
+        "accepted" : true,
+        "account_sequence_available" : 362,
+        "account_sequence_next" : 362,
+        "applied" : true,
+        "broadcast" : true,
+        "engine_result": "tesSUCCESS",
+        "engine_result_code": 0,
+        "engine_result_message": "The transaction was applied. Only final in a validated ledger.",
+        "status": "success",
+        "kept" : true,
+        "open_ledger_cost": "10",
+        "queued" : false,
+        "tx_blob": "1200002280000000240000016961D4838D7EA4C6800000000000000000000000000055534400000000004B4E9C06F24296074F7BC48F92A97916C6DC5EA9684000000000002710732103AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB74473045022100A7CCD11455E47547FF617D5BFC15D120D9053DFD0536B044F10CA3631CD609E502203B61DEE4AC027C5743A1B56AF568D1E2B8E79BB9E9E14744AC87F38375C3C2F181144B4E9C06F24296074F7BC48F92A97916C6DC5EA983143E9D4A2B8AA0780F682D136F7A56D6724EF53754",
+        "tx_json": {
+            "Account": "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
+            "Amount": {
+                "currency": "USD",
+                "issuer": "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
+                "value": "1"
+            },
+            "Destination": "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
+            "Fee": "10000",
+            "Flags": 2147483648,
+            "Sequence": 361,
+            "SigningPubKey": "03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB",
+            "TransactionType": "Payment",
+            "TxnSignature": "3045022100A7CCD11455E47547FF617D5BFC15D120D9053DFD0536B044F10CA3631CD609E502203B61DEE4AC027C5743A1B56AF568D1E2B8E79BB9E9E14744AC87F38375C3C2F1",
+            "hash": "5B31A7518DC304D5327B4887CD1F7DC2C38D5F684170097020C7C9758B973847"
+        }
+    },
+    "validated_ledger_index" : 21184416
+}
+```
+
+*コマンドライン*
+
+```json
+Loading: "/etc/rippled.cfg"
+Connecting to 127.0.0.1:5005
+
+{
+    "result": {
+        "accepted" : true,
+        "account_sequence_available" : 362,
+        "account_sequence_next" : 362,
+        "applied" : true,
+        "broadcast" : true,
+        "engine_result": "tesSUCCESS",
+        "engine_result_code": 0,
+        "engine_result_message": "The transaction was applied. {
+    "result": {
         "engine_result": "tesSUCCESS",
         "engine_result_code": 0,
         "engine_result_message": "The transaction was applied.Only final in a validated ledger.",
@@ -226,54 +290,30 @@ rippled submit s█████████████████████�
 }
 ```
 
-*コマンドライン*
-
-```json
-Loading: "/etc/rippled.cfg"
-Connecting to 127.0.0.1:5005
-
-{
-   "result" : {
-      "engine_result" : "tesSUCCESS",
-      "engine_result_code" : 0,
-      "engine_result_message" : "The transaction was applied.Only final in a validated ledger.",
-      "status" : "success",
-      "tx_blob" : "1200002280000000240000016A61D4838D7EA4C6800000000000000000000000000055534400000000004B4E9C06F24296074F7BC48F92A97916C6DC5EA9684000000000002710732103AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB74473045022100FBBF74057359EC31C3647AD3B33D8954730E9879C35034374858A76B7CFA643102200EAA08C61071396E9CF0987FBEA16CF113CBD8068AA221214D165F151285EECD81144B4E9C06F24296074F7BC48F92A97916C6DC5EA983143E9D4A2B8AA0780F682D136F7A56D6724EF53754",
-      "tx_json" : {
-         "Account" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
-         "Amount" : {
-            "currency" : "USD",
-            "issuer" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
-            "value" : "1"
-         },
-         "Destination" : "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
-         "Fee" : "10000",
-         "Flags" : 2147483648,
-         "Sequence" : 362,
-         "SigningPubKey" : "03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB",
-         "TransactionType" : "Payment",
-         "TxnSignature" : "3045022100FBBF74057359EC31C3647AD3B33D8954730E9879C35034374858A76B7CFA643102200EAA08C61071396E9CF0987FBEA16CF113CBD8068AA221214D165F151285EECD",
-         "hash" : "CB98A6FA1FAC47F9FCC6A233EB46F8F9AF59CC69BD69AE6D06F298F6FF52162A"
-      }
-   }
-}
-```
-
 <!-- MULTICODE_BLOCK_END -->
 
-この応答は[標準フォーマット][]に従っており、結果が正しい場合、以下のフィールドが含まれます。
+この応答は\[標準フォーマット\]\[\]に従っており、結果が正しい場合、以下のフィールドが含まれます。
 
-| `Field`                 | 型    | 説明                              |
-|:------------------------|:--------|:-----------------------------------------|
-| `engine_result`         | 文字列  | トランザクションの暫定的な結果を示すコード。例: `tesSUCCESS` |
-| `engine_result_code`    | 整数 | トランザクションの暫定的な結果を示し、`engine_result`と直接の相関関係にある数値コード |
-| `engine_result_message` | 文字列  | 人間が読める形式の、トランザクションの暫定的な結果の説明 |
-| `tx_blob`               | 文字列  | トランザクション全体の16進文字列表現 |
-| `tx_json`               | オブジェクト  | トランザクション全体のJSON表現  |
+| `Field`                      | 型       | 説明                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|:---------------------------- |:------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `engine_result`              | 文字列     | トランザクションの暫定的な結果を示すコード。 例: `tesSUCCESS`                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `engine_result_code`         | 整数      | Numeric version of the [result code](transaction-results.html). **Not recommended.**                                                                                                                                                                                                                                                                                                                                                         |
+| `engine_result_message`      | 文字列     | 人間が読める形式の、トランザクションの暫定的な結果の説明                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `tx_blob`                    | 文字列     | トランザクション全体の16進文字列表現                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `tx_json`                    | オブジェクト  | トランザクション全体のJSON表現                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `accepted`                   | Boolean | _(Omitted in sign-and-submit mode)_ The value `true` indicates that the transaction was applied, queued, broadcast, or kept for later. The value `false` indicates that none of those happened, so the transaction cannot possibly succeed as long as you do not submit it again and have not already submitted it another time. \[New in: rippled 1.5.0\]\[\]                                                                               |
+| `account_sequence_available` | Number  | _(Omitted in sign-and-submit mode)_ The next \[Sequence Number\]\[\] available for the sending account after all pending and [queued](transaction-queue.html) transactions. \[New in: rippled 1.5.0\]\[\]                                                                                                                                                                                                                                    |
+| `account_sequence_next`      | number  | _(Omitted in sign-and-submit mode)_ The next \[Sequence Number\]\[\] for the sending account after all transactions that have been provisionally applied, but not transactions in the [queue](transaction-queue.html). \[New in: rippled 1.5.0\]\[\]                                                                                                                                                                                         |
+| `applied`                    | Boolean | _(Omitted in sign-and-submit mode)_ The value `true` indicates that this transaction was applied to the open ledger. In this case, the transaction is likely, but not guaranteed, to be validated in the next ledger version. \[New in: rippled 1.5.0\]\[\]                                                                                                                                                                                  |
+| `broadcast`                  | Boolean | _(Omitted in sign-and-submit mode)_ The value `true` indicates this transaction was broadcast to peer servers in the peer-to-peer XRP Ledger network. (Note: if the server has no peers, such as in \[stand-alone mode\]\[\], the server uses the value `true` for cases where it _would_ have broadcast the transaction.) The value `false` indicates the transaction was not broadcast to any other servers. \[New in: rippled 1.5.0\]\[\] |
+| `kept`                       | Boolean | _(Omitted in sign-and-submit mode)_ The value `true` indicates that the transaction was kept to be retried later. \[New in: rippled 1.5.0\]\[\]                                                                                                                                                                                                                                                                                              |
+| `queued`                     | Boolean | _(Omitted in sign-and-submit mode)_ The value `true` indicates the transaction was put in the [Transaction Queue](transaction-queue.html), which means it is likely to be included in a future ledger version. \[New in: rippled 1.5.0\]\[\]                                                                                                                                                                                                 |
+| `open_ledger_cost`           | String  | _(Omitted in sign-and-submit mode)_ The current [open ledger cost](transaction-cost.html#open-ledger-cost) before processing this transaction. Transactions with a lower cost are likely to be [queued](transaction-queue.html). \[New in: rippled 1.5.0\]\[\]                                                                                                                                                                               |
+| `validated_ledger_index`     | Integer | _(Omitted in sign-and-submit mode)_ The \[ledger index\]\[\] of the newest validated ledger at the time of submission. This provides a lower bound on the ledger versions that the transaction can appear in as a result of this request. (The transaction could only have been validated in this ledger version or earlier if it had already been submitted before.)                                                                        |
 
-**注意:** WebSocketの応答に`"status":"success"`が含まれていても、これはコマンドが正常に受け付けられたことを示すものであり、トランザクションが正常に実行されたことを示しているわけでは _ありません_ 。トランザクションは、さまざまな状況で正常に処理されない可能性があります。例えば、ペイメントの2つのアカウントを接続するトラストラインの欠落や、トランザクション生成後のレジャーの状態の変化などです。問題が特にない場合も、トランザクションが含まれているバージョンのレジャーを閉鎖し検証するまでに数秒かかることがあります。詳細は、[トランザクションの応答の完全なリスト](transaction-results.html)を参照してください。トランザクションの結果は、検証済みバージョンのレジャーにトランザクションが表示されるまで、最終的なものと考えないでください。
+**注意:** WebSocketの応答に`"status":"success"`が含まれていても、これはコマンドが正常に受け付けられたことを示すものであり、トランザクションが正常に実行されたことを示しているわけでは _ありません_ 。 Many situations can prevent a transaction from processing successfully, such as a lack of trust lines connecting the two accounts in a payment, or changes in the state of the ledger since the time the transaction was constructed. 問題が特にない場合も、トランザクションが含まれているバージョンのレジャーを閉鎖し検証するまでに数秒かかることがあります。 詳細は、[トランザクションの応答の完全なリスト](transaction-results.html)を参照してください。 トランザクションの結果は、検証済みバージョンのレジャーにトランザクションが表示されるまで、最終的なものと考えないでください。
 
-**注意:** このコマンドの結果としてエラーメッセージが表示された場合、要求から取得されたシークレットキーがメッセージの中に記述されている可能性があります。（要求に含まれているものが署名済みのtx_blobである場合は問題ありません）。これらのエラーが他者から見えない状態であることを確認してください。
+**注意:** このコマンドの結果としてエラーメッセージが表示された場合、要求から取得されたシークレットキーがメッセージの中に記述されている可能性があります。 （要求に含まれているものが署名済みのtx_blobである場合は問題ありません）。 これらのエラーが他者から見えない状態であることを確認してください。
 
 * シークレットキーが記述されているエラーは、複数の人物が参照できるログファイルに書き込まないでください。
 * シークレットキーが記述されているエラーは、誰でも参照できる場所にデバッグを目的として貼り付けないでください。
@@ -282,17 +322,20 @@ Connecting to 127.0.0.1:5005
 
 ## 考えられるエラー
 
-* いずれかの[汎用エラータイプ][]。
+* いずれかの\[汎用エラータイプ\]\[\]。
 * `amendmentBlocked` - `rippled`サーバーでの[修正がブロックされている](amendments.html#amendment-blocked)ため、トランザクションをネットワークに送信できません。
-* `highFee` - `fee_mult_max`パラメーターが指定されましたが、サーバーの現在の手数料の乗数が指定値を超えています（署名と送信モードのみ）。
-* `internalJson` - トランザクションをJSONへとシリアル化するときに、内部エラーが発生しました。このエラーは、無効な署名や一部フィールドの形式の誤りなど、トランザクションのさまざまな側面が原因となって発生する可能性があります。
-* `internalSubmit` - トランザクションを送信するときに内部エラーが発生しました。このエラーは、無効な署名や一部フィールドの形式の誤りなど、トランザクションのさまざまな側面が原因となって発生する可能性があります。
-* `internalTransaction` - トランザクションを処理するときに内部エラーが発生しました。このエラーは、無効な署名や一部フィールドの形式の誤りなど、トランザクションのさまざまな側面が原因となって発生する可能性があります。
+* `noPath` - トランザクションにパスが含まれておらず、サーバーは、このペイメントの発生経路となるパスを検出できませんでした。 （署名と送信モードのみ）。
+* `internalJson` - トランザクションをJSONへとシリアル化するときに、内部エラーが発生しました。 このエラーは、無効な署名や一部フィールドの形式の誤りなど、トランザクションのさまざまな側面が原因となって発生する可能性があります。
+* `internalSubmit` - トランザクションを送信するときに内部エラーが発生しました。 このエラーは、無効な署名や一部フィールドの形式の誤りなど、トランザクションのさまざまな側面が原因となって発生する可能性があります。
+* `internalTransaction` - トランザクションを処理するときに内部エラーが発生しました。 このエラーは、無効な署名や一部フィールドの形式の誤りなど、トランザクションのさまざまな側面が原因となって発生する可能性があります。
 * `invalidParams` - 1つ以上のフィールドの指定が正しくないか、1つ以上の必須フィールドが指定されていません。
 * `invalidTransaction` - トランザクションの形式が誤っているか、その他の理由で無効なものになっています。
-* `noPath` - トランザクションにパスが含まれておらず、サーバーは、このペイメントの発生経路となるパスを検出できませんでした。（署名と送信モードのみ）。
-* `tooBusy` - トランザクションにパスが含まれていませんが、サーバーがビジーであるため、パス検出処理をすぐに実行できません。管理者として接続している場合は発生しません。（署名と送信モードのみ）。
+* `noPath` - The transaction did not include paths, and the server was unable to find a path by which this payment can occur. (Sign-and-Submit mode only)
+* `tooBusy` - トランザクションにパスが含まれていませんが、サーバーがビジーであるため、パス検出処理をすぐに実行できません。 管理者として接続している場合は発生しません。 （署名と送信モードのみ）。
+* `notSupported` - Signing is not supported by this server (Sign-and-Submit mode only.) If you are the server admin, you can still access signing when connected [as an admin](admin-api-methods.html), or you could [enable public signing](enable-public-signing.html). \[New in: rippled 1.1.0\]\[\]
 
 
-{% include '_snippets/rippled_versions.md' %}
+<!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
+{% include '_snippets/rippled_versions.md' %}
