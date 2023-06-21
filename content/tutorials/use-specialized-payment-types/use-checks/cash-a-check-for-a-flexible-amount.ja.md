@@ -119,7 +119,7 @@ Checkを変動金額で換金するためのトランザクションを準備す
 
 <!-- MULTICODE_BLOCK_END -->
 
-## {{cash_flex_n.next()}}. Wait for validation
+## {{cash_flex_n.next()}}.最終結果の確認 Wait for validation
 
 {% include '_snippets/wait-for-validation.ja.md' %} <!--#{ fix md highlighting_ #}-->
 
