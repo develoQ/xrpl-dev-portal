@@ -5,6 +5,7 @@ blurb: プリコンパイル済みのrippledバイナリーをCentOSまたはRed
 labels:
   - コアサーバー
 ---
+
 # yumを使用したCentOS/Red Hatへのインストール
 
 このページでは、Rippleの[yum](https://en.wikipedia.org/wiki/Yellowdog_Updater,_Modified)リポジトリを使用して、**CentOS 7**または**Red Hat Enterprise Linux 7**に、`rippled`の安定した最新バージョンをインストールする場合の推奨手順を説明します。
@@ -21,36 +22,46 @@ labels:
 
 1. Ripple RPMリポジトリをインストールします。
 
-        $ cat << REPOFILE | sudo tee /etc/yum.repos.d/ripple.repo
-        [ripple-stable]
-        name=XRP Ledger Packages
-        baseurl=https://repos.ripple.com/repos/rippled-rpm/stable/
-        enabled=1
-        gpgcheck=0
-        gpgkey=https://repos.ripple.com/repos/rippled-rpm/stable/repodata/repomd.xml.key
-        repo_gpgcheck=1
-        REPOFILE
+    Choose the appropriate RPM repository for the stability of releases you want:
 
-2. 最新のrepoのアップデートを取得します。
+    - `stable` for the latest production release (`master` branch)
+    - `unstable` for pre-release builds (`release` branch)
+    - `nightly` for experimental/development builds (`develop` branch)
 
+    <!-- MULTICODE_BLOCK_START -->
+
+    *Stable*
+
+        $ cat &lt;&lt; REPOFILE | sudo tee /etc/yum.repos.d/ripple.repo [ripple-stable] name=XRP Ledger Packages baseurl=https://repos.ripple.com/repos/rippled-rpm/stable/ enabled=1 gpgcheck=0 gpgkey=https://repos.ripple.com/repos/rippled-rpm/stable/repodata/repomd.xml.key repo_gpgcheck=1 REPOFILE
+
+    *Pre-release*
+
+        systemdユニットファイルを再度読み込みます。
+
+    *Development*
+
+        最新のrepoのアップデートを取得します。
+
+    <!-- MULTICODE_BLOCK_START -->
+
+2. Fetch the latest repo updates:
+   
         $ sudo yum -y update
 
 3. 新しい`rippled`パッケージをインストールします。
-
+   
         $ sudo yum install rippled
 
-   バージョン1.3.1では、構成ファイル（`rippled.cfg`および`validators.txt`）を変更する必要はありません。このアップデート手順では、既存の構成ファイルが現在のまま残ります。
-
-4. systemdユニットファイルを再度読み込みます。
-
+4. Reload systemd unit files:
+   
         $ sudo systemctl daemon-reload
 
 5. 起動時に開始するように、`rippled`サービスを設定します。
-
+   
         $ sudo systemctl enable rippled.service
 
 6. `rippled`サービスを開始します。
-
+   
         $ sudo systemctl start rippled.service
 
 
@@ -59,19 +70,19 @@ labels:
 {% include '_snippets/post-rippled-install.ja.md' %}<!--_ -->
 
 
-## 関連項目
+## See Also
 
 - **コンセプト:**
     - [`rippled`サーバー](xrpl-servers.html)
-    - [コンセンサスについて](intro-to-consensus.html)
+    - [Introduction to Consensus](intro-to-consensus.html)
 - **チュートリアル:**
     - [rippledの構成](configure-rippled.html)
     - [rippledのトラブルシューティング](troubleshoot-the-rippled-server.html)
     - [rippled APIの使用開始](get-started-using-http-websocket-apis.html)
 - **リファレンス:**
     - [rippled APIリファレンス](http-websocket-apis.html)
-      - [`rippled`コマンドラインの使用](commandline-usage.html)
-      - [server_infoメソッド][]
+        - [`rippled`コマンドラインの使用](commandline-usage.html)
+        - \[server_infoメソッド\]\[\]
 
 
 <!--{# common link defs #}-->
