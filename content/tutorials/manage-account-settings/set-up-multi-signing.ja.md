@@ -5,9 +5,10 @@ blurb: アカウントに署名者リストを追加して、マルチ署名を�
 labels:
   - セキュリティ
 ---
+
 # マルチ署名の設定
 
-[マルチ署名](multi-signing.html)は、XRP Ledgerの[トランザクション](transaction-basics.html)を承認する3種類の方法の1つです。マルチ署名の他に[レギュラーキーとマスターキー](cryptographic-keys.html)で署名する方法があります。3種類のトランザクション承認方法を自由に組み合わせて使用できるように[アドレス](accounts.html)を設定できます。
+[マルチ署名](multi-signing.html)は、XRP Ledgerの[トランザクション](transaction-basics.html)を承認する3種類の方法の1つです。 マルチ署名の他に[レギュラーキーとマスターキー](cryptographic-keys.html)で署名する方法があります。 3種類のトランザクション承認方法を自由に組み合わせて使用できるように[アドレス](accounts.html)を設定できます。
 
 このチュートリアルでは、アドレスのマルチ署名を有効にする方法を説明します。
 
@@ -16,26 +17,26 @@ labels:
 
 - トランザクションを送信するための十分なXRPが供給されていて、新しい署名者リストの[必要準備金](reserves.html)を満たしている資金供給のあるXRP Ledger[アドレス](accounts.html)が必要です。
 
-  - [MultiSignReserve Amendment][]が有効な場合、マルチ署名を使用するには、使用する署名と署名者の数に関わらず、アカウントの準備金として2 XRPが必要です。（MultiSignReserve Amendmentは**2019年4月7日**以降、本番環境のXRP Ledgerで有効になっています。)
+    - \[MultiSignReserve Amendment\]\[\]が有効な場合、マルチ署名を使用するには、使用する署名と署名者の数に関わらず、アカウントの準備金として2 XRPが必要です。 （MultiSignReserve Amendmentは**2019年4月7日**以降、本番環境のXRP Ledgerで有効になっています。 )
 
-  - [MultiSignReserve Amendment][]が有効ではないテストネットワークでは、マルチ署名を使用するには[アカウント準備金](reserves.html)に通常よりも多くのXRPが必要となります。必要額は、リストの署名者の数に応じて増加します。
+    - \[MultiSignReserve Amendment\]\[\]が有効ではないテストネットワークでは、マルチ署名を使用するには[アカウント準備金](reserves.html)に通常よりも多くのXRPが必要となります。 必要額は、リストの署名者の数に応じて増加します。
 
-- XRP Ledgerフォーマットでキーペアを生成するツールを利用できる必要があります。この処理に`rippled`サーバーを使用する場合は、[wallet_proposeメソッド][]が管理者専用であるため、管理者アクセス権限が必要です。
+- XRP Ledgerフォーマットでキーペアを生成するツールを利用できる必要があります。 この処理に`rippled`サーバーを使用する場合は、\[wallet_proposeメソッド\]\[\]が管理者専用であるため、管理者アクセス権限が必要です。
 
-  - あるいは、すでにXRP Ledgerアドレスを持っている人をあなたのアドレスの署名者として承認するには、その人または組織のアカウントアドレスを知っている必要があります。
+    - あるいは、すでにXRP Ledgerアドレスを持っている人をあなたのアドレスの署名者として承認するには、その人または組織のアカウントアドレスを知っている必要があります。
 
-- マルチ署名は使用可能である必要があります。（MultiSign Amendmentは**2016年6月27日**以降、本番環境のXRP Ledgerで有効になっています。)
+- マルチ署名は使用可能である必要があります。 （MultiSign Amendmentは**2016年6月27日**以降、本番環境のXRP Ledgerで有効になっています。 )
 
 ## 1. 構成の設計
 
-含めたい署名者の数を決定します（最大8）。特定のトランザクションに必要な署名の数に基づいて、署名者リストの定数と署名者の重みを選択します。シンプルな「M-of-N」の署名設定では、各署名者に重み **`1`** を割り当て、リストの定数が「M」になるように設定します。これが必要な署名の数です。
+含めたい署名者の数を決定します（最大8）。 特定のトランザクションに必要な署名の数に基づいて、署名者リストの定数と署名者の重みを選択します。 シンプルな「M-of-N」の署名設定では、各署名者に重み **`1`** を割り当て、リストの定数が「M」になるように設定します。
 
 
 ## 2. メンバーキーの準備
 
-署名者リストにメンバーとして加える有効な形式のXRP Ledgerアドレスが1つ以上必要です。あなた、またはあなたが選択した署名者は、これらのアドレスに関連付けられた秘密鍵を知っておく必要があります。アドレスは、レジャーに存在する資金供給されたアカウントにすることもできますが、必ずしもそうである必要はありません。
+署名者リストにメンバーとして加える有効な形式のXRP Ledgerアドレスが1つ以上必要です。 あなた、またはあなたが選択した署名者は、これらのアドレスに関連付けられた秘密鍵を知っておく必要があります。 アドレスは、レジャーに存在する資金供給されたアカウントにすることもできますが、必ずしもそうである必要はありません。
 
-[wallet_proposeメソッド][]を使用して新しいアドレスを生成できます。例:
+\[wallet_proposeメソッド\]\[\]を使用して新しいアドレスを生成できます。 例:
 
     $ rippled wallet_propose
     Loading: "/etc/opt/ripple/rippled.cfg"
@@ -58,9 +59,9 @@ labels:
 
 ## 3. SignerListSetトランザクションの送信
 
-通常の方法（シングルシグネチャー）で[SignerListSetトランザクション][]に[署名して送信](transaction-basics.html#トランザクションへの署名とトランザクションの送信)します。これによりSignerListがXRP Ledgerのアドレスに関連付けられるので、これ以降はSignerListの複数メンバーがあなたの代わりにトランザクションに署名するマルチ署名が可能となります。
+通常の方法（シングルシグネチャー）で\[SignerListSetトランザクション\]\[\]に[署名して送信](transaction-basics.html#トランザクションへの署名とトランザクションの送信)します。 これによりSignerListがXRP Ledgerのアドレスに関連付けられるので、これ以降はSignerListの複数メンバーがあなたの代わりにトランザクションに署名するマルチ署名が可能となります。
 
-この例ではSignerListに3人のメンバーが含まれています。また、マルチ署名済みトランザクションにはrsA2LpzuawewSBQXkiju3YQTMzW13pAAdWの署名と、リストの他の2人のメンバーからの少なくとも1つの署名を必要とするように、重みと定数が設定されています。
+この例ではSignerListに3人のメンバーが含まれています。 また、マルチ署名済みトランザクションにはrsA2LpzuawewSBQXkiju3YQTMzW13pAAdWの署名と、リストの他の2人のメンバーからの少なくとも1つの署名を必要とするように、重みと定数が設定されています。
 
 {% include '_snippets/secret-key-warning.md' %}
 <!--{#_ #}-->
@@ -135,9 +136,9 @@ labels:
        }
     }
 
-[トランザクションの結果](transaction-results.html)が[**tesSUCCESS**](tes-success.html)であることを確認します。それ以外の場合、トランザクションは失敗しています。スタンドアロンモードまたは本番環境以外のネットワークで問題が発生した場合は、[マルチ署名が有効であること](start-a-new-genesis-ledger-in-stand-alone-mode.html#新しいジェネシスレジャーの設定)を確認してください。
+[トランザクションの結果](transaction-results.html)が[**tesSUCCESS**](tes-success.html)であることを確認します。 それ以外の場合、トランザクションは失敗しています。 スタンドアロンモードまたは本番環境以外のネットワークで問題が発生した場合は、[マルチ署名が有効であること](start-a-new-genesis-ledger-in-stand-alone-mode.html#新しいジェネシスレジャーの設定)を確認してください。
 
-**注記:** [MultiSignReserve Amendment][]が有効ではない場合は、SignerListのメンバーの増加に応じて、アドレスの[所有者準備金](reserves.html#所有者準備金)のXRP額を増加する必要があります。アドレスに十分なXRPがないと、トランザクションは[tecINSUFFICIENT_RESERVE](tec-codes.html)で失敗します。[MultiSignReserve Amendment][]が有効な場合は、SignerListの署名者の数に関係なく[所有者準備金](reserves.html#所有者準備金)として必要なXRPは5 XRPです。関連項目: [SignerListと準備金](signerlist.html#signerlistと準備金)
+**注記:** \[MultiSignReserve Amendment\]\[\]が有効ではない場合は、SignerListのメンバーの増加に応じて、アドレスの[所有者準備金](reserves.html#所有者準備金)のXRP額を増加する必要があります。 アドレスに十分なXRPがないと、トランザクションは[tecINSUFFICIENT_RESERVE](tec-codes.html)で失敗します。 \[MultiSignReserve Amendment\]\[\]が有効な場合は、SignerListの署名者の数に関係なく[所有者準備金](reserves.html#所有者準備金)として必要なXRPは5 XRPです。 関連項目: [SignerListと準備金](signerlist.html#signerlistと準備金)
 
 
 ## 4. 検証の待機
@@ -147,9 +148,9 @@ labels:
 
 ## 5. 新しい署名者リストの確認
 
-[account_objectsメソッド][]を使用して、SignerListに最新の検証済みレジャーのアドレスが関連付けられていることを確認します。
+\[account_objectsメソッド\]\[\]を使用して、SignerListに最新の検証済みレジャーのアドレスが関連付けられていることを確認します。
 
-通常、アカウントは異なるタイプのオブジェクト（トラストラインやオファーなど）を複数所有できます。このチュートリアルで新しいアドレスに資金を供給した場合、SignerListが応答の唯一のオブジェクトになります。
+通常、アカウントは異なるタイプのオブジェクト（トラストラインやオファーなど）を複数所有できます。 このチュートリアルで新しいアドレスに資金を供給した場合、SignerListが応答の唯一のオブジェクトになります。
 
     $ rippled account_objects rEuLyBCvcw4CFmzv8RepSiAoNgF8tTGJQC validated
     Loading: "/etc/opt/ripple/rippled.cfg"
@@ -200,30 +201,30 @@ SignerListが予期した内容で存在していれば、アドレスでマル�
 
 ## 6. その他のステップ
 
-これで、アドレスから[マルチ署名済みトランザクションを送信](send-a-multi-signed-transaction.html)できます。次の操作も実行できます。
+これで、アドレスから[マルチ署名済みトランザクションを送信](send-a-multi-signed-transaction.html)できます。 次の操作も実行できます。
 
-* `asfDisableMaster`フラグを使用して[AccountSetトランザクション][]を送信し、アドレスのマスターキーペアを無効化。
-* [SetRegularKeyトランザクション][]を送信して[アドレスのレギュラーキーペアを削除](change-or-remove-a-regular-key-pair.html)（レギュラーキーペアをすでに設定している場合）。
+* `asfDisableMaster`フラグを使用して\[AccountSetトランザクション\]\[\]を送信し、アドレスのマスターキーペアを無効化。
+* \[SetRegularKeyトランザクション\]\[\]を送信して[アドレスのレギュラーキーペアを削除](change-or-remove-a-regular-key-pair.html)（レギュラーキーペアをすでに設定している場合）。
 
-## 関連項目
+## See Also
 
 - **コンセプト:**
-  - [暗号鍵](cryptographic-keys.html)
-  - [マルチ署名](multi-signing.html)
+    - [暗号鍵](cryptographic-keys.html)
+    - [マルチ署名](multi-signing.html)
 - **チュートリアル:**
-  - [rippledのインストール](install-rippled.html)
-  - [レギュラーキーペアの割り当て](assign-a-regular-key-pair.html)
-  - [信頼できるトランザクションの送信](reliable-transaction-submission.html)
-  - [パブリック署名の有効化](enable-public-signing.html)
+    - [rippledのインストール](install-rippled.html)
+    - [レギュラーキーペアの割り当て](assign-a-regular-key-pair.html)
+    - [信頼できるトランザクションの送信](reliable-transaction-submission.html)
+    - [パブリック署名の有効化](enable-public-signing.html)
 - **リファレンス:**
-  - [wallet_proposeメソッド][]
-  - [account_objectsメソッド][]
-  - [sign_forメソッド][]
-  - [submit_multisignedメソッド][]
-  - [SignerListSetトランザクション][]
-  - [SignerListオブジェクト](signerlist.html)
+    - \[wallet_proposeメソッド\]\[\]
+    - \[account_objectsメソッド\]\[\]
+    - \[sign_forメソッド\]\[\]
+    - \[submit_multisignedメソッド\]\[\]
+    - \[SignerListSetトランザクション\]\[\]
+    - [SignerListオブジェクト](signerlist.html)
 
 <!--{# common link defs #}-->
-{% include '_snippets/rippled-api-links.md' %}			
-{% include '_snippets/tx-type-links.md' %}			
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
 {% include '_snippets/rippled_versions.md' %}
