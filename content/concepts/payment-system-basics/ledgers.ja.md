@@ -1,48 +1,47 @@
 ---
 html: ledgers.html
 parent: payment-system-basics.html
-blurb: XRP Ledgerは、rippledによって内部データベースに保持されている一連の個別レジャー（レジャーバージョン）で構成されています。これらのレジャーの構造と内容について説明します。
+blurb: XRP Ledgerは、rippledによって内部データベースに保持されている一連の個別レジャー（レジャーバージョン）で構成されています。 これらのレジャーの構造と内容について説明します。
 labels:
-  - ブロックチェーン
+  - Blockchain
   - データ保持
 ---
-# レジャー
 
-XRP Ledgerは完全にオープンな共有グローバルレジャーです。個々の参加者はこのレジャーを管理する個々の機関を信頼しなくても、レジャーの整合性を信頼できます。`rippled`サーバーソフトウェアは、非常に特殊なルールによってのみ更新可能なレジャーデータベースを管理することにより、これを実現しています。各`rippled`インスタンスはレジャーの完全なコピーを保持し、`rippled`サーバーからなるピアツーピアネットワークはトランザクション候補を各サーバーに配信します。コンセンサスプロセスによって、レジャーの新しいバージョンに適用されるトランザクションが決定します。関連項目: [コンセンサスプロセス](consensus.html)。
+# Ledgers
 
-![図: 各レジャーは、その前のレジャーバージョンにトランザクションを適用して生成されます。](img/ledger-changes.ja.png)
+XRP Ledgerは完全にオープンな共有グローバルレジャーです。 個々の参加者はこのレジャーを管理する個々の機関を信頼しなくても、レジャーの整合性を信頼できます。 `rippled`サーバーソフトウェアは、非常に特殊なルールによってのみ更新可能なレジャーデータベースを管理することにより、これを実現しています。 各`rippled`インスタンスはレジャーの完全なコピーを保持し、`rippled`サーバーからなるピアツーピアネットワークはトランザクション候補を各サーバーに配信します。 コンセンサスプロセスによって、レジャーの新しいバージョンに適用されるトランザクションが決定します。 関連項目: [コンセンサスプロセス](consensus.html)。
 
-この共有グローバルレジャーは、実際には`rippled`の内部データベースに保持されている一連の個別レジャー（レジャーバージョン）です。各レジャーバージョンには、レジャーの生成順を示す[レジャーインデックス][]が付いています。各閉鎖済みレジャーバージョンにも、レジャーの内容を示す識別用ハッシュ値があります。`rippled`インスタンスには常に、1つの処理中の「現行」オープンレジャー、コンセンサスにより承認されていないいくつかの閉鎖済みレジャー、およびコンセンサスによる検証済みの任意の数の履歴レジャーがあります。検証済みレジャーだけが、その内容が正確で変更できません。
+図: 各レジャーは、その前のレジャーバージョンにトランザクションを適用して生成されます。 }}
+
+この共有グローバルレジャーは、実際には`rippled`の内部データベースに保持されている一連の個別レジャー（レジャーバージョン）です。 各レジャーバージョンには、レジャーの生成順を示す\[レジャーインデックス\]\[\]が付いています。 各閉鎖済みレジャーバージョンにも、レジャーの内容を示す識別用ハッシュ値があります。 `rippled`インスタンスには常に、1つの処理中の「現行」オープンレジャー、コンセンサスにより承認されていないいくつかの閉鎖済みレジャー、およびコンセンサスによる検証済みの任意の数の履歴レジャーがあります。 検証済みレジャーだけが、その内容が正確で変更できません。
 
 1つのレジャーバージョンはさまざまな要素で構成されています:
 
-![図: レジャーにはトランザクション、状態ツリー、閉鎖時刻、検証情報を含むヘッダーが含まれています。](img/anatomy-of-a-ledger-simplified.ja.png)
+図: レジャーにはトランザクション、状態ツリー、閉鎖時刻、検証情報を含むヘッダーが含まれています。
 
-* **ヘッダー** - [レジャーインデックス][]、レジャーのその他のコンテンツのハッシュ、その他のメタデータ。
-* **トランザクションツリー** - このレジャーの作成時に、直前のレジャーに適用された[トランザクション](transaction-formats.html)。トランザクションは、レジャーの変更を可能にする _唯一の_ 手段です。
+* **ヘッダー** - \[レジャーインデックス\]\[\]、レジャーのその他のコンテンツのハッシュ、その他のメタデータ。
+* **トランザクションツリー** - このレジャーの作成時に、直前のレジャーに適用された[トランザクション](transaction-formats.html)。 トランザクションは、レジャーの変更を可能にする _唯一の_ 手段です。
 * **状態ツリー** - このバージョンのレジャーの設定、残高、オブジェクトを含むすべての[レジャーオブジェクト](ledger-object-types.html)。
 
 
 ## ツリーの形式
 
-レジャーの状態ツリーは、その名前のとおりツリー型データ構造です。状態ツリーの各オブジェクトは256ビットのオブジェクトIDで識別されます。JSONではレジャーオブジェクトのIDは`index`フィールドです。このフィールドには64文字の16進数文字列が含まれています（例: `"193C591BF62482468422313F9D3274B5927CA80B4DD3707E42015DD609E39C94"`）。状態ツリーの各オブジェクトには、オブジェクトの検索に使用できるIDが設定されています。各トランザクションには、トランザクションツリーでトランザクションを検索するときに使用できる識別用ハッシュが含まれています。レジャーオブジェクトの`index`（ID）と[レジャーの`ledger_index`（シーケンス番号）][レジャーインデックス]を混同しないでください。
+レジャーの状態ツリーは、その名前のとおりツリー型データ構造です。 状態ツリーの各オブジェクトは256ビットのオブジェクトIDで識別されます。 JSONではレジャーオブジェクトのIDは`index`フィールドです。 このフィールドには64文字の16進数文字列が含まれています（例: `"193C591BF62482468422313F9D3274B5927CA80B4DD3707E42015DD609E39C94"`）。 状態ツリーの各オブジェクトには、オブジェクトの検索に使用できるIDが設定されています。 各トランザクションには、トランザクションツリーでトランザクションを検索するときに使用できる識別用ハッシュが含まれています。 レジャーオブジェクトの`index`（ID）と[レジャーの`ledger_index`（シーケンス番号）][レジャーインデックス]を混同しないでください。
 
-**ヒント:** レジャーの状態ツリーのオブジェクトは「レジャーノード」と呼ばれることもあります。たとえばトランザクションメタデータは`AffectedNodes`のリストを返します。これをピアツーピアネットワークの「ノード」（サーバー）と混同しないでください。
+**ヒント:** レジャーの状態ツリーのオブジェクトは「レジャーノード」と呼ばれることもあります。 たとえばトランザクションメタデータは`AffectedNodes`のリストを返します。 これをピアツーピアネットワークの「ノード」（サーバー）と混同しないでください。
 
-トランザクションの場合、識別用ハッシュは署名済みトランザクションの指示に基づいていますが、検索時のトランザクションオブジェクトにはトランザクションの結果とメタデータが含まれています。これは、ハッシュの生成時には反映されません。
-
-<!-- TODO: translate these new sections -->
+トランザクションの場合、識別用ハッシュは署名済みトランザクションの指示に基づいていますが、検索時のトランザクションオブジェクトにはトランザクションの結果とメタデータが含まれています。
 
 ## Open, Closed, and Validated Ledgers
 
 The `rippled` server makes a distinction between ledger versions that are _open_, _closed_, and _validated_. A server has one open ledger, any number of closed but unvalidated ledgers, and an immutable history of validated ledgers. The following table summarizes the difference:
 
-| Ledger Type:                     | Open                        | Closed                                     | Validated |
-|:---------------------------------|:----------------------------|:-------------------------------------------|:--|
-| **Purpose:**                     | Temporary workspace         | Proposed next state                        | Confirmed previous state |
+| Ledger Type:                     | Open                        | Closed                                     | Validated                               |
+|:-------------------------------- |:--------------------------- |:------------------------------------------ |:--------------------------------------- |
+| **Purpose:**                     | Temporary workspace         | Proposed next state                        | Confirmed previous state                |
 | **Number used:**                 | 1                           | Any number, but usually 0 or 1             | One per ledger index, growing over time |
-| **Can contents change?**         | Yes                         | No, but the whole ledger could be replaced | Never |
-| **Transactions are applied in:** | The order they are received | Canonical order                            | Canonical order |
+| **Can contents change?**         | Yes                         | No, but the whole ledger could be replaced | Never                                   |
+| **Transactions are applied in:** | The order they are received | Canonical order                            | Canonical order                         |
 
 Unintuitively, the XRP Ledger never "closes" an open ledger to convert it into a closed ledger. Instead, the server throws away the open ledger, creates a new closed ledger by applying transactions on top of a previous closed ledger, then creates a new open ledger using the latest closed ledger as a base. This is a consequence of [how consensus solves the double-spend problem](consensus-principles-and-rules.html#問題の単純化).
 
@@ -84,10 +83,10 @@ Non-validating servers do all the same steps, except they don't propose their re
 2. This rounds up, based on the close time resolution, to **12:00:10**.
 3. Since this value is larger than the previous ledger's close time, it does not need to be adjusted. **12:00:10** becomes the official close time.
 
+## See Also
 
-## 関連項目
-
-レジャーヘッダー、レジャーオブジェクトID、レジャーオブジェクトタイプについての詳細は、[レジャーデータフォーマット](ledger-data-formats.html)を参照してください。
+- レジャーヘッダー、レジャーオブジェクトID、レジャーオブジェクトタイプについての詳細は、[レジャーデータフォーマット](ledger-data-formats.html)を参照してください。
+- For information on how servers track the history of changes to ledger state, see [Ledger History](ledger-history.html)
 
 
 <!--{# common link defs #}-->
