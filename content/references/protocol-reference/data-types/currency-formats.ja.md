@@ -2,73 +2,133 @@
 html: currency-formats.html
 parent: basic-data-types.html
 blurb: 通貨番号の精度と範囲、カスタム通貨コードのフォーマットです。
-labels:
+label:
   - XRP
   - トークン
 ---
+
 # 通貨フォーマット
 
-XRP Ledgerには2種類の通貨（[XRP](xrp.html)と[発行済み通貨](issued-currencies.html)）があります。XRP Ledgerでは、これらの通貨のフォーマットは異なりますが、いずれの通貨も高精度です。
+XRP Ledgerには2種類の通貨（[XRP](xrp.html)と[発行済み通貨](issued-currencies.html)）があります。 XRP Ledgerでは、これらの通貨のフォーマットは異なりますが、いずれの通貨も高精度です。
 
-## 文字列フォーマット
+## Comparison
+
+The following table summarizes some of the differences between XRP and tokens in the XRP Ledger:
+
+| XRP                                                                                      | Tokens                                                                                                           |
+|:---------------------------------------------------------------------------------------- |:---------------------------------------------------------------------------------------------------------------- |
+| Has no issuer.                                                                           | Always issued by an XRP Ledger account.                                                                          |
+| Specified as a string.                                                                   | Specified as an object.                                                                                          |
+| Tracked in [accounts](accountroot.html).                                                 | Tracked in [trust lines](ripplestate.html).                                                                      |
+| Can never be created; can only be destroyed.                                             | Can be issued or redeemed freely.                                                                                |
+| 最小値: `0` (Cannot be negative.)                                                           | 最小値: `-9999999999999999e80` 非ゼロの最小絶対値: `1000000000000000e-96`                                                    |
+| 最大値: `100000000000`（10<sup>11</sup>）XRP `"100000000000000000"`（10<sup>17</sup>） dropのXRP | 最大値: `9999999999999999e80`                                                                                       |
+| Precise to the nearest "drop" (0.000001 XRP)                                             | 10進15桁の精度                                                                                                        |
+| Can't be [frozen](freezes.html).                                                         | The issuer can [freeze](freezes.html) balances.                                                                  |
+| No transfer fees; XRP-to-XRP payments are always direct.                                 | Can take indirect [paths](paths.html) with each issuer charging a percentage [transfer fee](transfer-fees.html). |
+| Can be used in [Payment Channels](payment-channels.html) and [Escrow](escrow.html).      | Not compatible with Payment Channels or Escrow.                                                                  |
+
+For more information, see [XRP](xrp.html) and [Tokens](tokens.html).
+
+## 発行済み通貨の計算
+
+Use the appropriate format for the type of currency you want to specify:
+
+- [XRP Ledgerの発行済み通貨は、以下の精度のカスタムフォーマットで表現されます。](#xrp-amounts)
+- [Token Amounts](#token-amounts)
+
+### `"1"` dropのXRP
+
+To specify an amount of XRP, use a [String Number][] indicating _drops_ of XRP, where each drop is equal to 0.000001 XRP. For example, to specify 13.1 XRP:
+
+```
+"13100000"
+```
+
+**Do not specify XRP as an object.**
+
+XRP amounts cannot be negative.
+
+### Token Amounts
+
+To specify an amount of a [(fungible) token](tokens.html), use an Amount object. This is a JSON object with three fields:
+
+| `Field`           | Type                                               | Description                                                                                                                                                                                                                                                                                                       |
+|:----------------- |:-------------------------------------------------- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `発行済み通貨額フォーマットの図` | 同一コードの通貨は接続トラストラインを通じて[ripple](rippling.html)できます。 | Arbitrary currency code for the token. 通貨コード`XRP`は発行済み通貨には使用できません。                                                                                                                                                                                                                                                |
+| `value`           | [String Number][]                                  | Quoted decimal representation of the amount of the token. This can include scientific notation, such as `1.23e11` meaning 123,000,000,000. Both `e` and `E` may be used. This can be negative when displaying balances, but negative values are disallowed in other contexts such as specifying how much to send. |
+| `issuer`          | 文字列フォーマット                                          | Generally, the [account](accounts.html) that issues this token. In special cases, this can refer to the account that holds the token instead.                                                                                                                                                                     |
+
+**Caution:** These field names are case-sensitive.
+
+For example, to represent $153.75 US dollars issued by account `r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59`, you would specify:
+
+```json
+{
+    "currency": "USD",
+    "value": "153.75",
+    "issuer": "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59"
+}
+```
+
+### Specifying Without Amounts
+
+In some cases, you need to define an asset (which could be XRP or a token) without a specific amount, such as when defining an order book in the [decentralized exchange](decentralized-exchange.html).
+
+To describe a token without an amount, specify it as a currency object, but omit the `value` field. For example:
+
+```json
+{
+  "currency": "TST",
+  "issuer": "rP9jPyP5kyvFRb6ZiRghAGw5u8SGAmU4bd"
+}
+```
+
+To describe XRP without an amount, specify it as a JSON object with _only_ a `currency` field. Never include an `issuer` field for XRP. For example:
+
+```json
+{
+  "currency": "XRP"
+}
+```
+
+
+## String Numbers
 
 {% include '_snippets/string-number-formatting.md' %}
-<!--{#_ #}-->
 
 ## XRPの精度
 
-XRPの精度は、64ビット符号なし整数と同等であり、各単位は0.000001 XRPと同等です。プロパティは次の通りです。
-
-* 最小値: `0`
-* 最大値: `100000000000`（10<sup>11</sup>）XRP
-    - `"100000000000000000"`（10<sup>17</sup>） dropのXRP
-* `0.000001`（10<sup>-6</sup>）XRPに近い精度
-    - `"1"` dropのXRP
+XRPの精度は、64ビット符号なし整数と同等であり、各単位は0.000001 XRPと同等です。 It uses integer math, so that any amount less than a full drop is rounded down.
 
 ## 発行済み通貨の精度
 
-XRP Ledgerの発行済み通貨は、以下の精度のカスタムフォーマットで表現されます。
+Tokens can represent a wide variety of assets, including those typically measured in very small or very large denominations. このフォーマットでは、有効数字と10のべき乗の指数を科学的記数法と同様の方法で使用します。 このフォーマットは、指定された範囲内のプラスまたはマイナスの有効桁数と指数に対応しています。 非整数値の一般的な浮動小数点表記とは異なり、このフォーマットでは整数を用いて計算します。 このため、常に15桁の精度が維持されます。 Multiplication and division have adjustments to compensate for over-rounding in the least significant digits.
 
-* 非ゼロの最小絶対値: `1000000000000000e-96`
-* 最大値: `9999999999999999e80`
-* 最小値: `-9999999999999999e80`
-* 10進15桁の精度
+When sending token amounts in the XRP Ledger's peer-to-peer network, servers [serialize](serialization.html) the amount to a 64-bit binary value.
 
-## 発行済み通貨の計算
-[[ソース]](https://github.com/ripple/rippled/blob/35fa20a110e3d43ffc1e9e664fc9017b6f2747ae/src/ripple/protocol/impl/STAmount.cpp "Source")
-
-![発行済み通貨額フォーマットの図](img/currency-number-format.ja.png)
-
-`rippled`内部では発行済み通貨の数値はカスタムの数値フォーマットで表現されます。このフォーマットではさまざまな資産（一般的にごく小さな単位または極めて大きな単位で測定される資産を含む）を保管できます。このフォーマットでは、有効数字と10のべき乗の指数を科学的記数法と同様の方法で使用します。このフォーマットは、指定された範囲内のプラスまたはマイナスの有効桁数と指数に対応しています。非整数値の一般的な浮動小数点表記とは異なり、このフォーマットでは整数を用いて計算します。このため、常に15桁の精度が維持されます。乗算と除算には、最下位の有効数字の丸め過ぎを補う調整機能があります。
-
-「任意精度」の数値フォーマットとは異なり、カスタムフォーマットは64ビットの固定サイズで格納できます。このようにシリアル化される場合、このフォーマットは「非XRP」ビット、符号ビット、有効桁数、指数で構成されます。これらは次の順で表示されます。
-
-1. 発行済み通貨額の1番目のビット（最上位ビット）は、XRPの額ではないことを示す`1`です。（XRPの額である場合、最上位ビットは常に`0`に設定され、このフォーマットからXRPの額が区別されます。）
-2. 符号ビットは、金額のプラスマイナスを示します。標準的な[2の補数で表される](https://en.wikipedia.org/wiki/Two%27s_complement)整数とは異なり、`1` はXRP Ledgerフォーマットでは**プラス**を示し`0`はマイナスを示します。
-3. 次の8ビットは、指数を符号なし整数で表しています。指数は、小数点以下桁数（有効桁数に乗算する10のべき乗）を-96以上+80以下の範囲で示します。ただしシリアル化では、この指数に97を加算して符号なし整数としてシリアル化できるようにします。したがってシリアル化された値が`1`の場合は指数`-96`、シリアル化された値が`177`の場合は指数80を示します。
-4. 残りの54ビットは、有効数字を符号なし整数で表します。シリアル化では、値0の特殊なケースを除き、この値は10<sup>15</sup>（`1000000000000000`）以上10<sup>16</sup>-1（`9999999999999999`）以下の範囲で正規化されます。値0の特殊なケースがあります。この場合符号ビット、指数、および仮数はすべてゼロであるため、64ビット値は`0x8000000000000000000000000000000000000000`としてシリアル化されます。
-
+**Tip:** For tokens that should not be divisible at all, see [Non-Fungible Tokens (NFTs)](non-fungible-tokens.html).
 
 ## 通貨コード
 
-XRP LedgerのXRP以外の通貨には160ビットの通貨コードがあります。[`rippled`API](http-websocket-apis.html)では、標準マッピングを使用して3文字のASCII文字列（大文字と小文字の区別あり）が160ビットの通貨コードにマッピングされます。通貨コード`XRP`は発行済み通貨には使用できません。同一コードの通貨は接続トラストラインを通じて[ripple](rippling.html)できます。通貨コードには、XRP Ledgerに組み込まれるその他の動作はありません。
+{% include '_snippets/data_types/currency_code.md' %}
+<!--{#_ #}-->
+
 
 ### 標準通貨コード
 
-標準通貨マッピングによりビットが次のように割り当てられます。
+The standard format for currency codes is a three-character string such as `USD`. This is intended for use with [ISO 4217 Currency Codes](https://www.xe.com/iso4217.php). The following rules apply:
 
-![標準通貨コードのフォーマット](img/currency-code-format.ja.png)
+- Currency codes must be exactly 3 ASCII characters in length. ただし、すべての大文字と小文字、桁数、および記号`?`、`!`、`@`、`#`、`$`、`%`、`^`、`&`、`*`、`<`、`>`、`(`、`)`、`{`、`}`、`[`、`]`、および<code>|</code>の組み合わせを使用できます。
+- 標準通貨コードのフォーマット
+- 通常、XRP額の指定時には通貨コードは使用しません。 フィールドにXRPの通貨コードが指定されている稀なケースでは、通貨コードのバイナリ形式はすべてゼロになります。
 
-1. 最初の8ビットは`0x00`でなければなりません。
-2. 次の88ビットは予約済みであり、すべて`0`です。
-3. 次の24ビットは3つのASCII文字を表します。
-    [ISO 4217](https://www.xe.com/iso4217.php)コードまたはよく利用されている疑似ISO 4217コード（BTCなど）の使用が推奨されます。ただし、すべての大文字と小文字、桁数、および記号`?`、`!`、`@`、`#`、`$`、`%`、`^`、`&`、`*`、`<`、`>`、`(`、`)`、`{`、`}`、`[`、`]`、および<code>|</code>の組み合わせを使用できます。通貨コード`XRP`（すべて大文字）はXRP用に予約されており、発行済み通貨には使用できません。
-4. 次の40ビットは予約済みであり、すべて`0`です。
-
-通常、XRP額の指定時には通貨コードは使用しません。フィールドにXRPの通貨コードが指定されている稀なケースでは、通貨コードのバイナリ形式はすべてゼロになります。
+At the protocol level, this format is [serialized](serialization.html#currency-codes) into a 160-bit binary value starting with `0x00`.
 
 ### 非標準通貨コード
 
-通貨コードとして160ビット（40文字）16進文字列（例: `015841551A748AD2C1F76FF6ECB0CCCD00000000`）を使用して、その他のタイプの通貨を発行することもできます。異なる通貨コードタイプとして扱われないようにするには、先頭8ビットが`0x00`であってはなりません。
+通貨コードとして160ビット（40文字）16進文字列（例: `015841551A748AD2C1F76FF6ECB0CCCD00000000`）を使用して、その他のタイプの通貨を発行することもできます。 異なる通貨コードタイプとして扱われないようにするには、先頭8ビットが`0x00`であってはなりません。
 
-**廃止予定:** 一部の旧バージョンの[ripple-lib](https://github.com/XRPLF/xrpl.js)では通貨コードタイプとして「有利子」または「マイナス利子」がサポートされていました。これらの通貨の先頭8ビットは`0x01`です。マイナス利子/有利子通貨はサポートされなくなりましたが、レジャーデータにこのような通貨が現れることがあります。詳しくは、[マイナス利子](demurrage.html)を参照してください。
+**廃止予定:** 一部の旧バージョンの[ripple-lib](https://github.com/XRPLF/xrpl.js)では通貨コードタイプとして「有利子」または「マイナス利子」がサポートされていました。 これらの通貨の先頭8ビットは`0x01`です。 マイナス利子/有利子通貨はサポートされなくなりましたが、レジャーデータにこのような通貨が現れることがあります。 詳しくは、[マイナス利子](demurrage.html)を参照してください。
+
+[String Number]: #string-numbers
