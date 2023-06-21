@@ -5,10 +5,11 @@ blurb: 特定のピアサーバー用の予約済みスロットをリスト表�
 labels:
   - コアサーバー
 ---
+
 # peer_reservations_list
 [[ソース]](https://github.com/ripple/rippled/blob/4a1148eb2849513dd1e7ae080288fd47ab57a376/src/ripple/rpc/handlers/Reservations.cpp#L116 "Source")
 
-`{{currentpage.name}}`メソッドは、[ピアリザベーション][]を一覧表示します。[新規: rippled 1.4.0][]
+`{{currentpage.name}}`メソッドは、\[ピアリザベーション\]\[\]を一覧表示します。 \[新規: rippled 1.4.0\]\[\]
 
 _`{{currentpage.name}}`メソッドは、権限のないユーザーは実行できない[管理メソッド](admin-api-methods.html)です。_
 
@@ -118,22 +119,23 @@ Loading: "/etc/rippled.cfg"
 
 <!-- MULTICODE_BLOCK_END -->
 
-この応答は[標準フォーマット][]に従っており、正常に完了した場合は結果に次のフィールドが含まれます。
+この応答は\[標準フォーマット\]\[\]に従っており、正常に完了した場合は結果に次のフィールドが含まれます。
 
-| `Field`        | 型    | 説明                                                |
-|:---------------|:------|:----------------------------------------------------|
-| `reservations` | 配列 | 既存の[ピアリザベーション][]のリスト。各メンバーはピアリザベーションオブジェクトです。詳細は以下のとおりです。 |
+| `Field`        | 型  | 説明                                                                                      |
+|:-------------- |:-- |:--------------------------------------------------------------------------------------- |
+| `reservations` | 配列 | 既存の\[ピアリザベーション\]\[\]のリスト。 Each member is a peer reservation object, as described below. |
 
 #### ピアリザベーションオブジェクト
 
-`reservations`配列の各メンバーは、1つの[ピアリザベーション][]を表すJSONオブジェクトです。このオブジェクトのフィールドを次に示します。
+`reservations`配列の各メンバーは、1つの\[ピアリザベーション\]\[\]を表すJSONオブジェクトです。 このオブジェクトのフィールドを次に示します。
 
 {% include '_snippets/peer_reservation_object.ja.md' %}
 <!--_ -->
 
 ### 考えられるエラー
 
-- いずれかの[汎用エラータイプ][]。
+- いずれかの\[汎用エラータイプ\]\[\]。
+- `reportingUnsupported` - (\[Reporting Mode\]\[\] servers only) This method is not available in Reporting Mode.
 
 <!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
