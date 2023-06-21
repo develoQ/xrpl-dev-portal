@@ -3,19 +3,23 @@ html: response-formatting.html
 parent: api-conventions.html
 blurb: WebSocket、JSON-RPC、コマンドラインインターフェイスの応答のフォーマットとその応答に含まれるフィールド。
 ---
+
 # 応答フォーマット
 
-`rippled` APIからの応答のフォーマットは、メソッドが呼び出されたインターフェイス（WebSocket、JSON-RPC、コマンドライン）に応じて多少異なります。コマンドラインインターフェイスがJSON-RPCを呼び出すため、コマンドラインインターフェイスとJSON-RPCインターフェイスは同じフォーマットを使用します。
+`rippled` APIからの応答のフォーマットは、メソッドが呼び出されたインターフェイス（WebSocket、JSON-RPC、コマンドライン）に応じて多少異なります。 コマンドラインインターフェイスがJSON-RPCを呼び出すため、コマンドラインインターフェイスとJSON-RPCインターフェイスは同じフォーマットを使用します。
 
 成功した場合の応答に含まれるフィールドは、以下の通りです。
 
-| `Field`         | 型     | 説明                                     |
-|:----------------|:---------|:------------------------------------------------|
-| `id`            | （場合により異なる） | （WebSocketのみ）この応答の要求元となった要求で指定されているID。 |
-| `status`        | 文字列   | （WebSocketのみ）値が`success`である場合、要求がサーバーによって正常に受信され、理解されたことを示します。 |
-| `result.status` | 文字列   | （JSON-RPCおよびコマンドライン）値が`success`である場合、要求がサーバーによって正常に受信され、理解されたことを示します。 |
-| `type`          | 文字列   | （WebSocketのみ）値が`response`の場合、コマンドに対する正常な応答であることを示します。[非同期の通知](subscribe.html)では、`ledgerClosed`や`transaction`など異なる値が使用されます。 |
-| `result`        | オブジェクト   | クエリーの結果。内容はコマンドによって異なります。 |
+| `Field`         | 型                                                              | 説明                                                                                                                                                                                                                                                         |
+|:--------------- |:-------------------------------------------------------------- |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`            | (Varies)                                                       | （WebSocketのみ）この応答の要求元となった要求で指定されているID。                                                                                                                                                                                                                     |
+| `status`        | 文字列                                                            | (WebSocket only) The value `success` indicates the request was successfully received and understood by the server. Some [client libraries](client-libraries.html) omit this field on success.                                                              |
+| `result.status` | 文字列                                                            | (JSON-RPC and Commandline) The value `success` indicates the request was successfully received and understood by the server. Some [client libraries](client-libraries.html) omit this field on success.                                                    |
+| `type`          | 文字列                                                            | （WebSocketのみ）値が`response`の場合、コマンドに対する正常な応答であることを示します。 [非同期の通知](subscribe.html)では、`ledgerClosed`や`transaction`など異なる値が使用されます。                                                                                                                                |
+| `result`        | Object                                                         | クエリーの結果。 内容はコマンドによって異なります。                                                                                                                                                                                                                                 |
+| `warning`       | （WebSocketのみ）値が`success`である場合、要求がサーバーによって正常に受信され、理解されたことを示します。 | _(May be omitted)_ If this field is provided, the value is the string `load`. This means the client is approaching the [rate limiting](rate-limiting.html) threshold where the server will disconnect this client. <!-- STYLE_OVERRIDE: will --> |
+| `warnings`      | Array                                                          | _(May be omitted)_ If this field is provided, it contains one or more **Warnings Objects** with important warnings. For details, see [API Warnings](#api-warnings). \[New in: rippled 1.5.0\]\[\]                                                          |
+| `forwarded`     | Boolean                                                        | _(May be omitted)_ If `true`, this request and response have been forwarded from a \[Reporting Mode\]\[\] server to a P2P Mode server (and back) because the request requires data that is not available in Reporting Mode. The default is `false`.        |
 
 
 ## 成功した場合の応答の例
@@ -24,7 +28,7 @@ blurb: WebSocket、JSON-RPC、コマンドラインインターフェイスの�
 
 *WebSocket*
 
-```
+```json
 {
  "id": 2,
  "status": "success",
@@ -48,7 +52,7 @@ blurb: WebSocket、JSON-RPC、コマンドラインインターフェイスの�
 
 *JSON-RPC*
 
-```
+```json
 HTTP Status: 200 OK
 {
    "result": {
@@ -70,7 +74,7 @@ HTTP Status: 200 OK
 ```
 *コマンドライン*
 
-```
+```json
 {
    "result": {
        "account_data": {
@@ -91,3 +95,107 @@ HTTP Status: 200 OK
 ```
 
 <!-- MULTICODE_BLOCK_END -->
+
+
+## API Warnings
+
+When the response contains a `warnings` array, each member of the array represents a separate warning from the server. Each such **Warning Object** contains the following fields:
+
+| `Field`   | （場合により異なる）                                                            | Description                                                                                                                                                                                                |
+|:--------- |:--------------------------------------------------------------------- |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`      | Number                                                                | A unique numeric code for this warning message.                                                                                                                                                            |
+| `message` | （JSON-RPCおよびコマンドライン）値が`success`である場合、要求がサーバーによって正常に受信され、理解されたことを示します。 | A human-readable string describing the cause of this message. Do not write software that relies the contents of this message; use the `id` (and `details`, if applicable) to identify the warning instead. |
+| `details` | オブジェクト                                                                | _(May be omitted)_ Additional information about this warning. The contents vary depending on the type of warning.                                                                                          |
+
+The following reference describes all possible warnings.
+
+### 1001. Unsupported amendments have reached majority
+
+Example warning:
+
+```json
+"warnings" : [
+  {
+    "details" : {
+      "expected_date" : 864030,
+      "expected_date_UTC" : "2000-Jan-11 00:00:30.0000000 UTC"
+    },
+    "id" : 1001,
+    "message" : "One or more unsupported amendments have reached majority. Upgrade to the latest version before they are activated to avoid being amendment blocked."
+  }
+]
+```
+
+This warning indicates that the one or more [amendments](amendments.html) to the XRP Ledger protocol are scheduled to become enabled, but the current server does not have an implementation for those amendments. If those amendments become enabled, the current server will become [amendment blocked](amendments.html#amendment-blocked-servers), so you should [upgrade to the latest `rippled` version](install-rippled.html) as soon as possible. <!-- STYLE_OVERRIDE: will -->
+
+The server only sends this warning if the client is [connected as an admin](get-started-using-http-websocket-apis.html#admin-access).
+
+This warning includes a `details` field with the following fields:
+
+| Field               | Value  | Description                                                                                                             |
+|:------------------- |:------ |:----------------------------------------------------------------------------------------------------------------------- |
+| `expected_date`     | Number | The time that the first unsupported amendment is expected to become enabled, in \[seconds since the Ripple Epoch\]\[\]. |
+| `expected_date_UTC` | String | The timestamp, in UTC, when the first unsupported amendment is expected to become enabled.                              |
+
+Due to the variation in ledger close times, these times are approximate. It is also possible that the amendment fails to maintain support from >80% of validators until the specified time, and does not become enabled at the expected time. The server will not become amendment blocked so long as the unsupported amendments do not become enabled.
+
+
+### 1002. This server is amendment blocked
+
+Example warning:
+
+```json
+"warnings" : [
+  {
+    "id" : 1002,
+    "message" : "This server is amendment blocked, and must be updated to be able to stay in sync with the network."
+  }
+]
+```
+
+This warning indicates that the server is [amendment blocked](amendments.html#amendment-blocked-servers) and can no longer remain synced with the XRP Ledger.
+
+The server administrator must [upgrade `rippled`](install-rippled.html) to a version that supports the activated amendments.
+
+### 1003. This is a reporting server
+\[New in: rippled 1.7.0\]\[\]
+
+Example warning:
+
+```json
+"warnings" : [
+  {
+    "id" : 1003,
+    "message" : "This is a reporting server. The default behavior of a reporting server is to only return validated data. If you are looking for not yet validated data, include \"ledger_index : current\" in your request, which will cause this server to forward the request to a p2p node. If the forward is successful the response will include \"forwarded\" : \"true\""
+  }
+]
+```
+
+This warning indicates that the server answering the request is running \[Reporting Mode\]\[\]. Certain API methods are not available or behave differently because Reporting Mode does not connect to the peer-to-peer network and does not track ledger data that has not yet been validated.
+
+It is generally safe to ignore this warning.
+
+**Caution:** If you request ledger data without explicitly \[specifying a ledger version\]\[Specifying Ledgers\], Reporting Mode uses the latest validated ledger by default instead of the current in-progress ledger.
+
+
+## See Also
+
+- [Request Formatting](request-formatting.html)
+- [Error Formatting](error-formatting.html) for unsuccessful API responses.
+- **Concepts:**
+    - [The `rippled` Server](xrpl-servers.html)
+    - [Introduction to Consensus](intro-to-consensus.html)
+    - [Amendments](amendments.html)
+        - [Known Amendments](known-amendments.html)
+- **Tutorials:**
+    - [Get Started with XRP Ledger APIs](get-started-using-http-websocket-apis.html)
+    - [Install and Update `rippled`](install-rippled.html)
+- **References:**
+    - \[feature method\]\[\]
+    - \[server_info method\]\[\]
+
+
+<!--{# common link defs #}-->
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
+{% include '_snippets/rippled_versions.md' %}
