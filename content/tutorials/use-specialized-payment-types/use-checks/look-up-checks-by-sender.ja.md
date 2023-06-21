@@ -5,11 +5,12 @@ blurb: 特定のアドレスで送信されるすべてのCheckのリストを�
 labels:
   - Checks
 ---
+
 # 送金元に基づくCheckの検索
 
-_[Checks Amendment][]が必要です。_
+_\[Checks Amendment\]\[\]が必要です。_
 
-このチュートリアルでは、[Check](checks.html)をその送金元で検索する方法を説明します。[Checkを受取人で検索する](look-up-checks-by-recipient.html)こともできます。
+このチュートリアルでは、[Check](checks.html)をその送金元で検索する方法を説明します。 [Checkを受取人で検索する](look-up-checks-by-recipient.html)こともできます。
 
 ## 1. 特定のアドレスのすべてのCheckの検索
 
@@ -17,13 +18,13 @@ _[Checks Amendment][]が必要です。_
 
 特定のアドレスで受信および送信されるすべてのCheckのリストを取得するには、送金元アカウントのアドレスを指定した`account_objects`コマンドを実行し、要求の`type` フィールドを`checks`に設定します。
 
-**注記:**`account_objects`コマンドのコマンドラインインターフェイスでは`type`フィールドは受け入れられません。代わりに[jsonメソッド][]を使用してコマンドラインからJSON-RPCフォーマットの要求を送信できます。
+**注記:**`account_objects`コマンドのコマンドラインインターフェイスでは`type`フィールドは受け入れられません。 代わりに\[jsonメソッド\]\[\]を使用してコマンドラインからJSON-RPCフォーマットの要求を送信できます。
 
 ### 要求の例
 
 <!-- MULTICODE_BLOCK_START -->
 
-*RippleAPI*
+*ripple-lib 1.x*
 
 ```js
 {% include '_code-samples/checks/js/getChecks.js' %}
@@ -41,7 +42,7 @@ _[Checks Amendment][]が必要です。_
 
 <!-- MULTICODE_BLOCK_START -->
 
-*RippleAPI*
+*ripple-lib 1.x*
 
 ```
 {% include '_code-samples/checks/js/get-checks-resp.txt' %}
@@ -59,7 +60,7 @@ _[Checks Amendment][]が必要です。_
 
 ## 2. 送金元に基づく応答の絞り込み
 
-応答には、要求のアカウントが送金元であるCheckと、アカウントが受取人であるCheckが含まれていることがあります。応答の`account_objects`配列の各メンバーは1つのCheckを表します。これらの各Checkオブジェクトでは、`Account`のアドレスはそのCheckの送金元のアドレスです。
+応答には、要求のアカウントが送金元であるCheckと、アカウントが受取人であるCheckが含まれていることがあります。 応答の`account_objects`配列の各メンバーは1つのCheckを表します。 これらの各Checkオブジェクトでは、`Account`のアドレスはそのCheckの送金元のアドレスです。
 
 以下の疑似コードに、送金元で応答を絞り込む方法を示します。
 
