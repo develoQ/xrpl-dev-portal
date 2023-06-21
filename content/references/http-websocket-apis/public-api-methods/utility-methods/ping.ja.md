@@ -1,14 +1,15 @@
 ---
 html: ping.html
 parent: utility-methods.html
-blurb: 確認応答を返します。これにより、接続のステータスと遅延をテストできます。
+blurb: Confirm connectivity with the server.
 labels:
   - コアサーバー
 ---
+
 # ping
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/rpc/handlers/Ping.cpp "Source")
 
-`ping`コマンドは確認応答を返します。これにより、クライアントは接続のステータスと遅延をテストできます。
+`ping`コマンドは確認応答を返します。 これにより、クライアントは接続のステータスと遅延をテストできます。
 
 ## 要求フォーマット
 要求フォーマットの例:
@@ -44,7 +45,7 @@ rippled ping
 
 <!-- MULTICODE_BLOCK_END -->
 
-[試してみる >](websocket-api-tool.html#ping)
+[Try it! >](websocket-api-tool.html#ping)
 
 要求にはパラメーターが含まれていません。
 
@@ -79,13 +80,13 @@ rippled ping
 
 <!-- MULTICODE_BLOCK_END -->
 
-この応答は[標準フォーマット][]に従っており、正常に完了した場合は結果にフィールドが含まれません。クライアントは要求から応答までのラウンドトリップ時間を遅延として測定できます。
+この応答は\[標準フォーマット\]\[\]に従っており、正常に完了した場合は結果にフィールドが含まれません。 クライアントは要求から応答までのラウンドトリップ時間を遅延として測定できます。
 
 ## 考えられるエラー
 
-* [汎用エラータイプ][]のすべて。
+* \[汎用エラータイプ\]\[\]のすべて。
 
 <!--{# common link defs #}-->
-{% include '_snippets/rippled-api-links.md' %}			
-{% include '_snippets/tx-type-links.md' %}			
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
 {% include '_snippets/rippled_versions.md' %}
