@@ -2,4 +2,6 @@ files:
   - source: /content/**/*.md
     ignore:
       - /content/**/*.ja.md
+      - /content/_code-samples
+      - /content/_img-sources
     translation: /%original_path%/%file_name%.%two_letters_code%.%file_extension%
