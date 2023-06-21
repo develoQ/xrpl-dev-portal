@@ -3,13 +3,14 @@ html: nftokenpage.html
 parent: ledger-object-types.html
 blurb: NFTokenを記録するためのレジャー構造。
 labels:
- - Non-fungible Tokens, NFTs
+  - Non-fungible Tokens, NFTs
 ---
+
 # NFTokenPage
 
-`NFTokenPage` オブジェクトは、同じアカウントが所有する `NFToken` オブジェクトのコレクションを表します。一つのアカウントは複数の `NFTokenPage` 型のレジャーオブジェクトを持つことができ、それらは双方向リストを形成します。
+`NFTokenPage` オブジェクトは、同じアカウントが所有する `NFToken` オブジェクトのコレクションを表します。 一つのアカウントは複数の `NFTokenPage` 型のレジャーオブジェクトを持つことができ、それらは双方向リストを形成します。
 
-_([NonFungibleTokensV1_1 amendment][]が必要です)_
+_(\[NonFungibleTokensV1_1 amendment\]\[\]が必要です)_
 
 
 ## {{currentpage.name}} JSONの例
@@ -38,7 +39,7 @@ _([NonFungibleTokensV1_1 amendment][]が必要です)_
 
 
 
-ページのサイズを最小にし、ストレージを最適化するために、`Owner`フィールドは存在しません。なぜなら、それはオブジェクトのレジャー識別子の一部としてエンコードされているからです。
+ページのサイズを最小にし、ストレージを最適化するために、`Owner`フィールドは存在しません。 なぜなら、それはオブジェクトのレジャー識別子の一部としてエンコードされているからです。
 
 
 ## {{currentpage.name}} フィールド
@@ -46,14 +47,14 @@ _([NonFungibleTokensV1_1 amendment][]が必要です)_
 `NFTokenPage` オブジェクトは、以下の必須フィールドと任意フィールドを持つことができます。
 
 
-| 名前                | JSONの型   | [内部の型][] | 必須？ | 説明        |
-|:--------------------|:----------|:-----------|:----------|:------------|
-| `LedgerEntryType`   | 文字列    | UInt16      | はい   | レジャーオブジェクトのタイプを識別文字列です。予約されているレジャーの種類は、0x0050 です。|
-| `NextPageMin`       | 文字列    | Hash256     | いいえ | 次のページの位置情報(もしあれば)。このフィールドの詳細および使用方法については、NFTokenPageID の構築についての説明以降に記載しています。|
-| `NFTokens`          | オブジェクト  | TOKEN    | はい   | この NFTokenPage オブジェクトに含まれる NFToken オブジェクトのコレクション。本仕様では、1 ページあたり 32 の NFToken オブジェクトを上限としています。オブジェクトは、TokenID をソート パラメータとして使用して、低いものから高いものへとソートされた順序で格納されています。|
-| `PreviousPageMin`   | 文字列    | Hash256     | いいえ | 前のページの位置情報(もしあれば)。このフィールドの詳細および使用方法については、NFTokenPageID の構築についての説明以降に記載しています。|
-| `PreviousTxnID`     | 文字列    | HASH256     | いいえ | この NFTokenPage オブジェクトを最も最近変更したトランザクションのトランザクション ID の情報を示します。|
-| `PreviousTxnLgrSeq` | 数値    | UInt32       | いいえ  | この NFTokenPage オブジェクトを最も最近変更したトランザクションを含むレジャーのシーケンスを示します。|
+| 名前                  | JSONの型 | \[内部の型\]\[\] | 必須？ | 説明                                                                                                                                                              |
+|:------------------- |:------ |:------------ |:--- |:--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LedgerEntryType`   | 文字列    | UInt16       | はい  | `NFToken` オブジェクトの検索                                                                                                                                             |
+| `NextPageMin`       | 文字列    | Hash256      | いいえ | 次のページの位置情報(もしあれば)。 このフィールドの詳細および使用方法については、NFTokenPageID の構築についての説明以降に記載しています。                                                                                   |
+| `NFTokens`          | Array  | Array        | はい  | この NFTokenPage オブジェクトに含まれる NFToken オブジェクトのコレクション。 本仕様では、1 ページあたり 32 の NFToken オブジェクトを上限としています。 オブジェクトは、TokenID をソート パラメータとして使用して、低いものから高いものへとソートされた順序で格納されています。 |
+| `PreviousPageMin`   | 文字列    | Hash256      | いいえ | 前のページの位置情報(もしあれば)。 このフィールドの詳細および使用方法については、NFTokenPageID の構築についての説明以降に記載しています。                                                                                   |
+| `PreviousTxnID`     | 文字列    | Hash256      | いいえ | この NFTokenPage オブジェクトを最も最近変更したトランザクションのトランザクション ID の情報を示します。                                                                                                    |
+| `PreviousTxnLgrSeq` | 数値     | UInt32       | いいえ | この NFTokenPage オブジェクトを最も最近変更したトランザクションを含むレジャーのシーケンスを示します。                                                                                                       |
 
 
 ### TokenPage ID のフォーマット
@@ -69,38 +70,41 @@ _([NonFungibleTokensV1_1 amendment][]が必要です)_
 この不思議な構造は、SHAMap の構造を利用して、`NFTokenPages` の二重リンクされたリストを反復することなく、個々の `NFToken` オブジェクトを効率的に検索できるようにするものです。
 
 
-### `NFToken` オブジェクトの検索
+### NFTokens
 
-特定の `NFToken` を検索するには、上記のように所有者のアカウントとトークンの `NFTokenID` を使用して `NFTokenPageID` を計算します。識別子がその値以下であるレジャーの項目を検索します。そのエントリーが存在しないか、`NFTokenPage` でない場合、`NFToken` は与えられたアカウントによって保持されていません。
+特定の `NFToken` を検索するには、上記のように所有者のアカウントとトークンの `NFTokenID` を使用して `NFTokenPageID` を計算します。 Compute the `NFTokenPage` ID as described above. 識別子がその値以下であるレジャーの項目を検索します。 そのエントリーが存在しないか、`NFTokenPage` でない場合、`NFToken` は与えられたアカウントによって保持されていません。
 
 
 ### `NFToken` オブジェクトの追加
 
-`NFToken` オブジェクトを追加するには、そのオブジェクトが含まれるべき `NFTokenPage` を見つけ（`NFToken` オブジェクトを検索するのと同じテクニックを使用します)、そのページに追加します。`NFToken` を追加した後にページがオーバーフローした場合は、 `next` と `previous` ページを探し (もしあれば)、その 3 ページでバランスをとりながら、必要に応じて新しいページを挿入します。
+`NFToken` オブジェクトを追加するには、そのオブジェクトが含まれるべき `NFTokenPage` を見つけ（`NFToken` オブジェクトを検索するのと同じテクニックを使用します)、そのページに追加します。 `NFToken` を追加した後にページがオーバーフローした場合は、 `next` と `previous` ページを探し (もしあれば)、その 3 ページでバランスをとりながら、必要に応じて新しいページを挿入します。
 
 
-### `NFToken` オブジェクトの削除
+### NFTokens
 
-`NFToken` は同じ手法で削除することもできます。ページ内の `NFToken` の数がある閾値を下回ると、サーバーはそのページを前後のページと統合して準備金を取り戻そうとします。
-
-
-### `NFTokenPage` オブジェクトの準備金
-
-`NFTokenPage`ごとに、所有者アカウントに追加で準備金の費用がかかります。つまり、複数のNFTを保有するアカウントでは、NFTあたりの _実効_ 準備金コストは _R_ /32（ _R_ は準備金増分）と低くすることが可能です。
+`NFToken` は同じ手法で削除することもできます。 ページ内の `NFToken` の数がある閾値を下回ると、サーバーはそのページを前後のページと統合して準備金を取り戻そうとします。
 
 
-### 準備金の実例
+## `NFTokenPage` オブジェクトの準備金
 
-増分準備金の値は、この記事の執筆時点では 2 XRP です。下の表は、あるページが1、8、16、32のNFTを含む場合、トークンごとの _実効_準備金がどの程度になるかを示しています。
+`NFTokenPage`ごとに、所有者アカウントに追加で準備金の費用がかかります。 つまり、複数のNFTを保有するアカウントでは、NFTあたりの _実効_ 準備金コストは _R_ /32（ _R_ は準備金増分）と低くすることが可能です。
 
+### The reserve in practice
 
-| 増分準備金            | 1 NFToken | 8 NFTokens | 16 NFTokens | 32 NFTokens | 64 NFTokens |
-|:--------------------|:----------|:-----------|:------------|:------------|:------------|
-| 5 XRP               | 5 XRP     | 0.625 XRP  | 0.3125 XRP  | 0.15625 XRP | 0.07812 XRP |
-| 2 XRP               | 2 XRP     | 0.25 XRP   | 0.125 XRP   | 0.0625 XRP  | 0.03125 XRP |
-| 1 XRP               | 1 XRP     | 0.125 XRP  | 0.0625 XRP  | 0.03125 XRP | 0.01562 XRP |
+Because of the way splitting and combining pages works, the actual number of `NFToken` objects per page is somewhat unpredictable and depends on the actual `NFTokenID` values involved. In practice, after minting or receiving a large number of `NFToken` objects, each page can have as few as 16 `NFToken` objects, or as many as 32, with the typical case being around 24 `NFToken` objects per page.
+
+Currently, the reserve per item is 2 XRP. The table below shows how much the **total owner reserve** is for various numbers of `NFToken` objects owned under various scenarios:
+
+| `NFToken` オブジェクトの削除 | Best Case | Typical | Worst Case |
+|:------------------- |:--------- |:------- |:---------- |
+| 32                  | 2 XRP     | 2 XRP   | 2 XRP      |
+| 50                  | 5 XRP     | 5 XRP   | 8 NFTokens |
+| 200                 | 1 XRP     | 1 XRP   | 1 NFToken  |
+| 0.01562             | 増分準備金     | TOKEN   | HASH256    |
+
+These numbers are estimates; the actual numbers may vary.
 
 <!--{# common link defs #}-->
-{% include '_snippets/rippled-api-links.md' %}			
-{% include '_snippets/tx-type-links.md' %}			
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
 {% include '_snippets/rippled_versions.md' %}
