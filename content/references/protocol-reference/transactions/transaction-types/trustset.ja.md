@@ -1,10 +1,11 @@
 ---
 html: trustset.html
 parent: transaction-types.html
-blurb: トラストラインを作成または変更します。
+blurb: Add or modify a trust line.
 labels:
   - トークン
 ---
+
 # TrustSet
 
 [[ソース]](https://github.com/XRPLF/rippled/blob/master/src/ripple/app/tx/impl/SetTrust.cpp "Source")
@@ -29,35 +30,40 @@ labels:
 }
 ```
 
+[Query example transaction. >](websocket-api-tool.html?server=wss%3A%2F%2Fxrplcluster.com%2F&req=%7B%22id%22%3A%22example_TrustSet%22%2C%22command%22%3A%22tx%22%2C%22transaction%22%3A%228566673ECD0A9731C516906E5D2F47129C5C13713602140733831A56CEAE1A05%22%2C%22binary%22%3Afalse%7D)
+
 {% include '_snippets/tx-fields-intro.ja.md' %}
 <!--{# fix md highlighting_ #}-->
 
-| フィールド                    | JSONの型 | [内部の型][] | 説明       |
-|:-------------------------|:----------|:------------------|:------------------|
-| `LimitAmount`            | オブジェクト    | Amount            | 作成または変更するトラストラインを定義する[通貨額][]フォーマットのオブジェクト。 |
-| `LimitAmount`.`currency` | 文字列    | （Amount.currency） | このトラストラインが適用される通貨。3文字の[ISO 4217通貨コード](https://www.xe.com/iso4217.php)または[通貨フォーマット](currency-formats.html)に基づく160ビットの16進数値です。「XRP」は無効です。 |
-| `LimitAmount`.`value`    | 文字列    | （Amount.value）    | このトラストラインに設定される限度を表す引用符で囲んだ10進数値。 |
-| `LimitAmount`.`issuer`   | 文字列    | （Amount.issuer）   | 信頼したいアカウントのアドレス。 |
-| `QualityIn`              | 数値    | UInt32            | _（省略可）_ このトラストラインの受入額を、1,000,000,000単位当たりのこの数値の割合で評価。値`0`は、残高を額面価格で扱うことを示す省略表現です。 |
-| `QualityOut`             | 数値    | UInt32            | _（省略可）_ このトラストラインの払出額を、1,000,000,000単位当たりのこの数値の割合で評価。値`0`は、残高を額面価格で扱うことを示す省略表現です。 |
+| フィールド                    | JSONの型 | \[内部の型\]\[\]      | 説明                                                                                                                     |
+|:------------------------ |:------ |:----------------- |:---------------------------------------------------------------------------------------------------------------------- |
+| `LimitAmount`            | オブジェクト | Amount            | 作成または変更するトラストラインを定義する\[通貨額\]\[\]フォーマットのオブジェクト。                                                                         |
+| `LimitAmount`.`currency` | 文字列    | （Amount.currency） | 3文字の[ISO 4217通貨コード](https://www.xe.com/iso4217.php)または[通貨フォーマット](currency-formats.html)に基づく160ビットの16進数値です。 「XRP」は無効です。 |
+| `LimitAmount`.`value`    | 文字列    | （Amount.value）    | このトラストラインに設定される限度を表す引用符で囲んだ10進数値。                                                                                      |
+| `LimitAmount`.`issuer`   | 文字列    | （Amount.issuer）   | 信頼したいアカウントのアドレス。                                                                                                       |
+| `QualityIn`              | 数値     | UInt32            | _（省略可）_ このトラストラインの払出額を、1,000,000,000単位当たりのこの数値の割合で評価。 値`0`は、残高を額面価格で扱うことを示す省略表現です。                                     |
+| `QualityOut`             | 数値     | UInt32            | _（省略可）_ このトラストラインの受入額を、1,000,000,000単位当たりのこの数値の割合で評価。 値`0`は、残高を額面価格で扱うことを示す省略表現です。                                     |
 
-`LimitAmount.issuer`で指定されたアカウントがトラストラインの着信をブロックしている場合、結果コード`tecNO_PERMISSION`でトランザクションが失敗します。 _([DisallowIncoming amendment][] :not_enabled: が必要です)_
+`LimitAmount.issuer`で指定されたアカウントがトラストラインの着信をブロックしている場合、結果コード`tecNO_PERMISSION`でトランザクションが失敗します。 _(\[DisallowIncoming amendment\]\[\] :not_enabled: が必要です)_
+
 
 ## TrustSetのフラグ
 
 TrustSetタイプのトランザクションについては、[`Flags`フィールド](transaction-common-fields.html#flagsフィールド)で以下の値が追加でサポートされます。
 
-| フラグ名           | 16進数値      | 10進数値       | 説明                   |
-|:------------------|:-------------|:--------------|:----------------------|
-| `tfSetfAuth`      | `0x00010000` | 65536         | [このアカウントから発行された通貨](issued-currencies.html)を相手方に保有させることを許可します。（[*asfRequireAuth* AccountSet フラグ](accountset.html#accountsetのフラグ)を使用しない場合は効果がありません。）設定を解除できません。 |
-| `tfSetNoRipple`   | `0x00020000` | 131072        | 2つのトラストラインの両方でこのフラグが有効になっている場合、同じ通貨のトラストライン間の[リップリング](rippling.html)をブロックする No Ripple フラグを有効にします。 |
-| `tfClearNoRipple` | `0x00040000` | 262144        | No Rippleフラグを無効にし、このトラストラインで[リップリング](rippling.html)を許可します。 |
-| `tfSetFreeze`     | `0x00100000` | 1048576       | トラストラインを[凍結](freezes.html)します。 |
-| `tfClearFreeze`   | `0x00200000` | 2097152       | トラストラインを[凍結解除](freezes.html)します。 |
+| フラグ名              | Hex Value    | 10進数値   | 説明                                                                                                                                                              |
+|:----------------- |:------------ |:------- |:--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tfSetfAuth`      | `0x00010000` | 65536   | [このアカウントから発行された通貨](issued-currencies.html)を相手方に保有させることを許可します。 （[*asfRequireAuth* AccountSet フラグ](accountset.html#accountsetのフラグ)を使用しない場合は効果がありません。 ）設定を解除できません。 |
+| `tfSetNoRipple`   | `0x00020000` | 131072  | 2つのトラストラインの両方でこのフラグが有効になっている場合、同じ通貨のトラストライン間の[リップリング](rippling.html)をブロックする No Ripple フラグを有効にします。                                                               |
+| `tfClearNoRipple` | `0x00040000` | 262144  | No Rippleフラグを無効にし、このトラストラインで[リップリング](rippling.html)を許可します。                                                                                                      |
+| `tfSetFreeze`     | `0x00100000` | 1048576 | トラストラインを[凍結](freezes.html)します。                                                                                                                                  |
+| `tfClearFreeze`   | `0x00200000` | 2097152 | トラストラインを[凍結解除](freezes.html)します。                                                                                                                                |
 
-トランザクションがNo Rippleを有効にしようとしたができない場合、結果コード `tecNO_PERMISSION` で失敗します。[fix1578 amendment][]が有効になる前は、このようなトランザクションは代わりに`tesSUCCESS`（可能な限りの他の変更を行う）という結果になりました。
+トランザクションがNo Rippleを有効にしようとしたができない場合、結果コード `tecNO_PERMISSION` で失敗します。 \[fix1578 amendment\]\[\]が有効になる前は、このようなトランザクションは代わりに`tesSUCCESS`（可能な限りの他の変更を行う）という結果になりました。
 
-トラストラインのAuthフラグは、トラストラインがその所有者のXRP必要準備金に反映されるかどうかを左右しません。ただしAuthフラグを有効にすると、トラストラインがデフォルト状態になることがありません。承認されたトラストラインは削除できません。イシュアーは、トラストラインの限度と残高が0であっても、`tfSetfAuth`フラグだけを使用してトラストラインを事前承認できます。
+トラストラインのAuthフラグは、トラストラインがその所有者のXRP必要準備金に反映されるかどうかを左右しません。 ただしAuthフラグを有効にすると、トラストラインがデフォルト状態になることがありません。 承認されたトラストラインは削除できません。 イシュアーは、トラストラインの限度と残高が0であっても、`tfSetfAuth`フラグだけを使用してトラストラインを事前承認できます。
+
+
 
 <!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
