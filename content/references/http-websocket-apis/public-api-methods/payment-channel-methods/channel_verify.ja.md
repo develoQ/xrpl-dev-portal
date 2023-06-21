@@ -1,14 +1,15 @@
 ---
 html: channel_verify.html
 parent: payment-channel-methods.html
-blurb: 特定額のXRPをPayment Channelから清算するときに使用できる署名の有効性を検証します。
+blurb: Check a payment channel claim's signature.
 labels:
   - Payment Channel
 ---
+
 # channel_verify
 [[ソース]](https://github.com/ripple/rippled/blob/d4a56f223a3b80f64ff70b4e90ab6792806929ca/src/ripple/rpc/handlers/PayChanClaim.cpp#L89 "Source")
 
-_（[PayChan Amendment][]が有効になっている必要があります。[新規: rippled 0.33.0][]）_
+_（\[PayChan Amendment\]\[\]が有効になっている必要があります。 \[新規: rippled 0.33.0\]\[\]）_
 
 `channel_verify`メソッドは、特定額のXRPをPayment Channelから清算するときに使用できる署名の有効性を検証します。
 
@@ -55,12 +56,12 @@ rippled channel_verify aB44YfzW24VDEJQ2UuLPV2PvqcPCSoLnL7y5M1EzhdW4LnK5xMS3 5DB0
 
 要求には以下のパラメーターが含まれます。
 
-| フィールド | 型 | 説明 |
-|-------|------|-------------|
-| `amount` | 文字列 | 指定された`signature`で承認する[XRP、drop単位][]の額。 |
-| `channel_id` | 文字列 | XRPを供給するChannelのChannel ID。これは64文字の16進文字列です。 |
-| `public_key` | 文字列 | Channelの公開鍵と、署名の作成に使用されたキーペア（16進数またはXRP Ledgerの[base58][]形式）。[更新: rippled 0.90.0][新規: rippled 0.90.0] |
-| `signature` | 文字列 | 検証する署名（16進数）。 |
+| フィールド        | 型   | 説明                                                                                                             |
+| ------------ | --- | -------------------------------------------------------------------------------------------------------------- |
+| `amount`     | 文字列 | 指定された`signature`で承認する\[XRP、drop単位\]\[\]の額。                                                                     |
+| `channel_id` | 文字列 | XRPを供給するChannelのChannel ID。 これは64文字の16進文字列です。                                                                  |
+| `public_key` | 文字列 | Channelの公開鍵と、署名の作成に使用されたキーペア（16進数またはXRP Ledgerの\[base58\]\[\]形式）。 \[更新: rippled 0.90.0\]\[新規: rippled 0.90.0\] |
+| `signature`  | 文字列 | 検証する署名（16進数）。                                                                                                  |
 
 ## 応答フォーマット
 
@@ -107,21 +108,21 @@ rippled channel_verify aB44YfzW24VDEJQ2UuLPV2PvqcPCSoLnL7y5M1EzhdW4LnK5xMS3 5DB0
 
 <!-- MULTICODE_BLOCK_END -->
 
-この応答は[標準フォーマット][]に従っており、正常に完了した場合は結果に次のフィールドが含まれます。
+この応答は\[標準フォーマット\]\[\]に従っており、正常に完了した場合は結果に次のフィールドが含まれます。
 
-| フィールド | 型 | 説明 |
-|-------|------|-------------|
+| フィールド                | 型    | 説明                                     |
+| -------------------- | ---- | -------------------------------------- |
 | `signature_verified` | ブール値 | `true`の場合、示されている額、Channel、公開鍵で署名が有効です。 |
 
-**注意:** これは、Channelに十分なXRPが割り当てられていることを確認するものではありません。クレームが有効であると判断する前に、最新の検証済みレジャーでこのChannelを調べ、このChannelがオープンでありその`amount`の値がクレームの`amount`以上であることを確認してください。このためには[account_channelsメソッド][]を使用します。
+**注意:** これは、Channelに十分なXRPが割り当てられていることを確認するものではありません。 クレームが有効であると判断する前に、最新の検証済みレジャーでこのChannelを調べ、このChannelがオープンでありその`amount`の値がクレームの`amount`以上であることを確認してください。 このためには\[account_channelsメソッド\]\[\]を使用します。
 
 ## 考えられるエラー
 
-* [汎用エラータイプ][]のすべて。
+* \[汎用エラータイプ\]\[\]のすべて。
 * `invalidParams` - 1つ以上のフィールドの指定が正しくないか、1つ以上の必須フィールドが指定されていません。
-* `publicMalformed` - 要求の`public_key`フィールドが、正しいフォーマットの有効な公開鍵ではありません。公開鍵は33バイトであり、base58または16進数で表記されている必要があります。[アカウントの公開鍵のbase58表現は文字`a`から始まります](base58-encodings.html)。16進表現は66文字です。
-* `channelMalformed` - 要求の`channel_id`フィールドが有効なChannel IDではありません。Channel IDは256ビット（64文字）の16進文字列である必要があります。
-* `channelAmtMalformed` - 要求の`amount`に指定された値が、有効な[XRPの額][XRP、drop単位]ではありませんでした。
+* `publicMalformed` - 要求の`public_key`フィールドが、正しいフォーマットの有効な公開鍵ではありません。 公開鍵は33バイトであり、base58または16進数で表記されている必要があります。 [アカウントの公開鍵のbase58表現は文字`a`から始まります](base58-encodings.html)。 16進表現は66文字です。
+* `channelMalformed` - 要求の`channel_id`フィールドが有効なChannel IDではありません。 Channel IDは256ビット（64文字）の16進文字列である必要があります。
+* `channelAmtMalformed` - 要求の`amount`に指定された値が、有効な\[XRPの額\]\[XRP、drop単位\]ではありませんでした。
 
 
 {% include '_snippets/rippled_versions.md' %}
