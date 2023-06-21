@@ -1,12 +1,13 @@
 ---
 html: transaction-formats.html
 parent: protocol-reference.html
-blurb: トランザクションは、XRP Ledgerを変更する唯一の方法です。
+blurb: Definitions for all the protocol's transaction types and their results.
 template: pagetype-category.html.jinja
 ---
-# トランザクションのフォーマット
 
- _トランザクション_ は、XRP Ledgerを変更する唯一の方法です。[コンセンサスプロセス](consensus.html)に従って署名され、送信され、検証済みのレジャーバージョンに承認された場合にのみ、トランザクションは最終的なものになります。レジャーのルールによっては、 _[疑似トランザクション](pseudo-transaction-types.html)_ も生成されます。このトランザクションは署名も送信もされませんが、コンセンサスによって承認されなければならないことは同様です。失敗したトランザクションも、スパム対策の[トランザクションコスト][]を支払うためにXRPの残高が変更されることから、レジャーに含まれます。
+# Transaction Reference
+
+_トランザクション_ は、XRP Ledgerを変更する唯一の方法です。 [コンセンサスプロセス](consensus.html)に従って署名され、送信され、検証済みのレジャーバージョンに承認された場合にのみ、トランザクションは最終的なものになります。 レジャーのルールによっては、 _[疑似トランザクション](pseudo-transaction-types.html)_ も生成されます。 このトランザクションは署名も送信もされませんが、コンセンサスによって承認されなければならないことは同様です。 失敗したトランザクションも、スパム対策の\[トランザクションコスト\]\[\]を支払うためにXRPの残高が変更されることから、レジャーに含まれます。
 
 
 <!--{# common link defs #}-->
