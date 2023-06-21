@@ -5,12 +5,13 @@ blurb: Payment ChannelにXRPを追加します。
 labels:
   - Payment Channel
 ---
+
 # PaymentChannelFund
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/app/tx/impl/PayChan.cpp "Source")
 
-_[PayChan Amendment][]が必要です。_
+_\[PayChan Amendment\]\[\]が必要です。_
 
-Payment ChannelにXRPを追加する、有効期限の更新も可能。このトランザクションは、Channelの支払元アドレスだけが使用できます。
+Payment ChannelにXRPを追加する、有効期限の更新も可能。 このトランザクションは、Channelの支払元アドレスだけが使用できます。
 
 PaymentChannelFundの例:
 
@@ -24,29 +25,30 @@ PaymentChannelFundの例:
 }
 ```
 
+[Query example transaction. >](websocket-api-tool.html?server=wss%3A%2F%2Fs1.ripple.com%2F&req=%7B%22id%22%3A%22example_PaymentChannelFund%22%2C%22command%22%3A%22tx%22%2C%22transaction%22%3A%22877FA6E2FF8E08597D1F24E30BE8E52D0C9C06F0D620C5721E55622B6A632DFF%22%2C%22binary%22%3Afalse%7D)
+
 {% include '_snippets/tx-fields-intro.ja.md' %}
 <!--{# fix md highlighting_ #}-->
 
-| フィールド    | JSONの型  | [内部の型][]       | 説明                          |
-|:-------------|:----------|:------------------|:------------------------------|
-| `Channel` | 文字列 | Hash256 | 資金供給するChannelの一意のID（64文字の16進文字列）。 |
-| `Amount` | 文字列 | Amount | Channelに追加する[XRP、drop単位][通貨額]の正の額。 |
-| `Expiration` | 数値 | UInt32 | _（省略可）_ Channelに新たに設定する`Expiration`の時刻（Rippleエポック以降の経過秒数）。現行時刻にChannelの`SettleDelay`を加えた時刻よりも後であるか、またはChannelの既存の`Expiration`よりも後である必要があります。`Expiration`時刻の経過後には、トランザクションがそのChannelにアクセスするとChannelが閉鎖し、トランザクションの通常の処理は行われません。Channelの閉鎖時には未使用のXRPはすべて支払元アドレスに返金されます。（`Expiration`は、Channelの不変の`CancelAfter`時刻とは別のものです。）詳細は、[PayChannelレジャーオブジェクトタイプ](paychannel.html)を参照してください。 |
-
+| フィールド        | JSONの型 | \[内部の型\]\[\] | 説明                                                                                                                                                                                                                                                                                                                                                                                   |
+|:------------ |:------ |:------------ |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Channel`    | 文字列    | Hash256      | 資金供給するChannelの一意のID（64文字の16進文字列）。                                                                                                                                                                                                                                                                                                                                                    |
+| `Amount`     | 文字列    | Amount       | Channelに追加する\[XRP、drop単位\]\[通貨額\]の正の額。 Must be a positive amount of XRP.                                                                                                                                                                                                                                                                                                             |
+| `Expiration` | 数値     | UInt32       | _（省略可）_ Channelに新たに設定する`Expiration`の時刻（Rippleエポック以降の経過秒数）。 現行時刻にChannelの`SettleDelay`を加えた時刻よりも後であるか、またはChannelの既存の`Expiration`よりも後である必要があります。 `Expiration`時刻の経過後には、トランザクションがそのChannelにアクセスするとChannelが閉鎖し、トランザクションの通常の処理は行われません。 Channelの閉鎖時には未使用のXRPはすべて支払元アドレスに返金されます。 （`Expiration`は、Channelの不変の`CancelAfter`時刻とは別のものです。 ）詳細は、[PayChannelレジャーオブジェクトタイプ](paychannel.html)を参照してください。 |
 
 ## エラーケース
 
 すべてのトランザクションで発生する可能性のあるエラーに加えて、{{currentpage.name}}トランザクションでは、次の[トランザクション結果コード](transaction-results.html)が発生する可能性があります。
 
-| エラーコード | 説明        |
-|:-----------|:------------|
-| `tecINSUFFICIENT_RESERVE` | 支払元アカウントが[必要準備金](reserves.html)のXRPを持っていません。|
-| `tecNO_DST`               | 送金先アカウントが削除されていました。 この可能性は、Payment Channelの作成時は[fixPayChanRecipientOwnerDir amendment](known-amendments.html#fixpaychanrecipientownerdir)が有効になった（2020-05-01）前の場合だけです。|
-| `tecNO_ENTRY`             | `Channel`フィールドに指定されたPayment Channelがありません。 |
-| `tecNO_PERMISSION`        | トランザクションの送金元アカウントはPayment Channelの支払元アカウントではありまっせん。|
-| `tecUNFUNDED`             | 送金元アカウントは[必要準備金](reserves.html)以上に指定されたXRPを持っていません。|
-| `temBAD_AMOUNT`           | トランザクションの`Amount`フィールドの指定が正しくない。負もゼロも無効です。|
-| `temBAD_EXPIRATION`       | `Expiration`フィールドの指定が正しくない。|
+| エラーコード                    | 説明                                                                                                                                                                    |
+|:------------------------- |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tecINSUFFICIENT_RESERVE` | 支払元アカウントが[必要準備金](reserves.html)のXRPを持っていません。                                                                                                                          |
+| `tecNO_DST`               | 送金先アカウントが削除されていました。 この可能性は、Payment Channelの作成時は[fixPayChanRecipientOwnerDir amendment](known-amendments.html#fixpaychanrecipientownerdir)が有効になった（2020-05-01）前の場合だけです。 |
+| `tecNO_ENTRY`             | `Channel`フィールドに指定されたPayment Channelがありません。                                                                                                                            |
+| `tecNO_PERMISSION`        | The sender of the transaction is not the source address for the channel.                                                                                              |
+| `tecUNFUNDED`             | 送金元アカウントは[必要準備金](reserves.html)以上に指定されたXRPを持っていません。                                                                                                                   |
+| `temBAD_AMOUNT`           | トランザクションの`Amount`フィールドの指定が正しくない。 負もゼロも無効です。                                                                                                                           |
+| `temBAD_EXPIRATION`       | `Expiration`フィールドの指定が正しくない。                                                                                                                                           |
 
 
 <!--{# common link defs #}-->
