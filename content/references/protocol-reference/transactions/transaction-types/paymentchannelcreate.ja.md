@@ -5,12 +5,13 @@ blurb: 新しいペイメントチャネルを作成します。
 labels:
   - Payment Channel
 ---
+
 # PaymentChannelCreate
 [[ソース]](https://github.com/XRPLF/rippled/blob/master/src/ripple/app/tx/impl/PayChan.cpp "ソース")
 
-_[PayChan Amendment][]が必要です。_
+_\[PayChan Amendment\]\[\]が必要です。_
 
-[ペイメントチャンネル](payment-channels.html)を作成し、XRPで資金を供給します。このトランザクションを送信するアドレスが、ペイメントチャネルの「送信元アドレス」となります。
+[ペイメントチャンネル](payment-channels.html)を作成し、XRPで資金を供給します。 このトランザクションを送信するアドレスが、ペイメントチャネルの「送信元アドレス」となります。
 
 ## {{currentpage.name}} JSONの例
 
@@ -28,20 +29,23 @@ _[PayChan Amendment][]が必要です。_
 }
 ```
 
+[Query example transaction. >](websocket-api-tool.html?server=wss%3A%2F%2Fxrplcluster.com%2F&req=%7B%22id%22%3A%22example_PaymentChannelCreate%22%2C%22command%22%3A%22tx%22%2C%22transaction%22%3A%22711C4F606C63076137FAE90ADC36379D7066CF551E96DA6FE2BDAB5ECBFACF2B%22%2C%22binary%22%3Afalse%7D)
+
 {% include '_snippets/tx-fields-intro.ja.md' %}
 <!--{# fix md highlighting_ #}-->
 
 
-| フィールド            | JSONの型 | [内部の型][] | 説明               |
-|:-----------------|:----------|:------------------|:--------------------------|
-| `Amount`         | 文字列    | Amount            | 送金元の残高から差し引いてこのChannelに留保する[XRP、drop単位][]の額。このChannelのオープン時には、XRPを`Destination`アドレスにのみ移動できます。Channelが閉鎖すると、未請求のXRPは支払元アドレスの残高に戻されます。 |
-| `Destination`    | 文字列    | AccountID         | このChannelに対するXRPクレームを受け取るアドレス。Channelの「宛先アドレス」とも呼ばれます。送金元（`Account`）と同一にはできません。 |
-| `SettleDelay`    | 数値    | UInt32            | Channelに未請求のXRPがある場合に、支払元アドレスがそのChannelを閉鎖するまでに待機する時間。 |
-| `PublicKey`      | 文字列    | Blob              | 送信元がこのチャネルに対する請求に使用する鍵ペアの33バイトの公開鍵を16進数で指定します。これはsecp256k1またはEd25519の公開鍵であることができます。キーペアの詳細については、[鍵の導出](cryptographic-keys.html#鍵導出) を参照してください。 |
-| `CancelAfter`    | 数値    | UInt32            | _（省略可）_ このChannelの有効期限（[Rippleエポック以降の経過秒数][]）。この時刻の経過後にトランザクションがこのChannelを変更しようとすると、このChannelは閉鎖し、Channelは変更されません。この値は変更できません。Channelはこの時刻よりも早い時点で閉鎖できますが、この時刻の経過後にもオープンしたままにすることはできません。 |
-| `DestinationTag` | 数値    | UInt32            | _（省略可）_ このPayment Channelの宛先（宛先アドレスのホスティングされている受取人など） を詳しく指定するための任意のタグ。 |
+| フィールド            | JSONの型 | \[内部の型\]\[\] | 説明                                                                                                                                                                                              |
+|:---------------- |:------ |:------------ |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Amount`         | 文字列    | Amount       | 送金元の残高から差し引いてこのChannelに留保する\[XRP、drop単位\]\[\]の額。 このChannelのオープン時には、XRPを`Destination`アドレスにのみ移動できます。 Channelが閉鎖すると、未請求のXRPは支払元アドレスの残高に戻されます。                                                      |
+| `Destination`    | 文字列    | AccountID    | このChannelに対するXRPクレームを受け取るアドレス。 Channelの「宛先アドレス」とも呼ばれます。 送金元（`Account`）と同一にはできません。                                                                                                               |
+| `SettleDelay`    | 数値     | UInt32       | Channelに未請求のXRPがある場合に、支払元アドレスがそのChannelを閉鎖するまでに待機する時間。                                                                                                                                          |
+| `PublicKey`      | 文字列    | Blob         | 送信元がこのチャネルに対する請求に使用する鍵ペアの33バイトの公開鍵を16進数で指定します。 これはsecp256k1またはEd25519の公開鍵であることができます。 キーペアの詳細については、[鍵の導出](cryptographic-keys.html#鍵導出) を参照してください。 <!-- STYLE_OVERRIDE: will --> |
+| `CancelAfter`    | 数値     | UInt32       | _（省略可）_ このChannelの有効期限（\[Rippleエポック以降の経過秒数\]\[\]）。 この時刻の経過後にトランザクションがこのChannelを変更しようとすると、このChannelは閉鎖し、Channelは変更されません。 この値は変更できません。 Channelはこの時刻よりも早い時点で閉鎖できますが、この時刻の経過後にもオープンしたままにすることはできません。 |
+| `DestinationTag` | 数値     | UInt32       | _（省略可）_ このPayment Channelの宛先（宛先アドレスのホスティングされている受取人など） を詳しく指定するための任意のタグ。                                                                                                                         |
 
-`Destination` アカウントがペイメントチャネルの着信をブロックしている場合、トランザクションは結果コード`tecNO_PERMISSION` 失敗します。_([DisallowIncoming amendment][] :not_enabled: が必要です)_。
+`Destination` アカウントがペイメントチャネルの着信をブロックしている場合、トランザクションは結果コード`tecNO_PERMISSION` 失敗します。 _(\[DisallowIncoming amendment\]\[\] :not_enabled: が必要です)_。
+
 
 <!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
