@@ -1,14 +1,15 @@
 ---
 html: ledger_closed.html
 parent: ledger-methods.html
-blurb: 最新の閉鎖済みレジャーの一意のIDを返します。
-label:
-  - ブロックチェーン
+blurb: Get the latest closed ledger version.
+labels:
+  - Blockchain
 ---
+
 # ledger_closed
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/rpc/handlers/LedgerClosed.cpp "Source")
 
-`ledger_closed`メソッドは、最新の決済済みレジャーの一意のIDを返します。（このレジャーは必ずしも検証済みで変更不可能ではありません。）
+`ledger_closed`メソッドは、最新の決済済みレジャーの一意のIDを返します。 （このレジャーは必ずしも検証済みで変更不可能ではありません。
 
 ## 要求フォーマット
 要求フォーマットの例:
@@ -37,14 +38,14 @@ label:
 
 *コマンドライン*
 
-```
+```sh
 #Syntax: ledger_closed
 rippled ledger_closed
 ```
 
 <!-- MULTICODE_BLOCK_END -->
 
-[試してみる >](websocket-api-tool.html#ledger_closed)
+[Try it! >](websocket-api-tool.html#ledger_closed)
 
 このメソッドはパラメーターを受け入れません。
 
@@ -81,18 +82,30 @@ rippled ledger_closed
 }
 ```
 
+*Commandline*
+
+```json
+{
+   "result" : {
+      "ledger_hash" : "6F5D3B97F1CAA8440AFCED3CA10FB9DC6472F64DEBC2EFAE7CAE7FC0123F32DA",
+      "ledger_index" : 56843991,
+      "status" : "success"
+   }
+}
+```
+
 <!-- MULTICODE_BLOCK_END -->
 
-この応答は[標準フォーマット][]に従っており、正常に完了した場合は結果に次のフィールドが含まれます。
+この応答は\[標準フォーマット\]\[\]に従っており、正常に完了した場合は結果に次のフィールドが含まれます。
 
-| `Field`        | 型               | 説明                                     |
-|:---------------|:-----------------|:-----------------------------------------|
-| `ledger_hash` | 文字列 | このレジャーバージョンの一意の[ハッシュ][]（16進数）。 |
-| `ledger_index` | 符号なし整数 | このレジャーバージョンの[レジャーインデックス][]。 |
+| `Field`        | 型      | 説明                                 |
+|:-------------- |:------ |:---------------------------------- |
+| `ledger_hash`  | 文字列    | このレジャーバージョンの一意の\[ハッシュ\]\[\]（16進数）。 |
+| `ledger_index` | 符号なし整数 | このレジャーバージョンの\[レジャーインデックス\]\[\]。    |
 
 ## 考えられるエラー
 
-* いずれかの[汎用エラータイプ][]。
+* いずれかの\[汎用エラータイプ\]\[\]。
 
 
 {% include '_snippets/rippled_versions.md' %}
