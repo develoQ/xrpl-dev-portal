@@ -1,10 +1,11 @@
 ---
 html: random.html
 parent: utility-methods.html
-blurb: クライアントが乱数生成のエントロピー生成源として使用する乱数を提供します。
+blurb: Generate a random number.
 labels:
   - コアサーバー
 ---
+
 # random
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/rpc/handlers/Random.cpp "Source")
 
@@ -78,20 +79,31 @@ rippled random
 }
 ```
 
+*Commandline*
+
+```json
+{
+   "result" : {
+      "random" : "DB7C23C7F224CD410912E68A997BE0FD0FA7175A4C74B829BE5A80ED0DBAA0C5",
+      "status" : "success"
+   }
+}
+```
+
 <!-- MULTICODE_BLOCK_END -->
 
-応答は[標準フォーマット][]に従っており、正常に完了した場合は結果に次のフィールドが含まれています。
+応答は\[標準フォーマット\]\[\]に従っており、正常に完了した場合は結果に次のフィールドが含まれています。
 
 | `Field`  | 型   | 説明               |
-|:---------|:-------|:--------------------------|
+|:-------- |:--- |:---------------- |
 | `random` | 文字列 | ランダムな256ビット16進値。 |
 
 ## 考えられるエラー
 
-* [汎用エラータイプ][]のすべて。
+* \[汎用エラータイプ\]\[\]のすべて。
 * `internal` - 乱数生成機能に関連している可能性がある内部エラーが発生しました。
 
 <!--{# common link defs #}-->
-{% include '_snippets/rippled-api-links.md' %}			
-{% include '_snippets/tx-type-links.md' %}			
+{% include '_snippets/rippled-api-links.md' %}
+{% include '_snippets/tx-type-links.md' %}
 {% include '_snippets/rippled_versions.md' %}
