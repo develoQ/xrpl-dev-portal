@@ -5,11 +5,13 @@ blurb: rippledサーバーが起動しない原因となると思われる問題
 labels:
   - コアサーバー
 ---
+
 # rippledサーバーが起動しない
 
 このページでは、[`rippled`サーバー](xrpl-servers.html)が起動しない際に考えられる原因とその修正方法を説明します。
 
 以下の手順では、サポートされているプラットフォームに[`rippled`がインストール](install-rippled.html)されていることを前提としています。
+
 
 ## ファイル記述子の制限
 
@@ -20,25 +22,25 @@ WARNING: There are only 1024 file descriptors (soft limit) available, which
 limit the number of simultaneous connections.
 ```
 
-これは、セキュリティの点からシステムで1つのプロセスが開くことができるファイルの数に制限があるが、その制限が`rippled`にとっては少なすぎる場合に発生します。この問題を修正するには、**ルートアクセス権限が必要です**。以下の手順に従い、`rippled`が開くことができるファイルの数を増やします。
+これは、セキュリティの点からシステムで1つのプロセスが開くことができるファイルの数に制限があるが、その制限が`rippled`にとっては少なすぎる場合に発生します。 この問題を修正するには、**ルートアクセス権限が必要です**。 以下の手順に従い、`rippled`が開くことができるファイルの数を増やします。
 
 1. 次の行を`/etc/security/limits.conf`ファイルの終わりに追加します。
-
+   
         *                soft    nofile          65536
         *                hard    nofile          65536
 
 2. [開くことができるファイルの数のハード制限](https://ss64.com/bash/ulimit.html)が現在`65536`であることを確認します。
-
+   
         ulimit -Hn
 
-   このコマンドの出力は`65536`になるはずです。
+    このコマンドの出力は`65536`になるはずです。
 
 3. `rippled`をもう一度起動します。
-
+   
         systemctl start rippled
 
 4. それでも`rippled`が起動しない場合は、`/etc/sysctl.conf`を開き、以下のカーネルレベル設定を付加します。
-
+   
         fs.file-max = 65536
 
 
@@ -59,7 +61,7 @@ Aborted (core dumped)
 
 - `rippled`ユーザーが読み取ることができる構成ファイルを`$HOME/.config/ripple/rippled.cfg`に作成します（`$HOME`は`rippled`ユーザーのホームディレクトリを指しています）。
 
-    **ヒント:** `rippled`リポジトリには、RPMのインストール時にデフォルトの構成として提供される[`rippled.cfg`サンプルファイル](https://github.com/ripple/rippled/blob/master/cfg/rippled-example.cfg)が含まれています。このファイルがない場合は、上記のリンク先からコピーできます。
+    **ヒント:** `rippled`リポジトリには、RPMのインストール時にデフォルトの構成として提供される[`rippled.cfg`サンプルファイル](https://github.com/ripple/rippled/blob/master/cfg/rippled-example.cfg)が含まれています。 このファイルがない場合は、上記のリンク先からコピーできます。
 
 - `--conf`[コマンドラインオプション](commandline-usage.html)を使用して、使用する構成ファイルのパスを指定します。
 
@@ -77,15 +79,15 @@ Aborted (core dumped)
 
 - `[validators.txt]`ファイルが存在し、`rippled`ユーザーにこのファイルの読み取り権限があることを確認します。
 
-    **ヒント:** `rippled`リポジトリには、RPMのインストール時にデフォルトの構成として提供される[`validators.txt`サンプルファイル](https://github.com/ripple/rippled/blob/master/cfg/validators-example.txt)が含まれています。このファイルがない場合は、上記のリンク先からコピーできます。
+    **ヒント:** `rippled`リポジトリには、RPMのインストール時にデフォルトの構成として提供される[`validators.txt`サンプルファイル](https://github.com/ripple/rippled/blob/master/cfg/validators-example.txt)が含まれています。 このファイルがない場合は、上記のリンク先からコピーできます。
 
-- `rippled.cfg`ファイルを編集し、`[validators_file]`設定を変更して、`validators.txt`ファイル（またはこれに相当するファイル）の正しいパスを指定します。ファイル名の前後に余分な空白があるかどうかを確認します。
+- `rippled.cfg`ファイルを編集し、`[validators_file]`設定を変更して、`validators.txt`ファイル（またはこれに相当するファイル）の正しいパスを指定します。 ファイル名の前後に余分な空白があるかどうかを確認します。
 
-- `rippled.cfg`ファイルを編集し、`[validators_file]`設定を削除します。バリデータ設定を`rippled.cfg`ファイルに直接追加します。例:
-
+- `rippled.cfg`ファイルを編集し、`[validators_file]`設定を削除します。 バリデータ設定を`rippled.cfg`ファイルに直接追加します。 例:
+  
         [validator_list_sites]
         https://vl.ripple.com
-
+      
         [validator_list_keys]
         ED2677ABFFD1B33AC6FBC3062B71F1E8397C1505E1C42C64D11AD1B28FF73F4734
 
@@ -113,7 +115,7 @@ Aborted (core dumped)
 
 ## 状態DBエラー
 
-`rippled`サーバーの状態データベースが破損している場合に、以下のエラーが発生する可能性があります。これは、予期しないシャットダウンが行われた場合、またはデータベースのタイプをRocksDBからNuDBに変更したが構成ファイルの`path`設定と`[database_path]`設定を変更しなかった場合に発生する可能性があります。
+`rippled`サーバーの状態データベースが破損している場合に、以下のエラーが発生する可能性があります。 これは、予期しないシャットダウンが行われた場合、またはデータベースのタイプをRocksDBからNuDBに変更したが構成ファイルの`path`設定と`[database_path]`設定を変更しなかった場合に発生する可能性があります。
 
 ```text
 2018-Aug-21 23:06:38.675117810 SHAMapStore:ERR state db error:
@@ -125,7 +127,7 @@ To resume operation, make backups of and remove the files matching /var/lib/ripp
 Terminating thread rippled: main: unhandled St13runtime_error 'state db error'
 ```
 
-この問題を修正する最も簡単な方法は、データベース全体を削除することです。あるいは、データベースを任意の場所にバックアップすることもできます。例:
+この問題を修正する最も簡単な方法は、データベース全体を削除することです。 あるいは、データベースを任意の場所にバックアップすることもできます。 例:
 
 ```sh
 mv /var/lib/rippled/db /var/lib/rippled/db-bak
@@ -137,9 +139,9 @@ mv /var/lib/rippled/db /var/lib/rippled/db-bak
 rm -r /var/lib/rippled/db
 ```
 
-**ヒント:** 一般に`rippled`データベースは安全に削除できます。これは、個々のサーバーはXRP Ledgerネットワーク内の他のサーバーからレジャー履歴を再ダウンロードできるためです。
+**ヒント:** 一般に`rippled`データベースは安全に削除できます。 これは、個々のサーバーはXRP Ledgerネットワーク内の他のサーバーからレジャー履歴を再ダウンロードできるためです。
 
-あるいは、構成ファイルでデータベースのパスを変更できます。例:
+あるいは、構成ファイルでデータベースのパスを変更できます。 例:
 
 ```
 [node_db]
@@ -159,9 +161,9 @@ path=/var/lib/rippled/custom_nudb_path
 Terminating thread rippled: main: unhandled St13runtime_error 'online_delete must not be less than ledger_history (currently 3000)
 ```
 
-`[ledger_history]`設定は、サーバーが埋め戻す履歴のレジャー数を表します。`online_delete`フィールド（`[node_db]`スタンザ）は、古い履歴を削除するときに維持する履歴のレジャー数を示します。サーバーがダウンロードしようとしている履歴レジャーを削除しないようにするため、`online_delete`の値は`[ledger_history]`以上でなければなりません。
+`[ledger_history]`設定は、サーバーが埋め戻す履歴のレジャー数を表します。 `online_delete`フィールド（`[node_db]`スタンザ）は、古い履歴を削除するときに維持する履歴のレジャー数を示します。 サーバーがダウンロードしようとしている履歴レジャーを削除しないようにするため、`online_delete`の値は`[ledger_history]`以上でなければなりません。
 
-この問題を修正するには、`rippled.cfg`ファイルを編集し、`[ledger_history]`オプションまたは`online_delete`オプションのいずれかを変更または削除します。（`[ledger_history]`を省略すると、デフォルトの256レジャーバージョンに設定されるので、`online_delete`を残して指定する場合は256よりも大きな値にする必要があります。`online_delete`を省略すると、古いレジャーバージョンの自動削除が無効になります。）
+この問題を修正するには、`rippled.cfg`ファイルを編集し、`[ledger_history]`オプションまたは`online_delete`オプションのいずれかを変更または削除します。 （`[ledger_history]`を省略すると、デフォルトの256レジャーバージョンに設定されるので、`online_delete`を残して指定する場合は256よりも大きな値にする必要があります。 `online_delete`を省略すると、古いレジャーバージョンの自動削除が無効になります。 ）
 
 
 ## node_sizeの値が正しくない
@@ -172,7 +174,7 @@ Terminating thread rippled: main: unhandled St13runtime_error 'online_delete mus
 Terminating thread rippled: main: unhandled N5beast14BadLexicalCastE 'std::bad_cast'
 ```
 
-`node_size`フィールドの有効なパラメーターは`tiny`、`small`、`medium`、`large`、`huge`です。詳細は、[ノードサイズ](capacity-planning.html#ノードサイズ)を参照してください。
+`node_size`フィールドの有効なパラメーターは`tiny`、`small`、`medium`、`large`、`huge`です。 詳細は、[ノードサイズ](capacity-planning.html#ノードサイズ)を参照してください。
 
 
 ## シャードパスが欠落している
@@ -183,11 +185,11 @@ Terminating thread rippled: main: unhandled N5beast14BadLexicalCastE 'std::bad_c
 Terminating thread rippled: main: unhandled St13runtime_error 'shard path missing'
 ```
 
-設定に`[shard_db]`スタンザが含まれている場合、このスタンザには`path`フィールドが指定されている必要があります。このフィールドは、`rippled`がシャードストアーのデータを書き込むことができるディレクトリを指しています。このエラーが発生する場合は、`path`フィールドが欠落しているか、誤った位置に指定されています。構成ファイルで余分な空白やスペルミスがないかどうかを確認し、[シャード設定の例](configure-history-sharding.html#2-rippledcfgの編集)と比較してください。
+設定に`[shard_db]`スタンザが含まれている場合、このスタンザには`path`フィールドが指定されている必要があります。 このフィールドは、`rippled`がシャードストアーのデータを書き込むことができるディレクトリを指しています。 このエラーが発生する場合は、`path`フィールドが欠落しているか、誤った位置に指定されています。 構成ファイルで余分な空白やスペルミスがないかどうかを確認し、[シャード設定の例](configure-history-sharding.html#2-rippledcfgの編集)と比較してください。
 
 ## サポート対象外のシャードストアータイプ: RocksDB
 
-RocksDBは、[履歴シャーディング](history-sharding.html)のバックエンドとしてサポートされなくなりました。RocksDBシャードストアーを定義している既存の構成がある場合は、サーバーが起動に失敗します。[新規: rippled 1.3.1][]
+RocksDBは、[履歴シャーディング](history-sharding.html)のバックエンドとしてサポートされなくなりました。 RocksDBシャードストアーを定義している既存の構成がある場合は、サーバーが起動に失敗します。 \[新規: rippled 1.3.1\]\[\]
 
 この場合、log startupコマンドの直後にプロセスが終了し、出力ログの早い段階で次のようなメッセージが表示されます。
 
@@ -202,7 +204,7 @@ ShardStore:ERR Unsupported shard store type: RocksDB
 - 履歴シャーディングを無効にします。
 
 
-## 関連項目
+## See Also
 
 - **コンセプト:**
     - [`rippled`サーバー](xrpl-servers.html)
@@ -212,9 +214,10 @@ ShardStore:ERR Unsupported shard store type: RocksDB
     - [容量の計画](capacity-planning.html)
 - **リファレンス:**
     - [rippled APIリファレンス](http-websocket-apis.html)
-      - [`rippled`コマンドラインの使用](commandline-usage.html)
-      - [server_infoメソッド][]
+        - [`rippled`コマンドラインの使用](commandline-usage.html)
+        - \[server_infoメソッド\]\[\]
 
+<!-- SPELLING_IGNORE: cfg, node_size -->
 <!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
 {% include '_snippets/tx-type-links.md' %}
