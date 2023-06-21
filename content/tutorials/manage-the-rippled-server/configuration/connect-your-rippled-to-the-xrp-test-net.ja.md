@@ -4,107 +4,240 @@ parent: configure-rippled.html
 blurb: rippledサーバーをTest Netに接続して、模造の資金を使って新しい機能を試したり、機能をテストしたりします。
 labels:
   - コアサーバー
-  - ブロックチェーン
+  - Blockchain
   - 開発
 ---
-# XRPL Altnetへのrippledの接続
 
-Rippleは[代替となるテスト用および開発用ネットワーク](parallel-networks.html)を作成しており、開発者が最新のXRP Ledgerの非本番バージョン（Testnet）でアプリケーションをテストしたり、最新のベータバージョン（Devnet）で機能をテストして実験したりできるようにしています。 **これらのネットワークで使用する資金は実際の資金ではなく、テスト専用の資金です。** TestnetまたはDevnetの[`rippled`サーバー](xrpl-servers.html)に接続できます。
+# Connect Your rippled to a Parallel Network
 
-**注記:** XRP TestnetとDevnetのレジャーと残高は定期的にリセットされます。
+Various [alternative test and development networks](parallel-networks.html) exist for developers to test their apps or experiment with features without risking real money. **これらのネットワークで使用する資金は実際の資金ではなく、テスト専用の資金です。 ** TestnetまたはDevnetの[`rippled`サーバー](xrpl-servers.html)に接続できます。
 
-`rippled`サーバーをXRP TestnetまたはDevnetに接続するには、以下の構成を設定します。
+**Caution:** On test networks with new and experimental features, you may need to run a pre-production release of the server to sync with the network. See the [Parallel Networks Page](parallel-networks.html) for information on what code version each network needs.
 
-1. `rippled.cfg`ファイルで以下の手順に従います。
+## Steps
 
-   a. [Testnet](xrp-testnet-faucet.html)に接続するには、以下のセクションのコメントを解除し、次のように追加します。
+To connect your `rippled` server to the XRP Testnet or Devnet, complete these steps. You can also use these steps to switch back to the production Mainnet after being on the Testnet or Devnet.
 
+## 1. Configure your server to connect to the right hub.
+
+`rippled.cfg`ファイルで以下の手順に従います。
+
+{% include '_snippets/conf-file-location.md' %}
+<!--{_ }-->
+
+1. Set an `[ips]` stanza with the hub for the network you want to connect to:
+
+    <!-- MULTICODE_BLOCK_START -->
+
+    *Testnet*
+   
         [ips]
         s.altnet.rippletest.net 51235
 
-   b. [Devnet](xrp-testnet-faucet.html)に接続するには、以下のセクションのコメントを解除し、次のように追加します。
-
+    *Devnet*
+   
         [ips]
         s.devnet.rippletest.net 51235
 
-   c. 以下のセクションを次のようにコメントアウトします。
+    *Mainnet*
+   
+        # No [ips] stanza. Use the default hubs to connect to Mainnet.
 
+    *AMM-Devnet*
+   
+        <code>rippledサーバーをXRP TestnetまたはDevnetに接続するには、以下の構成を設定します。
+       </code>
+
+    <!-- MULTICODE_BLOCK_END -->
+
+2. Comment out the previous `[ips]` stanza, if there is one:
+   
         # [ips]
         # r.ripple.com 51235
 
+3. Add a `[network_id]` stanza with the appropriate value:
 
+    <!-- MULTICODE_BLOCK_START -->
 
-2. `validators.txt`ファイルで以下の手順に従います。
+    *Testnet*
+   
+        [network_id]
+        testnet
 
-   2a. Altnetに接続するための変更
+    *Devnet*
+   
+        [network_id]
+        devnet
 
-        a. 以下のセクションのコメントを解除し、Altnetに接続するようにします。
+    *Mainnet*
+   
+        [network_id]
+        main
 
-            [validator_list_sites]
-            https://vl.altnet.rippletest.net
+    *AMM-Devnet*
+   
+        [network_id]
+        25
 
-            [validator_list_keys]
-            ED264807102805220DA0F312E71FC2C69E1552C9C5790F6C25E3729DEB573D5860
+    <!-- MULTICODE_BLOCK_END -->
 
-        b. 以下のセクションを次のようにコメントアウトします。
+    For custom networks, everyone who connects to the network should use a value unique to that network. When creating a new network, choose a network ID at random from the integers 11 to 4,294,967,295.
 
-            # [validator_list_sites]
-            # https://vl.ripple.com
-            #
-            # [validator_list_keys]
-            # ED2677ABFFD1B33AC6FBC3062B71F1E8397C1505E1C42C64D11AD1B28FF73F4734
+    **Note:** This setting helps your server find peers who are on the same network, but it is not a hard control on what network your server follows. The UNL / trusted validator settings (in the next step) are what actually define what network the server follows.
 
-   2b. Devnetに接続するための変更
+## 2. Set your trusted validator list.
 
-        a. 以下のセクションをコメントアウトします。
+`validators.txt`ファイルで以下の手順に従います。 This file is located in the same folder as your `rippled.cfg` file and defines which validators your server trusts not to collude.
 
+1. 以下のセクションのコメントを解除し、Altnetに接続するようにします。 [validator_list_sites] https://vl.altnet.rippletest.net [validator_list_keys] ED264807102805220DA0F312E71FC2C69E1552C9C5790F6C25E3729DEB573D5860 b.
+
+    <!-- MULTICODE_BLOCK_START -->
+
+    *Testnet*
+   
+        以下のセクションをコメントアウトします。
+       
             # [validator_list_sites]
             # https://vl.altnet.rippletest.net
-
+       
             # [validator_list_keys]
             # ED264807102805220DA0F312E71FC2C69E1552C9C5790F6C25E3729DEB573D5860
+       
+            # [validator_list_sites]
+            # https://vl.ripple.com
+            #
+            # [validator_list_keys]
+            # ED2677ABFFD1B33AC6FBC3062B71F1E8397C1505E1C42C64D11AD1B28FF73F4734
+       
+        b.
 
+    *Devnet*
+   
+        [validator_list_sites]
+        https://vl.devnet.rippletest.net
+       
+        [validator_list_keys]
+        EDDF2F53DFEC79358F7BE76BC884AC31048CFF6E2A00C628EAE06DB7750A247B12
+
+
+    *Mainnet*
+   
+        以下のセクションを次のようにコメントアウトします。
+       
             # [validator_list_sites]
             # https://vl.ripple.com
             #
             # [validator_list_keys]
             # ED2677ABFFD1B33AC6FBC3062B71F1E8397C1505E1C42C64D11AD1B28FF73F4734
 
-        b. 次の信頼できるバリデータをvalidator.txtファイルに追加します。
+    *AMM-Devnet*
+   
+        [validator_list_sites]
+        http://vlamm.devnet.rippletest.net/
+       
+        [validator_list_keys]
+        03553F67DC5A6FE0EBFE1B3B4742833D14AF7C65E79E5760EC76EC56EAFD254CE9
 
-            [validator_list_sites]
-            https://vl.devnet.rippletest.net/index.json
+    <!-- MULTICODE_BLOCK_END -->
 
-            [validator_list_keys]
-            EDDF2F53DFEC79358F7BE76BC884AC31048CFF6E2A00C628EAE06DB7750A247B12
+    **Tip:** Preview packages might come with the necessary stanzas pre-configured, but check them just in case.
+
+1. Comment out any previous `[validator_list_sites]`, `[validator_list_keys]`, or `[validators]` stanzas.
+
+    For example:
+   
+            # [validator_list_sites]
+            # https://vl.ripple.com
+            #
+            # [validator_list_keys]
+            # ED2677ABFFD1B33AC6FBC3062B71F1E8397C1505E1C42C64D11AD1B28FF73F4734
+       
+            # Old hard-coded List of Devnet Validators
+            # [validators]
+            # n9Mo4QVGnMrRN9jhAxdUFxwvyM4aeE1RvCuEGvMYt31hPspb1E2c
+            # n9MEwP4LSSikUnhZJNQVQxoMCgoRrGm6GGbG46AumH2KrRrdmr6B
+            # n9M1pogKUmueZ2r3E3JnZyM3g6AxkxWPr8Vr3zWtuRLqB7bHETFD
+            # n9MX7LbfHvPkFYgGrJmCyLh8Reu38wsnnxA4TKhxGTZBuxRz3w1U
+            # n94aw2fof4xxd8g3swN2qJCmooHdGv1ajY8Ae42T77nAQhZeYGdd
+            # n9LiE1gpUGws1kFGKCM9rVFNYPVS4QziwkQn281EFXX7TViCp2RC
+            # n9Jq9w1R8UrvV1u2SQqGhSXLroeWNmPNc3AVszRXhpUr1fmbLyhS
+
+## 3. Enable (or Disable) Features
+
+For some test networks using experimental features, you must also forcefully enable the appropriate feature in the config file. For other networks, you should not use the `[features]` stanza. Add or modify the `[features]` stanza of your config file as follows:
+
+<!-- MULTICODE_BLOCK_START -->
+
+_Testnet_
+
+```
+# [features]
+# Delete or comment out. Don't force-enable features on Testnet.
+```
+
+_Devnet_
+
+```
+# [features]
+# Delete or comment out. Don't force-enable features on Devnet.
+```
+
+_Mainnet_
+
+```
+# [features]
+# Delete or comment out. Don't force-enable features on Mainnet.
+```
+
+_AMM-Devnet_
+
+```
+[features]
+AMM
+```
+
+<!-- MULTICODE_BLOCK_END -->
+
+(On Mainnet, Testnet, and Devnet, no you)
+
+**Warning:** Do not use the `[features]` stanza when connecting to Mainnet or Testnet. Forcefully enabling different features than the rest of the network could cause your server to diverge from the network.
+
+## 4. Restart the server.
+
+```sh
+$ sudo systemctl restart rippled
+```
+
+## 5. Verify that your server syncs.
+
+It takes about 5 to 15 minutes to sync to the network after a restart. After your server is synced, the \[server_info method\]\[\] shows a `validated_ledger` object based on the network you are connected to.
+
+`rippled`がXRP TestnetまたはDevnetに接続していることを確認するため、サーバーで\[server_infoメソッド\]\[\]を使用して、その結果をTestnetまたはDevnetの公開サーバーの結果と比較します。 両方のサーバーで`validated_ledger`オブジェクトの`seq`フィールドが同一である必要があります（確認中にこの数が変化した場合は、1～2の差が生じる可能性があります）。
+
+The following example shows how to check your server's latest validated ledger from the commandline:
+
+```sh
+$ ./rippled server_info | grep seq
+```
+
+[WebSocket Toolのserver_info](websocket-api-tool.html#server_info)でネットワークのレジャーインデックスをチェックします。
 
 
 
-3. `rippled`を再起動します。
-
-4. `rippled`がXRP TestnetまたはDevnetに接続していることを確認するため、サーバーで[server_infoメソッド][]を使用して、その結果をTestnetまたはDevnetの公開サーバーの結果と比較します。両方のサーバーで`validated_ledger`オブジェクトの`seq`フィールドが同一である必要があります（確認中にこの数が変化した場合は、1～2の差が生じる可能性があります）。
-
-    以下のコマンドは、ローカルの`rippled`の最新検証済みレジャーインデックスをチェックします。
-
-         $ ./rippled server_info | grep seq
-
-    [WebSocket Toolのserver_info](websocket-api-tool.html#server_info)でネットワークのレジャーインデックスをチェックします。
-
-
-## 関連項目
+## See Also
 
 - **ツール:**
-  - [XRP Faucet](xrp-testnet-faucet.html)
-  - [WebSocket APIツール](websocket-api-tool.html) - 接続オプションで「Testnet公開サーバー」を選択します。
+    - [XRP Faucet](xrp-testnet-faucet.html)
+    - [WebSocket APIツール](websocket-api-tool.html) - 接続オプションで「Testnet公開サーバー」を選択します。
 - **コンセプト:**
-  - [並列ネットワーク](parallel-networks.html)
-  - [コンセンサスについて](intro-to-consensus.html)
+    - [並列ネットワーク](parallel-networks.html)
+    - [Introduction to Consensus](intro-to-consensus.html)
 - **チュートリアル:**
-  - [バリデータとしてのrippledの実行](run-rippled-as-a-validator.html)
-  - [スタンドアロンモードでの`rippled`のオフラインテスト](use-stand-alone-mode.html)
-  - `rippled`の[トラブルシューティング](troubleshoot-the-rippled-server.html)
+    - [Run rippled as a Validator](run-rippled-as-a-validator.html)
+    - [スタンドアロンモードでの`rippled`のオフラインテスト](use-stand-alone-mode.html)
+    - [`rippled`を再起動します。](troubleshoot-the-rippled-server.html)
 - **リファレンス:**
-  - [server_infoメソッド][]
+    - \[server_infoメソッド\]\[\]
 
 
 
