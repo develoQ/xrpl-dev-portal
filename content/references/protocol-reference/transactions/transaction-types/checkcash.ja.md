@@ -1,18 +1,19 @@
 ---
 html: checkcash.html
 parent: transaction-types.html
-blurb: レジャーでCheckオブジェクトの清算を試みます。
+blurb: Redeem a check.
 labels:
   - Checks
 ---
+
 # CheckCash
 [[ソース]](https://github.com/ripple/rippled/blob/master/src/ripple/app/tx/impl/CashCheck.cpp "Source")
 
-_（[Checks Amendment][]が必要です）_
+_（\[Checks Amendment\]\[\]が必要です）_
 
-対応する[CheckCreateトランザクション][]で承認された額まで受領するため、レジャーでCheckオブジェクトの清算を試みます。CheckCashトランザクションでCheckを換金できるのは、Checkの`Destination`アドレスだけです。このCheckの換金方法は、送金先により開始される[Payment][]の実行に似ています。
+対応する\[CheckCreateトランザクション\]\[\]で承認された額まで受領するため、レジャーでCheckオブジェクトの清算を試みます。 CheckCashトランザクションでCheckを換金できるのは、Checkの`Destination`アドレスだけです。 このCheckの換金方法は、送金先により開始される\[Payment\]\[\]の実行に似ています。
 
-Checkに相当する資金があるとは保証されないため、送金元に十分な残高がないか、または資金を送金できるだけの十分な流動性がないことが原因で、Checkの清算が失敗することがあります。このような状況が発生した場合、Checkはレジャーに残り、送金先は後でこのCheckの換金を再試行するか、または異なる額で換金を試みることができます。
+Checkに相当する資金があるとは保証されないため、送金元に十分な残高がないか、または資金を送金できるだけの十分な流動性がないことが原因で、Checkの清算が失敗することがあります。 このような状況が発生した場合、Checkはレジャーに残り、送金先は後でこのCheckの換金を再試行するか、または異なる額で換金を試みることができます。
 
 ## {{currentpage.name}} JSONの例
 
@@ -26,14 +27,16 @@ Checkに相当する資金があるとは保証されないため、送金元に
 }
 ```
 
+[Query example transaction. >](websocket-api-tool.html?server=wss%3A%2F%2Fs1.ripple.com%2F&req=%7B%22id%22%3A%22example_CheckCash%22%2C%22command%22%3A%22tx%22%2C%22transaction%22%3A%2267B71B13601CDA5402920691841AC27A156463678E106FABD45357175F9FF406%22%2C%22binary%22%3Afalse%7D)
+
 {% include '_snippets/tx-fields-intro.ja.md' %}
 <!--{# fix md highlighting_ #}-->
 
-| フィールド        | JSONの型           | [内部の型][] | 説明         |
-|:-------------|:--------------------|:------------------|:--------------------|
-| `CheckID`    | 文字列              | Hash256           | 換金する[Checkレジャーオブジェクト](check.html)のID（64文字の16進文字列）。 |
-| `Amount`     | [通貨額][] | Amount            | _（省略可）_ 可能であればCheckを厳密にこの額で清算します。通貨は対応するCheckCreateトランザクションの`SendMax`の通貨と一致している必要があります。このフィールドまたは`DeliverMin`のいずれかを指定する必要があります。 |
-| `DeliverMin` | [通貨額][] | Amount            | _（省略可）_ Checkをこの額以上の可能な限りの額で清算します。通貨は対応するCheckCreateトランザクションの`SendMax`の通貨と一致している必要があります。このフィールドまたは`Amount`のいずれかを指定する必要があります。 |
+| フィールド        | JSONの型      | \[内部の型\]\[\] | 説明                                                                                                                                |
+|:------------ |:----------- |:------------ |:--------------------------------------------------------------------------------------------------------------------------------- |
+| `CheckID`    | 文字列         | Hash256      | 換金する[Checkレジャーオブジェクト](check.html)のID（64文字の16進文字列）。                                                                                |
+| `Amount`     | \[通貨額\]\[\] | Amount       | _（省略可）_ 可能であればCheckを厳密にこの額で清算します。 通貨は対応するCheckCreateトランザクションの`SendMax`の通貨と一致している必要があります。 このフィールドまたは`DeliverMin`のいずれかを指定する必要があります。 |
+| `DeliverMin` | \[通貨額\]\[\] | Amount       | _（省略可）_ Checkをこの額以上の可能な限りの額で清算します。 通貨は対応するCheckCreateトランザクションの`SendMax`の通貨と一致している必要があります。 このフィールドまたは`Amount`のいずれかを指定する必要があります。    |
 
 `Amount`または`DeliverMin`のいずれかを指定する***必要があります***が、両方は指定しないでください。
 
