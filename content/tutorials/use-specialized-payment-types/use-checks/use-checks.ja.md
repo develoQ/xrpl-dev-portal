@@ -6,9 +6,10 @@ template: pagetype-category.html.jinja
 labels:
   - Checks
 ---
+
 # Checksの使用
 
-XRP LedgerのChecksでは、別のアカウントが後で支払いを請求することが認められていており、個人用の紙の小切手の仕組みと似ています。
+Checks in the XRP Ledger authorize another account to claim funds later, similar to how personal paper checks work.
 
 <!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
