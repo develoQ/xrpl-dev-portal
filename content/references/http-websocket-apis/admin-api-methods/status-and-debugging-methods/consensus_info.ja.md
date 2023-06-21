@@ -1,11 +1,12 @@
 ---
 html: consensus_info.html
 parent: status-and-debugging-methods.html
-blurb: デバッグのためのコンセンサスプロセスに関する情報を返します。
+blurb: Get information about the state of consensus as it happens.
 labels:
-  - ブロックチェーン
+  - Blockchain
   - コアサーバー
 ---
+
 # consensus_info
 [[ソース]](https://github.com/ripple/rippled/blob/a61ffab3f9010d8accfaa98aa3cacc7d38e74121/src/ripple/rpc/handlers/ConsensusInfo.cpp "Source")
 
@@ -210,31 +211,32 @@ Connecting to 127.0.0.1:5005
 
 <!-- MULTICODE_BLOCK_END -->
 
-この応答は[標準フォーマット][]に従っており、正常に完了した場合は結果に次のフィールドが含まれています。
+この応答は\[標準フォーマット\]\[\]に従っており、正常に完了した場合は結果に次のフィールドが含まれています。
 
-| `Field` | 型   | 説明                                               |
-|:--------|:-------|:----------------------------------------------------------|
-| `info`  | オブジェクト | コンセンサスのデバッグで役立つ可能性のある情報。この出力は、予告なく変更される可能性があります。 |
+| `Field` | 型      | 説明                                                |
+|:------- |:------ |:------------------------------------------------- |
+| `info`  | オブジェクト | コンセンサスのデバッグで役立つ可能性のある情報。 この出力は、予告なく変更される可能性があります。 |
 
 `info`オブジェクトに含まれる可能性のあるフィールドについて以下に簡単に説明します。
 
-| `Field`          | 型    | 説明                                     |
-|:-----------------|:--------|:------------------------------------------------|
-| `ledger_seq`     | 数値  | 現在コンセンサスプロセスにあるレジャーのシーケンス番号。 |
-| `our_position`   | オブジェクト  | コンセンサスプロセスにあるレジャーについてサーバーが予期する内容。 |
-| `peer_positions` | オブジェクト  | コンセンサスプロセスにあるピアと各ピアが提案するレジャーバージョンのマップ。 |
-| `proposers`      | 数値  | このコンセンサスプロセスに参加している信頼できるバリデータの数。信頼できるバリデータは、このサーバー構成に応じて異なります。 |
-| `synched`        | ブール値 | このサーバー自体が、自分がネットワークと同期中であるとみなしているかどうか。 |
-| `state`          | 文字列  | 現在進行中のコンセンサスプロセスの部分: `open`、`consensus`、`finished`、または`accepted`。 |
+| `Field`          | 型      | 説明                                                                                                    |
+|:---------------- |:------ |:----------------------------------------------------------------------------------------------------- |
+| `ledger_seq`     | 数値     | The \[ledger index\]\[Ledger Index\] of the [ledger](ledgers.html) currently in the consensus process |
+| `our_position`   | オブジェクト | This server's expectation for the ledger in the consensus process.                                    |
+| `peer_positions` | オブジェクト | コンセンサスプロセスにあるピアと各ピアが提案するレジャーバージョンのマップ。                                                                |
+| `proposers`      | 数値     | このコンセンサスプロセスに参加している信頼できるバリデータの数。 信頼できるバリデータは、このサーバー構成に応じて異なります。                                       |
+| `synched`        | ブール値   | このサーバー自体が、自分がネットワークと同期中であるとみなしているかどうか。                                                                |
+| `state`          | 文字列    | 現在進行中のコンセンサスプロセスの部分: `open`、`consensus`、`finished`、または`accepted`。                                     |
 
-`info`の唯一のフィールドが`"consensus": "none"`である最小限の結果となることもありますが、これは正常です。これは、サーバーがコンセンサスラウンドの合間にあることを示します。
+`info`の唯一のフィールドが`"consensus": "none"`である最小限の結果となることもありますが、これは正常です。 これは、サーバーがコンセンサスラウンドの合間にあることを示します。
 
 `consensus_info`コマンドを短い間隔で連続して数回実行すると、このコマンドの結果が大きく変化することがあります。
 
 
 ### 考えられるエラー
 
-* [汎用エラータイプ][]のすべて。
+- \[汎用エラータイプ\]\[\]のすべて。
+- `reportingUnsupported` - (\[Reporting Mode\]\[\] servers only) This method is not available in Reporting Mode.
 
 <!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
