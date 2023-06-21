@@ -1,10 +1,11 @@
 ---
 html: peers.html
 parent: peer-management-methods.html
-blurb: ピアプロトコルでこのサーバーに現在接続されているその他のすべてのrippledサーバーのリストを返します。
+blurb: Get information about the peer servers connected.
 labels:
   - コアサーバー
 ---
+
 # peers
 [[ソース]](https://github.com/ripple/rippled/blob/52f298f150fc1530d201d3140c80d3eaf781cb5f/src/ripple/rpc/handlers/Peers.cpp "Source")
 
@@ -268,6 +269,7 @@ rippled peers
      "status" : "success"
   }
 }
+
 ```
 
 *コマンドライン*
@@ -373,48 +375,60 @@ Connecting to 127.0.0.1:5005
      "status" : "success"
   }
 }
-
 ```
 
 <!-- MULTICODE_BLOCK_END -->
 
-応答は[標準フォーマット][]に従っており、正常に完了した場合は結果に次のフィールドからなるJSONオブジェクトが含まれます。
+応答は\[標準フォーマット\]\[\]に従っており、正常に完了した場合は結果に次のフィールドからなるJSONオブジェクトが含まれます。
 
-| `Field`   | 型   | 説明                                             |
-|:----------|:-------|:--------------------------------------------------------|
-| `cluster` | オブジェクト | [クラスターとして構成されている](clustering.html)場合は、同じクラスター内の他の`rippled`サーバーの概要。[新規: rippled 0.30.1][] |
-| `peers`   | 配列  | peerオブジェクトからなる配列。                                  |
+| `Field`   | 型      | 説明                                                                                            |
+|:--------- |:------ |:--------------------------------------------------------------------------------------------- |
+| `cluster` | オブジェクト | [クラスターとして構成されている](clustering.html)場合は、同じクラスター内の他の`rippled`サーバーの概要。 \[新規: rippled 0.30.1\]\[\] |
+| `peers`   | 配列     | peerオブジェクトからなる配列。                                                                             |
 
-`cluster`オブジェクトの各フィールドは、該当する`rippled`サーバーの識別用キーペアの公開鍵です。（これは、[server_infoメソッド][]で当該サーバーから`pubkey_node`として返される値と同じです。）そのフィールドの内容は、以下のフィールドを持つオブジェクトです。
+`cluster`オブジェクトの各フィールドは、該当する`rippled`サーバーの識別用キーペアの公開鍵です。 （これは、\[server_infoメソッド\]\[\]で当該サーバーから`pubkey_node`として返される値と同じです。 ）そのフィールドの内容は、以下のフィールドを持つオブジェクトです。
 
-| `Field` | 型   | 説明                                               |
-|:--------|:-------|:----------------------------------------------------------|
-| `tag`   | 文字列 | 構成ファイルで定義されているこのクラスターメンバーの表示名。 |
-| `fee`   | 数値 | （省略される場合があります）このクラスターメンバーが[トランザクションコスト](transaction-cost.html)に適用する負荷乗数。 |
-| `age`   | 数値 | このクラスターメンバーからの最終クラスターレポート以降の経過秒数。 |
+| `Field` | 型   | 説明                                                                       |
+|:------- |:--- |:------------------------------------------------------------------------ |
+| `tag`   | 文字列 | 構成ファイルで定義されているこのクラスターメンバーの表示名。                                           |
+| `fee`   | 数値  | （省略される場合があります）このクラスターメンバーが[トランザクションコスト](transaction-cost.html)に適用する負荷乗数。 |
+| `age`   | 数値  | このクラスターメンバーからの最終クラスターレポート以降の経過秒数。                                        |
 
 `peers`配列の各メンバーは、以下のフィールドを持つpeerオブジェクトです。
 
-| `Field`            | 型    | 説明                                   |
-|:-------------------|:--------|:----------------------------------------------|
-| `address`          | 文字列  | このピアが接続しているIPアドレスとポート。 |
-| `cluster`          | ブール値 | （省略される場合があります）`true`の場合、現在のサーバーとピアサーバーは同じ`rippled`クラスターに含まれています。 |
-| `name`             | 文字列  | （省略される場合があります）ピアが同じクラスターに含まれている場合、この名前は構成ファイルで定義されているそのピアサーバーの表示名です。 |
-| `complete_ledgers` | 文字列  | ピア`rippled`で利用可能なレジャーバージョンのシーケンス番号を示す範囲式 |
-| `inbound`          | ブール値 | （省略される場合があります）`true`の場合は、ピアはローカルサーバーに接続しています。 |
-| `latency`          | 数値  | ピアへのネットワーク遅延（ミリ秒単位） |
-| `ledger`           | 文字列  | 最後に閉鎖されたピアのレジャーのハッシュ。 |
-| `load`             | 数値  | ピアサーバーによるローカルサーバーへの負荷の測定値。この数値が大きいほど負荷が高くなります。（負荷の測定単位は正式には定義されていません。） |
-| `protocol`         | 文字列  | （省略される場合があります）ピアが使用しているプロトコルバージョン（ローカルサーバーのプロトコルバージョンと異なる場合）。 |
-| `public_key`       | 文字列  | （省略される場合があります）ピアのメッセージの整合性の検証に使用できる公開鍵。これは、検証に使用する公開鍵とは異なりますが、フォーマットは同じです。 |
-| `sanity`           | 文字列  | （省略される場合があります）このピアが現行サーバーと同じルールとレジャーシーケンスに従っているかどうか。値が`insane`の場合、ピアは並列ネットワークの一部である可能性があります。値が`unknown`の場合、現行サーバーはピアに互換性があるかどうかを把握していません。 <!-- STYLE_OVERRIDE: insane --> |
-| `status`           | 文字列  | （省略される場合があります）ピアからの最新のステータスメッセージ。`connecting`、`connected`、`monitoring`、`validating`、`shutting`のいずれかです。 |
-| `uptime`           | 数値  | `rippled`サーバーがこのピアに継続して接続していた秒数。[新規: rippled 0.30.1][] |
-| `version`          | 文字列  | （省略される場合があります）ピアサーバーの`rippled`バージョン番号 |
+| `Field`            | 型                                                     | 説明                                                                                                                                                                                    |
+|:------------------ |:----------------------------------------------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `address`          | 文字列                                                   | このピアが接続しているIPアドレスとポート。                                                                                                                                                                |
+| `cluster`          | ブール値                                                  | （省略される場合があります）`true`の場合、現在のサーバーとピアサーバーは同じ`rippled`クラスターに含まれています。                                                                                                                      |
+| `name`             | 文字列                                                   | （省略される場合があります）ピアが同じクラスターに含まれている場合、この名前は構成ファイルで定義されているそのピアサーバーの表示名です。                                                                                                                  |
+| `complete_ledgers` | 文字列                                                   | ピア`rippled`で利用可能なレジャーバージョンのシーケンス番号を示す範囲式                                                                                                                                              |
+| `inbound`          | ブール値                                                  | （省略される場合があります）`true`の場合は、ピアはローカルサーバーに接続しています。                                                                                                                                         |
+| `latency`          | 数値                                                    | ピアへのネットワーク遅延（ミリ秒単位）                                                                                                                                                                   |
+| `ledger`           | 文字列                                                   | The identifying \[hash\]\[Hash\] of the peer's most recently closed ledger                                                                                                            |
+| `load`             | 数値                                                    | ピアサーバーによるローカルサーバーへの負荷の測定値。 この数値が大きいほど負荷が高くなります。 （負荷の測定単位は正式には定義されていません。                                                                                                               |
+| `protocol`         | 文字列                                                   | （省略される場合があります）ピアが使用しているプロトコルバージョン（ローカルサーバーのプロトコルバージョンと異なる場合）。                                                                                                                         |
+| `metrics`          | Object                                                | Details on the amount of data sent to and received from this peer. See the description of the `metrics` object below for details. \[New in: rippled 1.4.0\]\[\]                       |
+| `public_key`       | 文字列                                                   | （省略される場合があります）ピアのメッセージの整合性の検証に使用できる公開鍵。 これは、検証に使用する公開鍵とは異なりますが、フォーマットは同じです。                                                                                                           |
+| `sanity`           | 文字列                                                   | （省略される場合があります）このピアが現行サーバーと同じルールとレジャーシーケンスに従っているかどうか。 値が`insane`の場合、ピアは並列ネットワークの一部である可能性があります。 値が`unknown`の場合、現行サーバーはピアに互換性があるかどうかを把握していません。 <!-- STYLE_OVERRIDE: insane --> |
+| `status`           | 最後に閉鎖されたピアのレジャーのハッシュ。                                 | （省略される場合があります）ピアからの最新のステータスメッセージ。 `connecting`、`connected`、`monitoring`、`validating`、`shutting`のいずれかです。                                                                               |
+| `uptime`           | 数値                                                    | `rippled`サーバーがこのピアに継続して接続していた秒数。 \[新規: rippled 0.30.1\]\[\]                                                                                                                           |
+| `version`          | ピアプロトコルでこのサーバーに現在接続されているその他のすべてのrippledサーバーのリストを返します。 | （省略される場合があります）ピアサーバーの`rippled`バージョン番号                                                                                                                                                 |
+
+The `metrics` object contains the following fields:
+
+| `Field`            | Type   | Description                                                   |
+|:------------------ |:------ |:------------------------------------------------------------- |
+| `avg_bps_recv`     | 文字列    | The average bytes per second of data received from this peer. |
+| `avg_bps_sent`     | String | The average bytes per second of data sent to this peer.       |
+| `total_bytes_recv` | String | The total number of bytes of data received from this peer.    |
+| `total_bytes_sent` | 文字列    | The total number of bytes of data sent to this peer.          |
+
+**Note:** All of the fields in the `metrics` object are 64-bit unsigned integers serialized to string format so that they do not lose precision in JSON encoding/decoding.
 
 ### 考えられるエラー
 
-* [汎用エラータイプ][]のすべて。
+- \[汎用エラータイプ\]\[\]のすべて。
+- `reportingUnsupported` - (\[Reporting Mode\]\[\] servers only) This method is not available in Reporting Mode.
 
 <!--{# common link defs #}-->
 {% include '_snippets/rippled-api-links.md' %}
